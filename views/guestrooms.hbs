@@ -1,0 +1,40 @@
+<div class="row">
+	<main class="col-md-12">
+
+		<!-- Start your code here -->
+		<h1>Guest Rooms</h1>
+		
+		<div>
+
+		</div>
+		{{#if rooms}}
+			{{#each rooms}}
+				<h3 class="mb-2 mt-2">{{this._id}}</h3>
+				{{#if this.items.length}}
+					<div style="display:flex;flex-direction: row;">
+						{{#each this.items}}
+						<div style="margin-right: 15px;">
+							<div class="card" style="width: 18rem;">
+								<img class="card-img-top" src={{#if this.photoUrl}}"/{{this.photoUrl}}"{{/if}}{{#unless this.photoUrl}}"/img/placeholder/hotelCalifornia.png"{{/unless}} alt="Card image cap">
+								<div class="card-body">
+									<h5 class="card-title">{{this.type}}</h5>
+									<p class="card-text">{{this.description}}</p>
+									<p class="card-text">{{this.bedCount}} {{this.bedType}} </p>
+									<a href="#" class="btn btn-primary">View Room Details</a>
+								</div>
+							</div>
+						</div>
+						{{/each}}
+					</div>
+				{{/if}}
+			{{/each}}
+		{{/if}}
+		{{#unless rooms}}
+			<div class="col-md-12 text-center">
+				<strong>No Rooms Found</strong>
+			</div>
+    	{{/unless}}
+		<!-- End your code here  -->
+
+	</main>
+</div>
