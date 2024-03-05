@@ -5,6 +5,12 @@ var path = require("path");
 const reservationRouter = require('./routes/reservationRoutes');
 const guestRouter = require('./routes/guestRoutes');
 const roomRouter = require('./routes/roomRoutes');
+const createAccount = require('./routes/createaccount');
+const roomDetails = require('./routes/roomdetails');
+const userDashboard = require('./routes/userdashboard');
+const updatePassword = require('./routes/updatepassword');
+
+
 
 const {renderAllRooms} = require('./controllers/roomController');
 
@@ -75,10 +81,30 @@ app.get("/contactUs", (req, res) => {
     res.render("contactUs",{layout:"main"});
 });
 
+app.get("/createaccount", (req, res) => {
+    res.render( "createaccount");  // renders createAccount
+})
+
+app.get("/roomdetails", (req, res) => {
+    res.render( "roomdetails");  // renders roomdetails
+})
+app.get("/userdashboard", (req, res) => {
+    res.render( "userdashboard");  // renders roomdetails
+})
+app.get("/updatepassword", (req, res) => {
+    res.render( "updatepassword");  // renders roomdetails
+})
+
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);
 app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
+app.use('/createaccount', createAccount);
+app.use('/roomdetails', roomDetails);
+app.use('/userdashboard', userDashboard);
+app.use('/updatepassword', updatePassword);
+
+
 
 // 4 - No matching route
 app.use((req, res) => {
