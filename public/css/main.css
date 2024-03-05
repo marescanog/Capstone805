@@ -59,3 +59,144 @@
         display: block;
     }
 }
+
+
+
+/* public/css/styles.css */
+
+/* Global reset for padding and margins */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4; /* Adjust the background color as needed */
+}
+
+/* Container for the whole contact page */
+.contact-page-container {
+    display: flex;
+    justify-content: space-between; /* Ensure items are spaced out */
+    align-items: flex-start;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    padding: 20px;
+    gap: 20px; /* Space between columns */
+    max-width: 1200px; /* Maximum width of the entire container */
+    margin: auto; /* Center the container */
+}
+
+/* Container for the contact information */
+.contact-info-container {
+    width: calc(50% - 20px); /* Adjust width calculation if needed */
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for the feedback form */
+.feedback-form-container {
+    width: calc(50% - 20px); /* Adjust width calculation if needed */
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+.feedback-form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-form-container label {
+    margin-bottom: 5px;
+}
+
+.feedback-form-container input[type="text"],
+.feedback-form-container input[type="email"],
+.feedback-form-container input[type="tel"],
+.feedback-form-container textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.feedback-form-container button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .contact-page-container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 0; /* Remove gap for mobile layout */
+    }
+
+    .contact-info-container,
+    .feedback-form-container {
+        width: 100%; /* Take full width on smaller screens */
+        box-shadow: none; /* Optional: remove shadow for a flatter design on mobile */
+        padding: 20px 0; /* Adjust padding for mobile layout */
+    }
+}
+
+/* Further responsive adjustments for smaller screens can be added here */
+
+.map-container {
+    margin: 20px 0;
+    width: 100%; /* Width is 100% to be responsive */
+    max-width: 300px; /* Adjust max-width to make the map smaller */
+    height: auto; /* Height will adjust automatically */
+    text-align: center; /* This will center the iframe in the container */
+}
+
+.map-container iframe {
+    width: 100%; /* The iframe will take the width of the container */
+    max-height: 200px; /* Adjust max-height to control the map's size */
+    border: none; /* Removes the border */
+}
+
+/* Responsive map container for smaller devices */
+@media (max-width: 768px) {
+    .map-container {
+        max-width: 100%; /* The map can expand to the full width on small devices */
+    }
+    .map-container iframe {
+        max-height: 200px; /* You can adjust the height for mobile if needed */
+    }
+}
+
+/* New styles for inline form group */
+.inline-form-group {
+    display: flex;
+    align-items: flex-start; /* Aligns the label and textarea at the top */
+    gap: 10px; /* Adjust the space between the label and textarea */
+}
+
+.inline-form-group label,
+.inline-form-group textarea {
+    flex: 1; /* Both the label and textarea will take up equal space */
+}
+
+/* Styles specifically for the textarea to ensure it aligns well with the label */
+.inline-form-group textarea {
+    height: auto; /* Adjust height as needed, or keep it to 'auto' */
+    resize: vertical; /* Allows vertical resizing only */
+}
+
+/* Responsive adjustments if necessary */
+@media (max-width: 768px) {
+    .inline-form-group {
+        flex-direction: column; /* Stack the label and textarea on smaller screens */
+    }
+}
