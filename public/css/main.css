@@ -1,3 +1,9 @@
+*{
+    box-sizing: border-box;
+    margin: 0%;
+    padding: 0%;
+}
+
 .login-dropdown {
     background-color: #FFFFFF;
     border: #D0D0D0 solid 1px;

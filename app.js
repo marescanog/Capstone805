@@ -1,18 +1,28 @@
 var express = require("express");
 const exphbs = require("express-handlebars");
 var path = require("path");
+// const fs = require('fs');
 
 const reservationRouter = require('./routes/reservationRoutes');
 const guestRouter = require('./routes/guestRoutes');
 const roomRouter = require('./routes/roomRoutes');
 
+// const header = fs.readFileSync('./views/layouts/header.hbs', 'utf8');
+
 const {renderAllRooms} = require('./controllers/roomController');
 
 var app = express();
 
+// exphbs.registerPartial('header', header);
+
+
 // Configure handlebars
 app.engine('.hbs', exphbs.engine({
     extname:'.hbs',
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+    partialsDir: path.join(__dirname, 'views/partials'),
+
     helpers: {
         navLink: function(url, options){
             return `<li class="nav-item">
