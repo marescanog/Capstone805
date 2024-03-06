@@ -1,0 +1,38 @@
+
+
+<div class="inquiries-container">
+<div class="inquiries-page">
+    <div class="inquiries-list">
+        <h2>All Inquiries <button class="submit-btn ">+ Submit<br> New Inquiry</br></button></h2>
+        {{#each inquiries}}
+        <div onclick="showInquiryDetails('{{@index}}')" class="inquiry-title" data-id="inquiry{{@index}}">
+            {{this.title}}
+        </div>
+        {{/each}}
+    </div>
+    <div class="inquiry-details-container">
+        {{#each inquiries}}
+        <div id="inquiry{{@index}}" class="inquiry-details" style="display: none;">
+            <p>{{this.detail}}</p>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<div class="middle-message">
+  Your Inquiry was received and is  awating response fom our hotel staff.
+</br>
+For urgent inquiries. Please call front desk at 1234567890.
+</div>
+
+</div>
+
+
+<script>
+function showInquiryDetails(index) {
+    document.querySelectorAll('.inquiry-details').forEach(function(detail) {
+        detail.style.display = 'none';
+    });
+    document.getElementById('inquiry' + index).style.display = 'block';
+}
+</script>
