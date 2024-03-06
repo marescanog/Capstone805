@@ -106,7 +106,11 @@ app.get("/createaccount", (req, res) => {
 })
 
 app.get("/roomdetails", (req, res) => {
-    res.render( "roomdetails");  // renders roomdetails
+    res.render( "roomdetails", {
+        layout:"main", 
+        css: 'roomdetails.css', 
+        title:'RoomDetails',
+    });  // renders roomdetails
 })
 app.get("/userdashboard", (req, res) => {
     res.render( "userdashboard");  // renders roomdetails
