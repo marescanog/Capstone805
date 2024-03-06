@@ -9,9 +9,9 @@ const DB = process.env.NODE_ENV === 'production' ?
     (process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD)).replace('<USERNAME>', process.env.DATABASE_USERNAME)
     : process.env.DATABASE_LOCAL;
 
-// mongoose.connect(DB, {})
-// .then(() => { console.log('Database connected successfully!');})
-// .catch(() => { console.log('Database connection failed!');})
+mongoose.connect(DB, {})
+.then(() => { console.log('Database connected successfully!');})
+.catch(() => { console.log('Database connection failed!');})
 
 function onHttpStart() {
     console.log(`Express http server listening on: ${HTTP_PORT}`);
