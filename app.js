@@ -1,18 +1,34 @@
 var express = require("express");
 const exphbs = require("express-handlebars");
 var path = require("path");
+// const fs = require('fs');
 
 const reservationRouter = require('./routes/reservationRoutes');
 const guestRouter = require('./routes/guestRoutes');
 const roomRouter = require('./routes/roomRoutes');
+const createAccount = require('./routes/createaccount');
+const roomDetails = require('./routes/roomdetails');
+const userDashboard = require('./routes/userdashboard');
+const updatePassword = require('./routes/updatepassword');
+
+
+
+// const header = fs.readFileSync('./views/layouts/header.hbs', 'utf8');
 
 const {renderAllRooms} = require('./controllers/roomController');
 
 var app = express();
 
+// exphbs.registerPartial('header', header);
+
+
 // Configure handlebars
 app.engine('.hbs', exphbs.engine({
     extname:'.hbs',
+    defaultLayout: 'main',
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+    partialsDir: path.join(__dirname, 'views/partials'),
+
     helpers: {
         navLink: function(url, options){
             return `<li class="nav-item">
@@ -75,10 +91,30 @@ app.get("/contactUs", (req, res) => {
     res.render("contactUs",{layout:"main"});
 });
 
+app.get("/createaccount", (req, res) => {
+    res.render( "createaccount");  // renders createAccount
+})
+
+app.get("/roomdetails", (req, res) => {
+    res.render( "roomdetails");  // renders roomdetails
+})
+app.get("/userdashboard", (req, res) => {
+    res.render( "userdashboard");  // renders roomdetails
+})
+app.get("/updatepassword", (req, res) => {
+    res.render( "updatepassword");  // renders roomdetails
+})
+
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);
 app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
+app.use('/createaccount', createAccount);
+app.use('/roomdetails', roomDetails);
+app.use('/userdashboard', userDashboard);
+app.use('/updatepassword', updatePassword);
+
+
 
 // 4 - No matching route
 app.use((req, res) => {
