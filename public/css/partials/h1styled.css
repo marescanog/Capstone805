@@ -1,0 +1,19 @@
+hr.under-h1-style {
+    border: none;
+    height: 3px;
+    color: #e45b32;  
+    background-color: #e45b32;  
+    opacity: 100% !important;
+}
+
+h1.styled-h1 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 3em;
+}
+
+.header-container{
+    width: fit-content;
+}

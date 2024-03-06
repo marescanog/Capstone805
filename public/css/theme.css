@@ -3,6 +3,17 @@
 
 }
 
+.button-next {
+    background-color: #E45C32;
+    padding: 1em 2.5em 1em 2.5em;
+    
+}
+
+.page-wrapper-flex{
+    padding: 3em;
+    width: 100%;
+    display: flex;
+}
 
 .nav-container {
     /* background-color: rgba(254, 172, 94, 1); */

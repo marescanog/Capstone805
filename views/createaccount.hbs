@@ -1,64 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/createaccount.css">
-    <title>Create Account</title>
-</head>
-
-<body>
-    <div class="container">
-        <h1>Create Account</h1>
-        <p>Reserve your room now! Create an account to proceed.</p>
-        <p class="login-link">Already have an account? <a href="#">Login</a></p>
-        <div class="container card">
-            <div class="row justify-content-left">
-                <div class="col-md-6">
-                    <h1 class="text-justify mb-4">Account Information</h1>
-                    <form class="mb-4 row g-3 ">
+<div class="page-wrapper-flex">
+    <div class="pa-right-container">
+        <div>
+            {{> _h1styled}}
+            <p>Reserve your room now! Create an account to proceed.</p>
+            <p class="login-link">Already have an account? <a href="#">Login</a></p>
+            <div class="card">
+                <div class="row justify-content-left">
+                    <div >
+                        <h1 class="text-justify mb-4">Account Information</h1>
+                        <form class="mb-4 row g-3 ">
+                            <div class="col-md-6">
+                            <label for="inputName" class="form-label">First Name*</label>
+                            <input type="text" class="form-control" aria-label="First name" required>
+                        </div>
                         <div class="col-md-6">
-                        <label for="inputName" class="form-label">First Name*</label>
-                        <input type="text" class="form-control" aria-label="First name" required>
+                            <label for="inputAddress" class="form-label">Last Name*</label>
+                            <input type="text" class="form-control" aria-label="Last name" required>
+                        </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                <input type="tel" class="form-control" id="mobileNumber">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password *</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="verifyPassword" class="form-label">Verify Password *</label>
+                                <input type="password" class="form-control" id="verifyPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                            <p class="text-justify">
+                                To complete your registration, a verification email has been sent to the provided address.
+                                Please click the link in the email to verify and proceed with your booking.
+                            </p>
+                            <div class="col-12 gap-2">
+                                <button type="submit" class="btn btn-primary button-next">Next: Verify Email</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-6">
-                        <label for="inputAddress" class="form-label">Last Name*</label>
-                        <input type="text" class="form-control" aria-label="Last name" required>
-                    </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mobileNumber" class="form-label">Mobile Number</label>
-                            <input type="tel" class="form-control" id="mobileNumber">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password *</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="verifyPassword" class="form-label">Verify Password *</label>
-                            <input type="password" class="form-control" id="verifyPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name *</label>
-                            <input type="text" class="form-control" id="lastName" required>
-                        </div>
-                        <p class="text-justify">
-                            To complete your registration, a verification email has been sent to the provided address.
-                            Please click the link in the email to verify and proceed with your booking.
-                        </p>
-                        <div class="col-12 gap-2">
-                            <button type="submit" class="btn btn-primary">Next: Verify Email</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
+    {{> _paymentSidebar}}
+</div>
 
-</body>
-
-</html>

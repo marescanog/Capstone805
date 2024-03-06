@@ -1,0 +1,64 @@
+.pa-right-container {
+    width: 55%;
+}
+
+.pa-left-container {
+    width: 45%;
+    margin-left: 3em;
+}
+
+.pa-side-card {
+    background-color: #FFECC8;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.pa-card-body{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-summary-section {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-image-style.col {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.pa-left-right-container {
+    width: 80%;
+}
+
+.pa-left{
+    text-align: left;
+}
+
+.pa-right {
+    text-align: right;
+}
+
+.form-check {
+    text-align: left;
+    width: 84%;
+}
+
+hr.pa-hr{
+    border: none;
+    height: 2px;
+    color: #33394F;  
+    background-color: #33394F;  
+    opacity: 175% !important;
+    width: 100%;
+
+}

@@ -55,6 +55,7 @@ app.engine('.hbs', exphbs.engine({
 }));
 
 app.set('view engine', '.hbs');
+app.set('views', './views');
 
 app.use(express.json());
 
@@ -91,8 +92,17 @@ app.get("/contactUs", (req, res) => {
     res.render("contactUs",{layout:"main"});
 });
 
+// renders createAccount
 app.get("/createaccount", (req, res) => {
-    res.render( "createaccount");  // renders createAccount
+    res.render( "createaccount", { 
+        layout:"main", 
+        css: 'createaccount.css', 
+        title:'Create Account',
+        partialsCSS: [
+            {name:"paymentSidebar.css"},
+            {name:"h1styled.css"}
+        ] 
+    });  
 })
 
 app.get("/roomdetails", (req, res) => {
@@ -109,10 +119,10 @@ app.get("/updatepassword", (req, res) => {
 app.use('/api/v1/guests', guestRouter);
 app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
-app.use('/createaccount', createAccount);
-app.use('/roomdetails', roomDetails);
-app.use('/userdashboard', userDashboard);
-app.use('/updatepassword', updatePassword);
+// app.use('/createaccount', createAccount);
+// app.use('/roomdetails', roomDetails);
+// app.use('/userdashboard', userDashboard);
+// app.use('/updatepassword', updatePassword);
 
 
 
