@@ -51,11 +51,19 @@ app.engine('.hbs', exphbs.engine({
             return options.fn(this);
             }
         },
+        isDevMode: function() {
+            if(process?.env?.NODE_ENV === 'development'){
+                return `<li class="nav-item">
+                <a class="nav-link ${"/devlinks" == app.locals.activeRoute ? "active" : "" }"
+                href="/devlinks">DEVLINKS</a>
+                </li>`
+            }
+        }
     }
 }));
 
 app.set('view engine', '.hbs');
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.json());
 
@@ -73,11 +81,15 @@ app.use(function(req,res,next){
 })
 
 app.get("/", (req, res) => {
-    res.render("home",{layout:"main"});
+    res.render("pages/public/home",{layout:"main"});
+});
+
+app.get("/home", (req, res) => {
+    res.render("pages/public/home",{layout:"main"});
 });
 
 app.get("/about", (req, res) => {
-    res.render("about",{layout:"main"});
+    res.render("pages/public/about",{layout:"main"});
 });
 
 app.get("/guestrooms", (req, res) => {
@@ -85,16 +97,15 @@ app.get("/guestrooms", (req, res) => {
 });
 
 app.get("/restaurant", (req, res) => {
-    res.render("restaurant",{layout:"main"});
+    res.render("pages/public/restaurant",{layout:"main"});
 });
 
 app.get("/contactUs", (req, res) => {
-    res.render("contactUs",{layout:"main"});
+    res.render("pages/public/contactUs",{layout:"main"});
 });
 
-// renders createAccount
 app.get("/createaccount", (req, res) => {
-    res.render( "createaccount", { 
+    res.render( "pages/public/createaccount", { 
         layout:"main", 
         css: 'createaccount.css', 
         title:'Create Account',
@@ -106,18 +117,68 @@ app.get("/createaccount", (req, res) => {
 })
 
 app.get("/roomdetails", (req, res) => {
-    res.render( "roomdetails", {
+    res.render( "pages/public/roomdetails", {
         layout:"main", 
         css: 'roomdetails.css', 
         title:'RoomDetails',
-    });  // renders roomdetails
+    });  
 })
+
 app.get("/userdashboard", (req, res) => {
-    res.render( "userdashboard");  // renders roomdetails
+    res.render( "pages/hotelguest/userdashboard", {
+        layout:"main", 
+        title:'Profile',  
+    });  
 })
+
 app.get("/updatepassword", (req, res) => {
-    res.render( "updatepassword");  // renders roomdetails
+    res.render( "pages/hotelguest/updatepassword");  
 })
+
+app.get("/devlinks", (req, res) => {
+    res.render( "pages/public/devlinks");  
+})
+
+// we can organize routes later like below for now we'll just write everthing in app.js
+// we will refactor later
+
+app.get("/devlinks", (req, res) => {
+    res.render( "pages/public/devlinks");  
+})
+
+app.get("/reservations", (req, res) => {
+    res.render( "pages/hotelguest/reservations",{ 
+        layout:"main", 
+        css: 'guest/reservations.css', 
+        title:'Reservations',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+})
+
+app.get("/loyalty", (req, res) => {
+    res.render( "pages/hotelguest/loyalty",{ 
+        layout:"main", 
+        css: 'guest/loyalty.css', 
+        title:'Loyalty history',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+})
+
+app.get("/editaccount", (req, res) => {
+    res.render( "pages/hotelguest/editAccount",{ 
+        layout:"main", 
+        css: 'guest/editaccount.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+})
+
 
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);
