@@ -4,6 +4,8 @@
     padding: 0%;
 }
 
+
+
 .login-dropdown {
     background-color: #FFFFFF;
     border: #D0D0D0 solid 1px;
@@ -67,16 +69,6 @@
 }
 
 
-
-<<<<<<< HEAD
-/* public/css/styles.css */
-
-/* Global reset for padding and margins */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 body {
     font-family: 'Arial', sans-serif;
@@ -207,6 +199,3 @@ body {
         flex-direction: column; /* Stack the label and textarea on smaller screens */
     }
 }
-=======
-
->>>>>>> 7823825e3ab68d5e93797f96d4d6397bae5ab09d
