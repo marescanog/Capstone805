@@ -41,7 +41,7 @@ exports.renderAllRooms = async (req, res) => {
 
         // console.log(rooms)
         // console.log(JSON.stringify(rooms))
-        res.render("guestrooms", {layout:"main", rooms:rooms})
+        res.render("pages/public/guestrooms", {layout:"main", rooms:rooms})
 
     } catch (err){
         res.status(400).json({
