@@ -89,7 +89,40 @@ app.get("/home", (req, res) => {
 });
 
 app.get("/about", (req, res) => {
-    res.render("pages/public/about",{layout:"main"});
+    const memberData = [
+        {
+            name: 'Marvie Gastaya',
+            imageUrl: "/img/about/marvie.png",
+            position:"Project Leader Database application developer",
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
+        },
+        {
+            name: 'Nischal Sapkota',
+            imageUrl: "/img/about/nishchal.png",
+            position:"Database application developer",
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
+        },
+        {
+          name: 'Sanam Maharjan',
+          imageUrl: "/img/about/sanam.png",
+          position:"Database application developer",
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
+      },
+      {
+          name: 'Taslima Parvin',
+          imageUrl: "/img/about/taslima.png",
+          position:"Database application developer",
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
+      },
+    ];
+    const hotelStory = "Here you can provide some text about the hotel's history, vision, and values...";
+    res.render("pages/public/about",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'About',
+        members: memberData,
+        story: hotelStory
+    });
 });
 
 app.get("/guestrooms", (req, res) => {
@@ -177,7 +210,29 @@ app.get("/editaccount", (req, res) => {
             {name:"h1styled.css"}
         ] 
     });  
-})
+});
+
+app.get("/udpate-email", (req, res) => {
+    res.render( "pages/hotelguest/update-email",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
+
+app.get("/view-inquiries", (req, res) => {
+    res.render( "pages/hotelguest/view-inquiries",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
 
 
 // 3 - ROUTES
