@@ -1,10 +1,46 @@
-<div class="row">
-	<main class="col-md-12">
+<!-- views/about-us.hbs -->
+<main class="about-container">
+<section class="hotel-story">
+    <h2>About Us</h2>
+    <div class="story-container">
+        <img src="/images/hotel.jpg" alt="Hotel" class="story-image">
+        <div class="story-text">
+            <h3>Hotel Story</h3>
+            <p>
+                
+In the golden era of travel, Hotel California was conceived by visionaries seeking to craft a haven of
+ luxury in an unparalleled setting.Founded on the dreams of hospitality pioneers, Hotel California 
+ began as a vision to create an oasis of comfort in a breathtaking locale.
 
-		<!-- Start your code here -->
-		<h1>About Us</h1>
-		
-		<!-- End your code here  -->
 
-	</main>
-</div>
+As the years passed, it embraced the changing tides of hospitality, always remaining a step ahead
+ in service and comfort. Nestled amidst breathtaking scenery, it has hosted countless guests, each
+  leaving with stories filled with enchantment and warmth.
+
+Today, Hotel California stands not just as a hotel, but as a cherished destination where every visit is
+ a journey into a world of timeless elegance and heartfelt connections.
+
+            </p>
+        </div>
+    </div>
+</section>
+
+ <section class="team-members">
+        <h2>Members</h2>
+        <div class="members-list">
+            {{#each members}}
+            <div class="member">
+                 <div class="member-image-container">
+                  <img src="{{this.imageUrl}}" alt="{{this.name}}" class="member-image">
+                  <div class="name-title-container">
+                     <span class="member-name">{{this.name}}</span>
+                     <span class="member-title">{{this.position}}</span>
+                  </div>
+              </div>
+                <p>{{this.description}}</p>
+           </div>
+        </div>
+            {{/each}}
+        </div>
+    </section>
+</main>
