@@ -1,27 +1,17 @@
-exports.getAllGuests = (req, res) => {
+const mongoose = require('mongoose');
+const Guest = require('../models/guestModel.js');
+const {Types} = mongoose;
+
+exports.getAllGuests = async (req, res) => {
     res.status(500).json({
         status: 'error',
         message: 'The getAllGuests route is not yet defined!'
     });
 }
 
-exports.registerGuest = (req, res) => {
+exports.getGuestById = async (req, res) => {
     res.status(500).json({
         status: 'error',
-        message: 'The registerGuest route is not yet defined!'
-    });
-}
-
-exports.getGuest = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The getGuest route is not yet defined!'
-    });
-}
-
-exports.updateGuest = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The updateGuest route is not yet defined!'
+        message: 'The getGuestById route is not yet defined!'
     });
 }

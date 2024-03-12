@@ -10,7 +10,7 @@ const DB = process.env.NODE_ENV === 'production' ?
     : process.env.DATABASE_LOCAL;
 
 mongoose.connect(DB, {})
-.then(() => { console.log('Database connected successfully!');})
+.then(() => { console.log(`Database connected successfully! Connected to: ${process.env.NODE_ENV} DB server`);})
 .catch(() => { console.log('Database connection failed!');})
 
 function onHttpStart() {
