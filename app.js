@@ -5,7 +5,9 @@ var path = require("path");
 
 const reservationRouter = require('./routes/reservationRoutes');
 const guestRouter = require('./routes/guestRoutes');
+const employeeRouter = require('./routes/employeeRoutes');
 const roomRouter = require('./routes/roomRoutes');
+const contactFormRouter = require('./routes/contactFormRoutes');
 // const createAccount = require('./routes/createaccount');
 // const roomDetails = require('./routes/roomdetails');
 // const userDashboard = require('./routes/userdashboard');
@@ -268,8 +270,10 @@ app.post('/submit-new-email', (req, res) => {
 
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);
+app.use('/api/v1/employees', employeeRouter);
 app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
+app.use('/api/v1/contactFormSubmissions', contactFormRouter);
 // app.use('/createaccount', createAccount);
 // app.use('/roomdetails', roomDetails);
 // app.use('/userdashboard', userDashboard);

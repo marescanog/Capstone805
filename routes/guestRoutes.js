@@ -1,16 +1,14 @@
 const express = require('express');
 var app = express();
-const {getAllGuests, registerGuest, getGuest, updateGuest} = require('./../controllers/guestController.js');
+const {getAllGuests, getGuestById} = require('./../controllers/guestController.js');
 const guestRouter = express.Router();
 
 guestRouter
   .route('/')
-  .get(getAllGuests)
-  .post(registerGuest);
+  .get(getAllGuests);
 
 guestRouter
   .route('/:id')
-  .get(getGuest)
-  .patch(updateGuest);
+  .get(getGuestById);
 
 module.exports = guestRouter;
