@@ -206,3 +206,393 @@ body {
         flex-direction: column; /* Stack the label and textarea on smaller screens */
     }
 }
+
+
+/* Container for the whole contact page */
+.contact-page-container {
+    display: flex;
+    justify-content: space-between; /* Ensure items are spaced out */
+    align-items: flex-start;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    padding: 20px;
+    gap: 20px; /* Space between columns */
+    max-width: 1200px; /* Maximum width of the entire container */
+    margin: auto; /* Center the container */
+}
+
+/* Container for the contact information */
+.contact-info-container {
+    width: calc(50% - 20px); /* Adjust width calculation if needed */
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for the feedback form */
+.feedback-form-container {
+    width: calc(50% - 20px); /* Adjust width calculation if needed */
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+.feedback-form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-form-container label {
+    margin-bottom: 5px;
+}
+
+.feedback-form-container input[type="text"],
+.feedback-form-container input[type="email"],
+.feedback-form-container input[type="tel"],
+.feedback-form-container textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.feedback-form-container button {
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .contact-page-container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 0; /* Remove gap for mobile layout */
+    }
+
+    .contact-info-container,
+    .feedback-form-container {
+        width: 100%; /* Take full width on smaller screens */
+        box-shadow: none; /* Optional: remove shadow for a flatter design on mobile */
+        padding: 20px 0; /* Adjust padding for mobile layout */
+    }
+}
+
+/* Further responsive adjustments for smaller screens can be added here */
+
+.map-container {
+    margin: 20px 0;
+    width: 100%; /* Width is 100% to be responsive */
+    max-width: 300px; /* Adjust max-width to make the map smaller */
+    height: auto; /* Height will adjust automatically */
+    text-align: center; /* This will center the iframe in the container */
+}
+
+.map-container iframe {
+    width: 100%; /* The iframe will take the width of the container */
+    max-height: 200px; /* Adjust max-height to control the map's size */
+    border: none; /* Removes the border */
+}
+
+/* Responsive map container for smaller devices */
+@media (max-width: 768px) {
+    .map-container {
+        max-width: 100%; /* The map can expand to the full width on small devices */
+    }
+    .map-container iframe {
+        max-height: 200px; /* You can adjust the height for mobile if needed */
+    }
+}
+
+/* New styles for inline form group */
+.inline-form-group {
+    display: flex;
+    align-items: flex-start; /* Aligns the label and textarea at the top */
+    gap: 10px; /* Adjust the space between the label and textarea */
+}
+
+.inline-form-group label,
+.inline-form-group textarea {
+    flex: 1; /* Both the label and textarea will take up equal space */
+}
+
+/* Styles specifically for the textarea to ensure it aligns well with the label */
+.inline-form-group textarea {
+    height: auto; /* Adjust height as needed, or keep it to 'auto' */
+    resize: vertical; /* Allows vertical resizing only */
+}
+
+/* Responsive adjustments if necessary */
+@media (max-width: 768px) {
+    .inline-form-group {
+        flex-direction: column; /* Stack the label and textarea on smaller screens */
+    }
+}
+/*this is for the about page*/
+
+/* About Container */
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* Hotel Story Section */
+.hotel-story {
+    margin-bottom: 40px;
+}
+
+.story-container {
+    display: flex;
+    align-items: center;
+}
+
+.story-image {
+    flex: 2; /* Gives the image more room */
+    width: auto; /* Adjust based on your design needs */
+    max-width: 50%; /* Ensures it's responsive */
+    height: auto;
+}
+
+.story-text {
+    flex: 1; /* Less room compared to the image */
+    padding: 20px; /* Adds some space between the text and the image */
+}
+
+/* Team Members Section */
+.team-members {
+    margin-bottom: 40px;
+}
+
+.members-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.member {
+    display: flex;
+    align-items: center; /* Aligns the items vertically in the center */
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: left; /* Align text to the left */
+    margin-bottom: 20px; /* Adds space between member boxes */
+    gap: 20px; /* Adds space between the image and the description */
+}
+
+.member-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.name-title-container {
+    display: block; /* This ensures the name and title are in a block beneath the image */
+}
+
+.member-name, .member-title {
+    display: inline; /* This ensures the name and title are on the same line */
+    font-weight: bold; /* Only if you want both name and title to be bold */
+}
+
+.member-title {
+    margin-left: 5px; /* Adds spacing between name and title */
+}
+
+.member-image {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+    border-radius: 50%;
+    margin-right: 20px; /* Space between image and text */
+}
+
+.member-title {
+    font-weight: bold; /* Makes the title bold */
+    margin-top: 10px; /* Space above the title if needed */
+    margin-bottom: 5px; /* Space between title and description */
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-aligns the content */
+}
+
+.member-info p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .story-container {
+        flex-direction: column;
+    }
+}
+
+
+/* viewInquiries css */
+.inquiries-page {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.inquiries-list {
+    width: 30%;
+    background-color: #e5eae5;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.inquiry-details {
+    color: white; /* This sets the text color to white */
+    /* ... other styles ... */
+}
+.inquiry-title {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 50px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.inquiry-details-container {
+    width: 65%;
+    padding: 20px;
+    background-color:#e5eae5;
+    border-radius: 5px;
+}
+
+
+
+.inquiry-details {
+    background-color: #524a4a;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 300px; /* Adjust width for a more rectangular shape */
+    max-height: 150px; /* Optional: Adjust max-height as needed */
+    overflow-y: auto; /* Enables scrolling within the box if content exceeds max-height */
+}
+.submit-btn {
+    background-color: rgb(224, 162, 8); /* Sets the background color to yellow */
+    color: black; /* Sets the text color to black or any color that contrasts well with yellow */
+    padding: 10px 15px; /* Adds padding inside the button */
+    border: none; /* Removes the border */
+    border-radius: 5px; /* Optional: Rounds the corners of the button */
+    cursor: pointer; /* Changes the cursor to a pointer when hovered over */
+    outline: none; /* Removes the outline to keep the styling clean */
+    font-weight: bold; /* Optional: Makes the button text bold */
+  }
+  
+  .submit-btn:hover {
+    background-color: #e0e000; /* Optional: Changes the color when hovered for a nice visual effect */
+  }
+
+  .middle-message {
+    position: fixed; /* Keeps it positioned relative to the viewport */
+    left: 50%; /* Center horizontally */
+    top: 70%; /* Lower than the middle vertically */
+    transform: translate(-50%, -70%); /* Adjust Y-axis centering */
+    background-color: #f8f9fa; /* Light grey background, change as needed */
+    padding: 10px 20px; /* Padding inside the message box */
+    border: 3px solid #d1d1d1; /* Border around the message box */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow */
+    z-index: 1000; /* Ensures it's above other content */
+}
+
+  
+  /* Optional: Style for small screens */
+  @media (max-width: 768px) {
+    .middle-message {
+      width: 80%; /* Adjust width on small screens */
+      top: 30%; /* Position it higher on small screens */
+      left: 10%; /* Adjust left position for small screens */
+      transform: translate(0, 0); /* Adjust translate for small screens */
+      text-align: center; /* Ensure text is centered */
+    }
+  }
+  
+  
+
+@media (max-width: 768px) {
+    .inquiries-page {
+        flex-direction: column;
+    }
+
+    .inquiries-list,
+    .inquiry-details-container {
+        width: 100%;
+    }
+}
+
+
+  
+
+/* Update-Email css */
+.profile-container {
+    display: flex;
+}
+
+.profile-sidebar {
+    width: 30%;
+    background-color: #f2f2f2; /* Light grey background */
+    padding: 20px;
+    text-align: center; /* Center content */
+}
+
+.profile-picture {
+    width: 100px; /* Adjust as needed */
+    height: 100px; /* Adjust as needed */
+    border-radius: 50%; /* Circle shape */
+    margin-bottom: 20px;
+}
+
+.update-email-form {
+    width: 70%;
+    padding: 20px;
+    background-color: #ffffff;
+    border-left: 1px solid #ddd; /* Separates the form visually from the sidebar */
+}
+
+.update-email-form h2 {
+    margin-bottom: 10px;
+}
+
+.update-email-form p {
+    margin-bottom: 20px;
+}
+
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.send-verification-btn {
+    background-color: yellow;
+    border: none;
+    padding: 10px 15px;
+    margin-right: 10px;
+}
+
+.cancel-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+}
+
+/* Add responsiveness and additional styling as needed */
