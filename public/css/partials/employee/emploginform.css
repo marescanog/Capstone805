@@ -1,0 +1,35 @@
+
+label {
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+
+.btn-primary{
+    background-color: #E45C32 !important;
+    padding: 0.5em 3em 0.5em 3em;
+    border-radius: 30px;
+}
+
+.btn-primary {
+    color: #FFFFFF;
+    background-color: #E45C32 !important;
+    border-color: #E45C32 !important;
+}
+
+.btn-primary:hover {
+    color: #FFFFFF;
+    background-color: rgba(228, 92, 50, 0.75) !important;
+    border-color: rgba(228, 92, 50, 0.75) !important;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 .2rem rgba(228, 92, 50, 0.5)
+}
+
+@media screen and (max-width: 600px) {
+    .btn-primary {
+        width: 100% !important;
+    }
+}

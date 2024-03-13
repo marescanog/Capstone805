@@ -1,0 +1,20 @@
+<p>
+    {{desc1}} 
+</p>
+<p>
+    {{desc2}}
+</p>
+<form action="auth/login/staff" method="post">
+    <div class="form-group">
+        <label for="exampleInputEmail1">{{type}} email</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="portal-forgot-pass-div">
+        <a href="/portal?forgot">Forgot your password?</a>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

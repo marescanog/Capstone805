@@ -1,0 +1,95 @@
+<div class="portal-page-wrapper">
+    {{> _h1styled headerTitle=headerTitle}}
+    <div class="portal-box-and-tabs-container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    Staff
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                    Admin
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            {{!-- STAFF --}}
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="portal-box-container">
+                    <div class="portal-box-left-container">
+                        {{> employee/_emploginform desc1=formData.staff.desc1 desc2=formData.staff.desc2 type='Employee'}}
+                    </div>
+                    <hr class="portal-h1-style">
+
+                    <div class="portal-line-separator"></div>
+
+                    <div class="portal-box-right-container">
+                        <div class="feature-description-container">
+                            <div class="feature-desc-body">
+                                <h3>Employee Portal Features</h3>
+                                <ul>
+                                    <li class="feature-desc-item">
+                                        <h4>View and Modify Reservations</h4>
+                                        <p>Review and update reservation details effortlessly.</p>
+                                    </li>
+                                    <li class="feature-desc-item">
+                                        <h4>Respond to Inquiries</h4>
+                                        <p>Access and manage guest inquiries efficiently.</p>
+                                    </li>
+                                    <li class="feature-desc-item">
+                                        <h4>Manager Privileges:</h4>
+                                        <h6>Generate Reports</h6>
+                                        <p class="no-margin">Create and analyze insightful reports for effective decision-making.</p>
+                                        <h6>Add Promotions</h6>
+                                        <p>Elevate guest experiences by introducing special promotions.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p>*Note: If your account has not been activated yet, please contact the admin for assistance.*</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            {{!-- ADMIN --}}
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="portal-box-container">
+                    <div class="portal-box-left-container">
+                      {{> employee/_emploginform desc1=formData.admin.desc1 desc2=formData.admin.desc2 type='Admin'}}
+                    </div>
+                    <hr class="portal-h1-style">
+
+                    <div class="portal-line-separator"></div>
+
+                    <div class="portal-box-right-container">
+                        <div class="feature-description-container">
+                            <div class="feature-desc-body">
+                                <h3>Admin Portal Features</h3>
+                                <ul>
+                                    <li class="feature-desc-item">
+                                        <h4>Manage User Accounts</h4>
+                                        <p>Add, edit, or deactivate staff accounts as needed.</p>
+                                    </li>
+                                    <li class="feature-desc-item">
+                                        <h4>User Permissions</h4>
+                                        <p>Set and modify access levels for staff and managers.</p>
+                                    </li>
+                                    <li class="feature-desc-item">
+                                        <h4>Account Activation</h4>
+                                        <p>Activate or deactivate user accounts as required.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p>*Note: For assistance or specific requests, please contact the admin support team.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
