@@ -30,7 +30,6 @@ app.engine('.hbs', exphbs.engine({
     defaultLayout: 'main',
     layoutsDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
-
     helpers: {
         navLink: function(url, options){
             return `<li class="nav-item">
@@ -267,6 +266,32 @@ app.post('/submit-new-email', (req, res) => {
         successMessage: 'Your email has been updated.'
     });  
 });
+
+
+app.get("/portal", (req, res) => {
+    res.render( "pages/employee/portal",{ 
+        layout:"main", 
+        css: 'employee/portal.css', 
+        title:'Employee Portal',
+        partialsCSS: [
+            {name:"h1styled.css"},
+            {name:"employee/emploginform.css"}
+        ],
+        headerTitle: "Employee Online Portal",
+        formData : {
+            staff: {
+                desc1: "Welcome to the Hotel Employee Portal. Your gateway to seamless operations and exceptional guest experiences.",
+                desc2: "Log in to make a difference!"
+            },
+            admin: {
+                desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
+                desc2: "Log in to unlock the full potential of your account management."
+            }
+        }
+    }); 
+});
+
+
 
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);
