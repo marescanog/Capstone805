@@ -1,10 +1,28 @@
 <div class="dashboard-page-container">
     <div class="dashboard-page-wrapper">
-        <div class="dashbaord-page-content-container">
+        <div class="dashboard-page-content-container">
             {{> _accountInfoSideBar img=sidebarData.img firstName=sidebarData.firstName lastName=sidebarData.lastName employeeType=sidebarData.employeeType 
                 emailAddress=sidebarData.emailAddress address=sidebarData.address mobileNumber=sidebarData.mobileNumber}}
-            <div>
-       
+            <div class="dashboard-main-section-container">
+                <div class="dashboard-main-top">
+                    <div>
+                        <div>
+                            <h2>Hello, Shawna M.</h2>
+                        </div>
+                        <button>Edit Profile</button>
+                    </div>
+                    <div>
+                        <h3>Today is Feb 23, 2024</h3>
+                    </div>
+                </div>
+                <div class="dashboard-main-mid">
+                    <p>3 Guests are checking in today</p>
+                    <a href="">VIEW LIST</a>
+                </div>
+                <hr>
+                <div class="dashboard-main-bottom">
+                     {{> _accountButtonList buttonData=buttonData}}
+                </div>
             </div>
         </div>
     </div>

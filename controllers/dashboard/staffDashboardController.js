@@ -6,7 +6,8 @@ exports.loadStaffDashboard = async (req, res) => {
         title:'Employee Dashboard',
         partialsCSS: [
             // {name:"h1styled.css"},
-            {name:"accountInfoSideBar.css"}
+            {name:"accountInfoSideBar.css"},
+            {name:"accountButtonList.css"}
         ],
         sidebarData : {
             img: "/img/placeholder/hotelstaff.png",
@@ -16,7 +17,12 @@ exports.loadStaffDashboard = async (req, res) => {
             mobileNumber: "499-999-999",
             address: "address, city, postal code, country",
             emailAddress: "shawnam@gmail.com"
-        }
+        },
+        buttonData: [
+            {name:"Respond to Inquiries",url:""},
+            {name:"Browse Reservations",url:""},
+            {name:"Create Reservation",url:""}
+        ]
     }); 
 }
 

@@ -1,0 +1,30 @@
+{{#if buttonData}}<h3 class="account-button-list-question-header">What would you like to do today?</h3>{{/if}} 
+<div class="account-button-list-container">
+    {{#if buttonData.0.name}}
+    <a href="" class="account-button-list-item">
+        <div class="account-button-style account-button-color-1">
+            <div class="account-button-text-container">
+                <p class="account-text-style">{{buttonData.0.name}}</p>
+            </div>
+        </div>
+    </a>
+    {{/if}}
+    {{#if buttonData.1.name}}
+    <a href="" class="account-button-list-item">
+        <div class="account-button-style account-button-color-2">
+            <div class="account-button-text-container">
+                <p class="account-text-style">{{buttonData.1.name}}</p>
+            </div>
+        </div>
+    </a>
+    {{/if}}
+    {{#if buttonData.2.name}}
+    <a href="" class="account-button-list-item">
+        <div class="account-button-style account-button-color-3">
+            <div class="account-button-text-container">
+                <p class="account-text-style">{{buttonData.2.name}}</p>
+            </div>
+        </div>
+    </a>
+    {{/if}}
+</div>
