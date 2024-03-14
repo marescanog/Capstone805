@@ -1,0 +1,42 @@
+<div class="acc-info-sidebar-box">
+    <div class="acc-info-sidebar-img-container">
+        <div class="acc-info-sidebar-img-box">
+    <link rel="stylesheet" href="/css/{{css}}">
+            <img class="acc-info-sidebar-user-img" src={{#if img}}{{img}}{{/if}}{{#unless img}}"\img\placeholder\account.png" {{/unless}} alt="user_image">
+        </div>
+        <a class="acc-info-a" href="">Update Photo</a>
+    </div>
+    <div class="acc-info-sidebar-details-container">
+        <div class="acc-info-title-box">
+            <div class="acc-info-name-box">
+                <div class="acc-info-name-style acc-info-title-firstname">{{#if firstName}}{{firstName}}{{/if}}{{#unless firstName}}Welcome Guest!{{/unless}}</div>
+                <div class="acc-info-name-style acc-info-title-lastname">{{#if lastName}}{{lastName}}{{/if}}</div>
+            </div>
+            <p class="acc-info-title-style">{{#if employeeType}}{{employeeType}}{{/if}}{{#unless employeeType}}Hotel Guest{{/unless}}</p>
+        </div>
+        <div class="acc-info-details-box"> 
+            <div class="acc-info-item-container">
+                <img class="acc-info-item-img" src="\img\icons\dash\email.svg" alt="email icon">
+                <p class="acc-info-item-text">{{#if emailAddress}}{{emailAddress}}{{/if}}{{#unless emailAddress}}email@gmail.com{{/unless}}</p>
+            </div>
+            <div class="acc-info-item-container">
+                <img class="acc-info-item-img" src="\img\icons\dash\check.svg" alt="check icon">
+                <p class="acc-info-item-text">Email Confirmed</p>
+            </div>
+            <div class="acc-info-item-container">
+                <img class="acc-info-item-img" src="\img\icons\dash\address.svg" alt="address icon">
+                <p class="acc-info-item-text">{{#if address}}{{address}}{{/if}}{{#unless address}}address, city, postal code, country{{/unless}}</p>
+            </div>
+            <div class="acc-info-item-container">
+                <img class="acc-info-item-img" src="\img\icons\dash\mobile.svg" alt="mobile icon">
+                <p class="acc-info-item-text">{{#if mobileNumber}}{{mobileNumber}}{{/if}}{{#unless mobileNumber}}Edit your account to add a number{{/unless}}</p>
+            </div>
+            {{#unless employeeType}}
+            <div>
+                <a class="acc-info-a" href="">Update Email</a>
+            </div>
+            {{/unless}}
+            <a class="acc-info-a" href="">Change Password</a>
+        </div>
+    </div>
+</div>

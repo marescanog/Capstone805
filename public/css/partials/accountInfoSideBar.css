@@ -1,0 +1,125 @@
+.acc-info-sidebar-box{
+    background-color: #FFECC8;
+    max-width: 20em;
+    min-height: 30em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 0.5em;
+    font-family: "Montserrat", sans-serif;
+}
+
+.acc-info-sidebar-img-container{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2em;
+}
+
+.acc-info-sidebar-img-box{
+    max-width: 9.5em;
+}
+
+.acc-info-sidebar-user-img {
+    max-width: 9.5em;
+    height: auto;
+    border-radius: 10em;
+}
+
+.acc-info-a {
+    color: #E88F3B;
+    font-weight: 600;
+    margin-top: 0.5em;
+}
+
+.acc-info-a:hover {
+    color: blue;
+}
+
+.acc-info-sidebar-details-container{
+    margin-top: 0.5em;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.acc-info-name-style{
+    font-size: 1.75em;
+    font-weight: bolder;
+    color: #484848;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1;
+    text-align: center;
+}
+
+.acc-info-title-style{
+    font-weight: bold;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 1.25em;
+    opacity: 0.65;
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.75;
+    text-align: center;
+}
+
+.acc-info-title-box{
+    margin-bottom: 1em;
+}
+
+.acc-info-item-container{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.acc-info-item-text{
+    height: 100%;
+    inline-size: 90%;
+    overflow-wrap: break-word;
+}
+
+.acc-info-item-img{
+    margin-right: 0.5em;
+    height: 100%;
+}
+
+.acc-info-details-box{
+    padding-bottom: 2em;
+}
+
+.acc-info-name-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.acc-info-title-firstname{
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.acc-info-title-lastname {
+    font-size: 1.5em;
+}
+
+@media screen and (max-width: 992px) {
+    .acc-info-sidebar-box{
+        max-width: 15.5em;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .acc-info-sidebar-box{
+        max-width: none;
+        width: 100%;
+        min-height: 30em;
+    }
+    
+    .acc-info-item-text{
+        inline-size: 15.52em;
+    }
+}
