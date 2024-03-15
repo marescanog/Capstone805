@@ -1,113 +1,168 @@
+{{#unless disable}}
 <div class="pa-left-container">
     <div class="card pa-side-card">
         <div class="pa-card-body">
-            <h3>Your Selection</h3>
-            <hr class="pa-hr">
-            <div class="room-summary-section row">
-                <div class="col room-image-style">
-                    <p>Image</p>
+            <h3 class="pa-h3-style">YOUR SELECTION</h3>
+            <hr class="pa-hr h3"> 
+            <div class="room-summary-section pa-left-right-container">
+                <div class="room-image-container">
+                    <img class="img-fluid thumbnail" src="{{bookingData.thumbnailSmall}}.{{bookingData.fileType}}" alt="room thumbnail">
                 </div>
-                <div class="col-8">
-                    <p>Deluxe Room</p>
-                    <p>Breakfast Included</p>
-                    <ul>
-                        <li>1 Queen</li>
-                        <li>1 Bathroom</li>
-                        <li>1 Balcony</li>
+                <div class="room-text-container">
+                    <div class="room-text-roomtype-header-container">
+                        <p class="room-text-roomtype-headerstyle">{{bookingData.roomType}}</p>
+                        <div {{#equalOrGT bookingData.offers.length 4 }}class="room-amenities-style-restrict"{{/equalOrGT}}>
+                            {{#if bookingData.offers}}
+                                {{#each bookingData.offers}}
+                                    <p>{{this}}</p>
+                                {{/each}}
+                            {{/if}}
+                            {{#unless bookingData.offers}}
+                                <p>Welcome Drinks at the Lobby</p>
+                            {{/unless}}
+                        </div>
+                    </div>
+                    <ul {{#equalOrGT bookingData.offers.length 4 }} class="room-amenities-list-restrict"{{/equalOrGT}}>
+                        <li>{{bookingData.bedCount}} {{bookingData.bedType}}</li>
+                        {{#if bookingData.amenities}}
+                            {{#each bookingData.amenities}}
+                            <li>{{this.count}} {{this.name}}</li>
+                            {{/each}}
+                        {{/if}}
                     </ul>
                 </div>
             </div>
-            <hr class="pa-hr">
-            <h3>Booking summary</h3>
+            <hr class="pa-hr h3">
             <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Check-in</p>
-                    <p class="col pa-right">B</p>
+                <h3 class="pa-h3-style">Booking summary</h3>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Check-out:</p>
+                        <p class="col pa-right">{{bookingData.checkOut}}</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Check-in:</p>
+                        <p class="col pa-right">{{bookingData.checkIn}}</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Guests</p>
+                        <p id="totalGuestsText" class="col pa-right">{{bookingData.guests}}</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Nightly Rate:</p>
+                      <p class="col pa-right">$<span id="nightlyText">{{bookingData.rate}}</span></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Total Nights</p>
+                        <p  class="col pa-right">$<span id="totalNightsText">{{bookingData.totalNights}}</span></p>
+                    </div>
+                </div>
+                {{#notEqual bookingData.extraPersonFee 0}}
+                    {{#equalOrGT bookingData.extraPersonFee 0}}
+                    <div>
+                        <div class="row">
+                            <p class="col pa-left">Extra Person Fees</p>
+                        <p class="col pa-right">$<span id="extraPersonFee">{{bookingData.extraPersonFee}}</span></p>
+                        </div>
+                    </div>
+                    {{/equalOrGT}}
+                {{/notEqual}}
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Id like to use my loyalty points
+                    </label>
+                </div>
+                <div class="loyalty-container displayNone" id="loyalty-container">
+                    <div class="loyalty-info-points-box">
+                        <p>You have <span>300</span> points to redeem</p>
+                    </div>
+                    <div class="loyalty-rewards-selection-box">
+                        <p>Select your reward*</p>
+                        <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
+                            <option value="1">$10 off</option>
+                            <option value="2">$20 off</option>
+                            <option value="3">$50 off</option>
+                        </select>
+                        <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
+                        <p>** Up to $200 off per booking</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="pa-hr-light">
+
+            <div class="pa-left-right-container">
+                <div>
+                    <div class="row">
+                        <p id="subTotalTextHeader" class="col pa-left">Subtotal</p>
+                        <p id="subTotalText" class="col pa-right"></p>
+                    </div>
+                </div>
+                {{!-- Figure out functionality later, but if discounts.length are greater > 0 or put hidden input here --}}
+                <div id="loyaltyDiscountTextContainer" class="display-None">
+                    <div class="row">
+                        <p class="col pa-left">Loyalty reward discount</p>
+                        <p id="loyaltyDiscountText" class="col pa-right">-$10</p>
+                    </div>
+                </div>
+                <div id="subTotalTextWithDiscountsCountainter" class="display-None">
+                    <div class="row">
+                        <p class="col pa-left">Subtotal</p>
+                        <p id="subTotalTextWithDiscounts" class="col pa-right"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Taxes & Fees</p>
+                        <p id="totalTaxText" class="col pa-right"></p>
+                    </div>
                 </div>
             </div>
+
+            <hr class="pa-hr h3">
+
             <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Check-out</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Guests</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Nightly Rate</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Total Nights</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Extra Person Fees</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Id like to use my loyalty points
-                </label>
-            </div>
-            <hr class="pa-hr">
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Subtotal</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">taxes & Fees</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <hr class="pa-hr">
-                  <div class="pa-left-right-container">
                 <div class="row">
                     <p class="col pa-left">Total Charges</p>
-                    <p class="col pa-right">B</p>
+                    <p id="totalChargesText" class="col pa-right"></p>
                 </div>
             </div>
-            <hr>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Extra Person Fees</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <hr class="pa-hr">
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Payment Upon Checkin</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div class="pa-left-right-container">
-                <div class="row">
-                    <p class="col pa-left">Charges Due Now</p>
-                    <p class="col pa-right">B</p>
-                </div>
-            </div>
-            <div >
-                <div class="pa-left-right-container"> 
-                                    <p >You will be charged a 30% reservation deposit fee of $179.60 at the time of booking and will be charged the remaining balance of $419.06 (including tax recovery charges and service fees) at the time of check-in. If you choose to change or cancel this booking please refer to our policy below.
 
-Policy Description</p>
+            <hr class="pa-hr h3">
+
+            <div class="pa-left-right-container">
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Payment Upon Checkin</p>
+                        <p id="paymentUponCheckinText" class="col pa-right"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Charges Due Now</p>
+                        <p id="chargesDueNowText" class="col pa-right"></p>
+                    </div>
+                </div>
+            </div>
+            <hr class="pa-hr-light">    
+            <div class="pa-left-right-container">
+                <div> 
+                    <p class="disclaimer-text">You will be charged a 30% reservation deposit fee of <span id="disclaimerChargeText">179.60</span> at the time of booking and will be charged the remaining balance of <span id="disclaimerDueText">$419.06</span> (including tax recovery charges and service fees) at the time of check-in. If you choose to change or cancel this booking please refer to our policy below.</p>
+                    <a href="">Policy Description</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{{/unless}}

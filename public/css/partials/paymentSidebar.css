@@ -1,10 +1,12 @@
 .pa-right-container {
     width: 55%;
+    font-family: "Montserrat", sans-serif;
 }
 
 .pa-left-container {
     width: 45%;
     margin-left: 3em;
+    font-family: "Montserrat", sans-serif;
 }
 
 .pa-side-card {
@@ -28,12 +30,28 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
 }
 
-.room-image-style.col {
+.room-image-container {
     justify-content: center;
     align-items: center;
     text-align: center;
+    background-color: orange;
+    max-width: 30%;
+}
+
+.room-text-container{
+    flex: 1;
+    min-width: 70%;
+    padding-left: 1em;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding-right: 2em;
+    /* background-color: yellow; */
+    height: 100%;
 }
 
 .pa-left-right-container {
@@ -58,7 +76,262 @@ hr.pa-hr{
     height: 2px;
     color: #33394F;  
     background-color: #33394F;  
-    opacity: 175% !important;
+    opacity: 75% !important;
     width: 100%;
 
+}
+
+hr.pa-hr.h3{
+    border: none;
+    height: 3px;
+    color: #33394F;  
+    background-color: #33394F;  
+    opacity: 75% !important;
+    width: 100%;
+
+}
+
+hr.pa-hr-light{
+    border: none;
+    height: 2px;
+    color: #33394F;  
+    background-color: #33394F;  
+    opacity: 50% !important;
+    width: 100%;
+
+}
+
+h3.pa-h3-style{
+    font-family: "Montserrat", sans-serif;
+    color: #33394F;
+    font-weight: bold;
+    font-size: 1.25em;
+    margin: 0;
+    padding: 0 0 1em 0;
+}
+
+.thumbnail{
+    object-fit: contain;
+}
+
+.room-text-roomtype-header-container{
+    padding-top: 1em;
+    padding-bottom: 1.25em;
+    /* background-color: blue; */
+    flex: 1;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
+  .room-amenities-list-restrict ul li {
+    opacity: 75%;
+    font-weight: 600;
+    font-size: 0.85em;
+    margin-right: 0.25em;
+    width: 8em;
+    text-overflow: ellipsis;
+  }
+
+  .room-text-roomtype-header-container p {
+    margin: 0;
+    padding: 0;
+    margin-top: 0.5em;
+  }
+
+  .room-text-roomtype-headerstyle{
+    font-weight: bold;
+    font-size: 1.05em;
+  }
+
+  .margin-top-3 {
+    margin-top: 1em !important;
+  }
+
+    .room-amenities-style-restrict{
+        max-height: 6.6em;
+        overflow-y: hidden;
+    }
+
+    .room-amenities-list-restrict{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .pa-left-right-container {
+        width: 100%;
+        margin-top:1em;
+    }
+
+    .form-check-label{
+        margin-left: 1em;
+    }
+
+   .pa-left-right-container p {
+        font-weight: 500;
+        font-size: 1em;
+    }
+
+    .col .pa-right {
+        font-weight: 500;
+    }
+
+    .loyalty-container{
+        margin-top: 1em;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out, opacity 0.5s ease;
+    }
+
+    .visible{
+        max-height: 1000px; 
+        opacity: 1;
+    }
+
+    .loyalty-info-points-box{
+        background-color: #FEAC5E;
+        text-align: center;
+        padding: 1.75em 1em;
+        border-radius: 1em;
+    }
+
+    .loyalty-info-points-box p{
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    .loyalty-info-points-box p span{
+        font-size: 1.55em;
+        font-weight: 700;
+        margin: 0 0.15em;
+    }
+
+    .loyalty-rewards-selection-box{
+        margin-top: 1em;
+    }
+
+    .loyalty-rewards-selection-box p {
+        margin: 0;
+        padding: 0;
+        margin-bottom: 1em;
+        font-size: 0.75em;
+    }
+
+    .loyalty-rewards-selection-box p:first-of-type {
+        margin-bottom: 0.25em;
+    }
+
+    .loyalty-rewards-selection-box p:nth-of-type(2) {
+        margin-top: 1em;
+    }
+
+    .disclaimer-text{
+        text-align: justify;
+    }
+
+    .display-None{
+        display: none;
+    }
+@media screen and (max-width: 992px) {
+    .pa-right-container {
+        width: 100%;
+    }
+    
+    .pa-left-container {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 1em;
+    }
+    
+    ul {
+        padding-bottom: 1.75em;
+        width: 90%;
+    }
+
+    .room-text-roomtype-header-container{ 
+        padding-top: 2em;
+    }
+
+    .margin-top-3 {
+        margin-top: 2em !important;
+    }
+
+    .pa-left-right-container {
+        width: 80%;
+    }
+
+    ul li {
+        width: 6em;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .card{
+        padding: 0.75em;
+    }
+
+    .room-text-container{
+        padding-right: 0;
+    }
+
+    ul {
+        flex-direction: column;
+    }
+
+    .room-text-roomtype-header-container{
+        padding-bottom: 0;
+    }
+
+    .room-text-roomtype-header-container p {
+        margin-top: 0;
+    }
+
+    .room-summary-section {
+        margin-top: 0.05;
+        margin-bottom: 0.05;
+    }
+
+    ul {
+        padding-bottom: 0;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .room-text-roomtype-header-container{ 
+        padding-top: 0;
+    }
+
+    .margin-top-3 {
+        margin-top: 0 !important;
+    }
+
+    .room-text-roomtype-amenities-list {
+        min-height: 0;
+    }
+
+    .room-amenities-style-restrict{
+        max-height: 4.6em;
+    }
+
+        
+    .pa-left-right-container {
+        width: 96%;
+    }
+
+    ul li {
+        width: 8em;
+    }
 }
