@@ -335,6 +335,12 @@ app.post("/createaccount", (req, res) => {
 }
 );
 
+app.get("/reservationinfo/:id", (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The Guest reservationinfo route is not yet defined!'
+    });
+})
 
 
 // 3 - ROUTES

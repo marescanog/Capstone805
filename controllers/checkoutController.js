@@ -81,10 +81,10 @@ exports.renderVerifyPage = async (req, res) => {
     }); 
 }
 
-exports.renderGuestInformationPage = async (req, res) => {
+exports.renderReservationInfoPage = async (req, res) => {
     res.status(500).json({
         status: 'error',
-        message: 'The renderGuestInformationPage route is not yet defined!'
+        message: 'The renderReservationInfoPage route is not yet defined!'
     });
 }
 

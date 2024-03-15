@@ -1,6 +1,6 @@
 const express = require('express');
 var app = express();
-const {routeCheckout, routeCreateAccountPost, renderCreateAccountPage, renderVerifyPage, renderGuestInformationPage} = require('./../controllers/checkoutController.js');
+const {routeCheckout, routeCreateAccountPost, renderCreateAccountPage, renderVerifyPage, renderReservationInfoPage} = require('./../controllers/checkoutController.js');
 const checkoutRouter = express.Router();
 
 checkoutRouter
@@ -17,8 +17,8 @@ checkoutRouter
 .get(renderVerifyPage);
 
 checkoutRouter
-.route('/guestInfomation')
-.get(renderGuestInformationPage);
+.route('/reservationinfo')
+.get(renderReservationInfoPage);
 
 
 module.exports = checkoutRouter;
