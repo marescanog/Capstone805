@@ -43,7 +43,7 @@ exports.renderCreateAccountPage = async (req, res) => {
 exports.renderVerifyPage = async (req, res) => {
     res.status(500).json({
         status: 'error',
-        message: 'The renderVerifyPage route is not yet defined!'
+        message: 'The renderVerifyPage from checkout route is not yet defined!'
     });
 }
 
@@ -52,4 +52,9 @@ exports.renderGuestInformationPage = async (req, res) => {
         status: 'error',
         message: 'The renderGuestInformationPage route is not yet defined!'
     });
+}
+
+exports.routeCreateAccountPost = async (req, res) => {
+    // do save db stuff here
+    res.redirect('/checkout/verifyaccount');
 }
