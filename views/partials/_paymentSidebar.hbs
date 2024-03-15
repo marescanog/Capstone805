@@ -1,5 +1,9 @@
 {{#unless disable}}
 <div class="pa-left-container">
+    <div class="timeout-container" id="reservationHeldLink">
+        <input type="hidden" id="serverHeldSecondsInput" value="{{serverHeldSeconds}}">
+        <img src="/img/icons/general/timer.svg" alt="timer icon" class="pr-4"><p>&nbsp;Room(s) held for&nbsp;</p><span id="roomheldDisplaySeconds">15:00</span>
+    </div>
     <div class="card pa-side-card">
         <div class="pa-card-body">
             <h3 class="pa-h3-style">YOUR SELECTION</h3>

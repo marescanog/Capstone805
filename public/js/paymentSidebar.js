@@ -80,4 +80,5 @@ document.addEventListener("DOMContentLoaded", function(e) {
         })
     }
 
+    countdown('serverHeldSecondsInput', 'roomheldDisplaySeconds', 'reservationHeldLink', 'r-active', 'r-inactive');
 });
