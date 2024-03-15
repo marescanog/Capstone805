@@ -1,0 +1,55 @@
+<div class="page-wrapper-flex">
+    <div class="create-acc-page-container">
+        <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
+            <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
+                {{> _h1styled headerTitle="Reservation"}}
+                <div class="subheader-container">
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                </div>
+                <div class="card">
+                    <div class="row justify-content-left">
+                        <div >
+                            <h1 class="text-justify mb-4 form-header-style">Account Information</h1>
+                            <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}Createaccount" method="post" name="crateaccount" id="createaccount">
+                                <div class="col-md-6">
+                                    <label for="inputName" class="form-label">First Name*</label>
+                                    <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputAddress" class="form-label">Last Name*</label>
+                                    <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" required autocomplete="on">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                    <input type="tel" class="form-control" id="mobileNumber">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="verifyPassword" class="form-label">Verify Password *</label>
+                                    <input type="password" class="form-control" id="verifyPassword" required>
+                                </div>
+                                <p class="text-justify">
+                                    To complete your registration, a verification email has been sent to the provided address.
+                                    Please click the link in the email to verify and proceed with your booking.
+                                </p>
+                                <div class="col-12 gap-2">
+                                    <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{> _paymentSidebar disable=disablePaymentSidebar}}
+    </div>
+</div>
+

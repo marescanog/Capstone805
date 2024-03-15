@@ -202,9 +202,9 @@ app.get("/devlinks", (req, res) => {
 })
 
 app.get("/reservations", (req, res) => {
-    res.render( "pages/hotelguest/reservations",{ 
+    res.render( "pages/hotelguest/reservationList",{ 
         layout:"main", 
-        css: 'guest/reservations.css', 
+        css: 'guest/reservationList.css', 
         title:'Reservations',
         partialsCSS: [
             {name:"h1styled.css"}
@@ -318,7 +318,8 @@ app.get("/verifyaccount", (req, res) => {
         css: 'verifyCreateAccount.css', 
         title:'Verify Account',
         partialsCSS: [
-            {name:"h1styled.css"}
+            {name:"h1styled.css"},
+            {name:"paymentSidebar.css"},
         ] ,
         disablePaymentSidebar: true,
         center: true,
@@ -336,10 +337,16 @@ app.post("/createaccount", (req, res) => {
 );
 
 app.get("/reservationinfo/:id", (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The Guest reservationinfo route is not yet defined!'
-    });
+    res.render( "pages/hotelguest/reservation",{ 
+        layout:"main", 
+        css: 'createaccount.css', 
+        title:'Reservation',
+        partialsCSS: [
+            {name:"paymentSidebar.css"},
+            {name:"h1styled.css"}
+        ] ,
+        disablePaymentSidebar: false,
+    });  
 })
 
 

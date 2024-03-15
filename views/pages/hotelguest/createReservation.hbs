@@ -1,0 +1,39 @@
+<div class="page-wrapper-flex">
+    <div class="create-acc-page-container">
+        <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
+            <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
+                {{> _h1styled headerTitle="Guest Information"}}
+                <div class="subheader-container">
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                </div>
+                <div class="card">
+                    <div class="row justify-content-left">
+                        <div >
+                            <h1 class="text-justify mb-4 form-header-style">Enter your Details</h1>
+                            <form class="mb-4 row g-3" action="/" method="post" name="crateaccount" id="createaccount">
+                                <div class="col-md-6">
+                                    <label for="inputName" class="form-label">First Name*</label>
+                                    <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputAddress" class="form-label">Last Name*</label>
+                                    <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                    <input type="tel" class="form-control" id="mobileNumber">
+                                </div>
+                                <div class="col-12 gap-2">
+                                    <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{> _paymentSidebar disable=disablePaymentSidebar}}
+    </div>
+</div>
+

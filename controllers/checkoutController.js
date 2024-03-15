@@ -82,10 +82,15 @@ exports.renderVerifyPage = async (req, res) => {
 }
 
 exports.renderReservationInfoPage = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The renderReservationInfoPage route is not yet defined!'
-    });
+    res.render( "pages/hotelguest/reservation",{ 
+        layout:"main", 
+        css: 'createaccount.css', 
+        title:'Reservation',
+        partialsCSS: [
+            {name:"paymentSidebar.css"},
+            {name:"h1styled.css"}
+        ] 
+    });  
 }
 
 exports.routeCreateAccountPost = async (req, res) => {
