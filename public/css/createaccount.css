@@ -1,4 +1,3 @@
-
 /* Basic styling */
 body {
     font-family: Arial, sans-serif;
@@ -54,6 +53,21 @@ input {
     transition: background-color 0.3s;
 }
 
+.btn-primary {
+    color: #ffffff;
+    background-color: #f57a0e;
+    border-color: #f57a0e;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    opacity: 0.6;
+    background-color: #f57a0e;
+    border-color: #f57a0e
+}
+
+
 .next-button:hover {
     background-color: #0056b3;
 }
@@ -61,10 +75,55 @@ input {
 .form-holder {
     display: flex;
     flex-direction: column;
-    /* justify-content: left;
-    align-items: flex-start; */
     text-align: left;
     min-height: 120vh;
     min-width: 50vh;
 }
 
+.create-acc-page-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.subheader-container{
+    padding: 1em 0.5em;
+}
+
+.create-acc-p-subheader-style{
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1em;
+}
+
+h1.form-header-style{
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: 1.35em;
+}
+
+.createAccCenter {
+    max-width: 50em;
+}
+
+.create-acc-center-container{
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+@media screen and (max-width: 992px) {
+    .create-acc-page-container{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    h1.form-header-style{
+        font-size: 1em;
+    }
+}

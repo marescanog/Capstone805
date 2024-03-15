@@ -9,6 +9,7 @@ const employeeRouter = require('./routes/employeeRoutes');
 const roomRouter = require('./routes/roomRoutes');
 const contactFormRouter = require('./routes/contactFormRoutes');
 const renderDashboardRouter = require('./routes/renderDashboardRoutes');
+const checkoutRouter = require('./routes/checkoutRoutes');
 // const createAccount = require('./routes/createaccount');
 // const roomDetails = require('./routes/roomdetails');
 // const userDashboard = require('./routes/userdashboard');
@@ -48,6 +49,24 @@ app.engine('.hbs', exphbs.engine({
             if (arguments.length < 3)
             throw new Error("Handlebars Helper equal needs 2 parameters");
             if (lvalue != rvalue) {
+            return options.inverse(this);
+            } else {
+            return options.fn(this);
+            }
+        },
+        notEqual: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue == rvalue) {
+            return options.inverse(this);
+            } else {
+            return options.fn(this);
+            }
+        },
+        equalOrGT: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue < rvalue) {
             return options.inverse(this);
             } else {
             return options.fn(this);
@@ -145,9 +164,10 @@ app.get("/createaccount", (req, res) => {
         css: 'createaccount.css', 
         title:'Create Account',
         partialsCSS: [
-            {name:"paymentSidebar.css"},
             {name:"h1styled.css"}
-        ] 
+        ],
+        disablePaymentSidebar: true,
+        center: true
     });  
 })
 
@@ -292,6 +312,28 @@ app.get("/portal", (req, res) => {
     }); 
 });
 
+app.get("/verifyaccount", (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The verifyaccount route is not yet defined!'
+    });
+    // res.render( "pages/public/createaccount", { 
+    //     layout:"main", 
+    //     css: 'createaccount.css', 
+    //     title:'Create Account',
+    //     partialsCSS: [
+    //         {name:"paymentSidebar.css"},
+    //         {name:"h1styled.css"}
+    //     ] 
+    // });  
+})
+
+// temporary
+app.post("/createaccount", (req, res) => {
+    res.redirect('/verifyaccount');
+    }
+);
+
 
 
 // 3 - ROUTES
@@ -301,6 +343,7 @@ app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
 app.use('/api/v1/contactFormSubmissions', contactFormRouter);
 app.use('/dashboard', renderDashboardRouter);
+app.use('/checkout', checkoutRouter)
 // app.use('/createaccount', createAccount);
 // app.use('/roomdetails', roomDetails);
 // app.use('/userdashboard', userDashboard);
