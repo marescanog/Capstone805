@@ -323,7 +323,8 @@ app.get("/verifyaccount", (req, res) => {
         disablePaymentSidebar: true,
         center: true,
         scripts: [
-            {src:"/js/countdown.js"},
+            {src:"/js/utils/countdown.js"},
+            {src:"/js/verifyEmail.js"},
         ],
         serverSeconds: 60
     });  
