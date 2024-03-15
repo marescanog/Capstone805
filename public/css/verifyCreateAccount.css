@@ -1,0 +1,140 @@
+/* Basic styling */
+body {
+    font-family: "Montserrat", sans-serif;
+    background-color: #f9f9f9;
+}
+
+.card{
+    padding: 2em;
+}
+
+p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.create-acc-page-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.createAccCenter {
+    max-width: 50em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.create-acc-center-container{
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.subheader-container{
+    padding: 1em 0.5em;
+}
+
+.create-acc-p-subheader-style{
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1em;
+}
+
+.createAccCenter {
+    max-width: 50em;
+}
+
+.success-contents {
+    min-width: 40em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-bg-circle {
+    background-color: #198754;
+    width: 8em;
+    height: 8em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8em;
+    margin-top: 3em;
+}
+
+.svg-check{
+    width: 4.5em;
+}
+
+.verification-details-container{
+    max-width: 22em;
+}
+
+.verification-details-container p{
+    text-align: justify;
+}
+
+.resend-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 3em;
+}
+
+.resend-text p{
+    margin:0;
+    padding: 0;
+}
+
+.card h1 {
+    font-weight: 800;
+    margin: 1em 0
+}
+
+.inactive {
+    pointer-events: none; 
+    color: grey;
+    text-decoration: underline;
+    font-weight: 600;
+}
+  
+.active {
+pointer-events: auto; 
+color: blue;
+font-weight: 600;
+font-size: 0.95em;
+}
+
+@media screen and (max-width: 992px) {
+    .create-acc-page-container{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    .success-contents {
+        min-width: 1em;
+    }
+
+    .check-bg-circle {
+        width: 6em;
+        height: 6em;
+        border-radius: 6em;
+        margin-top: 1em;
+    }
+    
+    .svg-check{
+        width: 3.5em;
+    }
+    
+}

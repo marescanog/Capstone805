@@ -1,0 +1,33 @@
+<div class="page-wrapper-flex">
+    <div class="create-acc-page-container">
+        <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
+            <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
+                {{> _h1styled headerTitle="Create Account"}}
+                <div class="subheader-container">
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                </div>
+                <div class="card">
+                    <div class="success-contents">
+                        <div>
+                            <div class="check-bg-circle"> 
+                                <img class="svg-check" src="/img/icons/general/check.svg" alt="as">
+                            </div>
+                        </div>
+                        <h1>Email Sent</h1>
+                        <div class="verification-details-container">
+                            <p>To complete your registration, a verification email has been sent to the provided address. Please click the link in the email to verify and proceed with your booking.</p>
+                        </div>
+                        <div class="resend-text">
+                            <input value="{{serverSeconds}}" type="hidden" id="serverSeconds" >
+                            <p>Did not receive verification email? </p>
+                            <a href="" id="activationLink" class="inactive">Resend Email (<span id="countdown">60</span>)</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{> _paymentSidebar disable=disablePaymentSidebar}}
+    </div>
+</div>
+
