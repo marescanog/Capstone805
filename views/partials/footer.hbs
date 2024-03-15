@@ -52,6 +52,10 @@
         <p>Created with love by group 3</p>
     </div>
 </div>
-
+{{#if scripts}}
+    {{#each scripts}}
+        <script src="{{this.src}}"></script>
+    {{/each}}
+{{/if}}
 </body>
 </html>

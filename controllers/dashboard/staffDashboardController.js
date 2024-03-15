@@ -27,10 +27,17 @@ exports.loadStaffDashboard = async (req, res) => {
 }
 
 exports.viewStaffReservations = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The viewStaffReservations route is not yet defined!'
-    });
+    res.render( "pages/employee/viewReservations",{ 
+        layout:"main", 
+        css: 'employee/viewReservations.css', 
+        title:'View Reservations',
+        partialsCSS: [
+            {name:"h1styled.css"},
+        ],
+        scripts: [
+            {src:"/js/searchControl.js"},
+        ]
+    }); 
 }
 
 exports.editStaffAccount = async (req, res) => {
