@@ -313,25 +313,25 @@ app.get("/portal", (req, res) => {
 });
 
 app.get("/verifyaccount", (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The verifyaccount route is not yet defined!'
-    });
-    // res.render( "pages/public/createaccount", { 
-    //     layout:"main", 
-    //     css: 'createaccount.css', 
-    //     title:'Create Account',
-    //     partialsCSS: [
-    //         {name:"paymentSidebar.css"},
-    //         {name:"h1styled.css"}
-    //     ] 
-    // });  
+    res.render( "pages/public/verifyCreateAccount", { 
+        layout:"main", 
+        css: 'verifyCreateAccount.css', 
+        title:'Verify Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] ,
+        disablePaymentSidebar: true,
+        center: true,
+        scripts: [
+            {src:"/js/countdown.js"},
+        ],
+        serverSeconds: 60
+    });  
 })
 
-// temporary
 app.post("/createaccount", (req, res) => {
     res.redirect('/verifyaccount');
-    }
+}
 );
 
 
