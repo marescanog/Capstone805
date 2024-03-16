@@ -33,10 +33,39 @@ exports.viewStaffReservations = async (req, res) => {
         title:'View Reservations',
         partialsCSS: [
             {name:"h1styled.css"},
+            {name:"search.css"},
         ],
         scripts: [
             {src:"/js/searchControl.js"},
-        ]
+        ],
+        searchOptionsList: [
+            {id:"reservationNumber", label:"Reservation Number"},
+            {id:"lastName", label:"Last Name"},
+            {id:"date", label: "Date"}
+        ],
+        searchControlUrl: "/dashboard/staff/viewReservations"
+    }); 
+}
+
+exports.checkin = async (req, res) => {
+    res.render( "pages/employee/guestCheckinList",{ 
+        layout:"main", 
+        css: 'employee/checkin.css', 
+        title:'View Reservations',
+        partialsCSS: [
+            {name:"h1styled.css"},
+            {name:"search.css"},
+        ],
+        scripts: [
+            {src:"/js/searchControl.js"},
+        ],
+        searchOptionsList: [
+            {id:"reservationNumber", label:"Reservation Number"},
+            {id:"lastName", label:"Last Name"},
+            {id:"firstName", label: "First Name"},
+            {id:"arrivalTime", label: "Arrival Time"}
+        ],
+        searchControlUrl: "/dashboard/staff/checkin"
     }); 
 }
 
@@ -65,13 +94,6 @@ exports.viewInquiries = async (req, res) => {
     res.status(500).json({
         status: 'error',
         message: 'The viewInquiries route is not yet defined!'
-    });
-}
-
-exports.checkin = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The checkin route is not yet defined!'
     });
 }
 
