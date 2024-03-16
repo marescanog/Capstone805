@@ -1,0 +1,30 @@
+.reservation-results-view-container {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    background-color: #ebe9e6;
+    height: 19em;
+    overflow-x: scroll;
+}
+
+
+.btn-tab-lightblue {
+    min-height: 1em;
+    min-width: 1em;
+    background-color: #4BC0C8!important;   
+}
+
+.btn-tab-lightorange {
+    min-height: 1em;
+    min-width: 1em;
+    background-color: #FEAC5E!important;   
+}
+@media screen and (max-width: 992px) {
+
+}
+
+@media screen and (max-width: 600px) {
+    .reservation-results-view-container{
+        width: 21.5em;
+        height: 30em;
+    }
+}

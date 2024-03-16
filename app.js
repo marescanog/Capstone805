@@ -79,6 +79,13 @@ app.engine('.hbs', exphbs.engine({
                 href="/devlinks">DEVLINKS</a>
                 </li>`
             }
+        },
+        getProperty: function(object, property){
+            return object[property];
+        },
+        getClassName: function(arr, object, property){
+            const res = arr== null ? [] :arr.filter(el=>el.name === object[property]);
+            return res.length > 0 ? res[0].classname : "";
         }
     }
 }));

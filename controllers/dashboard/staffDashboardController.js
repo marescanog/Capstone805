@@ -27,6 +27,8 @@ exports.loadStaffDashboard = async (req, res) => {
 }
 
 exports.viewStaffReservations = async (req, res) => {
+
+
     res.render( "pages/employee/viewReservations",{ 
         layout:"main", 
         css: 'employee/viewReservations.css', 
@@ -34,6 +36,7 @@ exports.viewStaffReservations = async (req, res) => {
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},
+            {name:"table.css"},
         ],
         scripts: [
             {src:"/js/searchControl.js"},
@@ -43,7 +46,48 @@ exports.viewStaffReservations = async (req, res) => {
             {id:"lastName", label:"Last Name"},
             {id:"date", label: "Date"}
         ],
-        searchControlUrl: "/dashboard/staff/viewReservations"
+        searchControlUrl: "/dashboard/staff/viewReservations",
+        results: [
+            {
+                reservationID: "ASD75HK",
+                checkinDate: "Sep 7, 2024 Fri",
+                checkoutDate: "10, 2024 Tuesday",
+                guestName: "Jenkins, Jenny",
+                status: "Upcoming",
+                action: "View"
+            },
+            {
+                reservationID: "DF4HTS",
+                checkinDate: "Sep 7, 2024 Fri",
+                checkoutDate: "10, 2024 Tuesday",
+                guestName: "Simone, Lemone",
+                status: "Completed",
+                action: "Modify"
+            },
+            {
+                reservationID: "SDF4HN",
+                checkinDate: "Sep 7, 2024 Fri",
+                checkoutDate: "10, 2024 Tuesday",
+                guestName: "Alpha, Betty",
+                status: "Upcoming",
+                action: "View"
+            }
+        ],
+        tableOptions: {
+            columns: [
+                {resultName:"reservationID", label:"Reservation #", isRow: true},
+                {resultName:"checkinDate", label:"Check-in"},
+                {resultName:"checkoutDate", label:"Check-out"},
+                {resultName:"guestName", label:"Guest Name"},
+                {resultName:"status", label:"Status"},
+                {resultName:"action", label:"Action", 
+                    isButton: { 
+                        classNames: [{classname:"btn-tab-lightblue", name: "View"}, {classname:"btn-tab-lightorange", name: "Modify"}],
+                        executables: [{classname:function b(){alert("View")}, name: "View"}, {classname:function a(){alert("Modify")}, name: "Modify"}]
+                    }
+                }
+            ]
+        }
     }); 
 }
 
@@ -55,6 +99,7 @@ exports.checkin = async (req, res) => {
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},
+            {name:"table.css"},
         ],
         scripts: [
             {src:"/js/searchControl.js"},

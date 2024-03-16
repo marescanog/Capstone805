@@ -35,7 +35,7 @@ input:focus{
   box-shadow: none;
 }
 
-button, input[type="submit"], input[type="reset"] {
+button, input[type="submit"], input[type="reset"] .srch {
 	background: none;
 	color: inherit;
 	border: none;
@@ -70,7 +70,6 @@ button, input[type="submit"], input[type="reset"] {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    flex-grow: initial;
 }
 
 p.search-filter-header {
@@ -111,13 +110,7 @@ input[type='radio']:before {
     margin-left: 0.35em;
 }
 
-.reservation-results-view-container {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-    background-color: #ebe9e6;
-    height: 19em;
-    overflow-x: scroll;
-}
+
 
 .table-striped>tbody>tr:nth-child(odd)>td, 
 .table-striped>tbody>tr:nth-child(odd)>th {
@@ -147,10 +140,5 @@ input[type='radio']:before {
 
     .form-check {
         margin-top: 0.25em;
-    }
-
-    .reservation-results-view-container{
-        width: 21.5em;
-        height: 30em;
     }
 }
