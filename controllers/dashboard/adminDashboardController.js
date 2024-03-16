@@ -10,7 +10,7 @@ exports.viewUsers = async (req, res) => {
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
-        title:'View Reservations',
+        title:'View Guests',
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},

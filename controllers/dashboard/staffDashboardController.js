@@ -96,7 +96,7 @@ exports.checkin = async (req, res) => {
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
-        title:'View Reservations',
+        title:'Checkin Guest',
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},
