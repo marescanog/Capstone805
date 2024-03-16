@@ -86,7 +86,7 @@ exports.viewPromotions = async (req, res) => {
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
-        title:'View Reservations',
+        title:'View Promotions',
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},
@@ -96,47 +96,32 @@ exports.viewPromotions = async (req, res) => {
             {src:"/js/searchControl.js"},
         ],
         searchOptionsList: [
-            {id:"accountID", label:"Account ID"},
-            {id:"lastName", label:"Last Name"},
-            {id:"firstName", label: "First Name"},
-            {id:"createdOn", label: "Created On"}
+            {id:"promotionID", label:"Promo ID"},
+            {id:"createdOn", label:"Created On"},
+            {id:"startdate", label: "Promo Start"},
+            {id:"name", label: "Promo Name"}
         ],
-        searchControlUrl: "/dashboard/USNVMQD493/users",
+        searchControlUrl: "/dashboard/manager/promotions",
         results: [
             {
-                accountID: "SDF4HN",
+                promotionID: "SBD73I",
                 createdOn: "March 16, 2024 Fri",
-                firstName: "Gary",
-                lastName: "Lee",
-                isVerified: "true",
-                status: "active",
-                userType: "Guest",
+                name: "Free Champagne",
+                startDate: "March 16, 2024 Fri",
+                endDate: "March 16, 2025 Fri",
+                description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos ",
                 action1: "Edit",
-                action2: "Permissions",
-                action3: "Delete"
-            },
-            {
-                accountID: "DSADASDS",
-                createdOn: "March 16, 2024 Fri",
-                firstName: "Dean",
-                lastName: "Marsano",
-                isVerified: "true",
-                status: "active",
-                userType: "Manager",
-                action1: "Edit",
-                action2: "Permissions",
-                action3: "Delete"
+                action2: "Delete",
             }
         ],
         tableOptions: {
             columns: [
-                {resultName:"accountID", label:"Accound I.D.", isRow: true},
+                {resultName:"promotionID", label:"Promo I.D.", isRow: true},
                 {resultName:"createdOn", label:"Created On"},
-                {resultName:"firstName", label:"First Name"},
-                {resultName:"lastName", label:"Last Name"},
-                {resultName:"status", label:"Status"},
-                {resultName:"isVerified", label:"Verified"},
-                {resultName:"userType", label:"User Type"},
+                {resultName:"name", label:"Name"},
+                {resultName:"startDate", label:"Promo Start"},
+                {resultName:"endDate", label:"End Date"},
+                {resultName:"description", label:"Description"},
                 {resultName:"action1", label:"Action", 
                     isButton: { 
                         classNames: [{classname:"btn-tab-lightblue", name: "Edit"}],
@@ -144,19 +129,13 @@ exports.viewPromotions = async (req, res) => {
                 },
                 {resultName:"action2", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Permissions"}],
-                    }
-                },
-                ,
-                {resultName:"action3", label:"Action", 
-                    isButton: { 
                         classNames: [{classname:"btn-tab-lightblue", name: "Delete"}],
                     }
                 }
             ]
         },
-        headerTitle:"Find User Accounts",
-        placeholder:"Search for a User"
+        headerTitle:"Find Promotions",
+        placeholder:"Search for a Promotion"
     }); 
 }
 
