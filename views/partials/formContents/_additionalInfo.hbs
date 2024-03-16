@@ -1,5 +1,6 @@
 <h1 class="text-justify mb-4 form-header-style">Additional Information</h1>
-<div>
+
+<div class="{{#if readOnly}}d-none{{/if}}">
     <h6 class="form-content-h6-style mt-4">Hotel Policy</h6>
     <div class="decor-check-section">
         <div class="space-check-icon">
@@ -11,17 +12,18 @@
         </div>
     </div>
 </div> 
+
 <div>
-    <h6 class="form-content-h6-style mt-4">Special Requests</h6>
-    <p>Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
+    <h6 class="form-content-h6-style mt-4 ">Special Requests</h6>
+    <p class="{{#if readOnly}}d-none{{/if}}" id="specialReqDesctext">Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
     <div class="form-group">
-        <label for="exampleFormControlTextarea1">Please enter your request (optional)</label>
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <label for="specialRequestInput" class="{{#if readOnly}}d-none{{/if}}">Please enter your request (optional)</label>
+        <textarea class="form-control {{#if readOnly}}no-border{{/if}}" id="specialRequestInput" rows="3">{{#if readOnly}}{{#unless specialRequests}}None{{/unless}}{{/if}}</textarea>
     </div>
 </div>
 <div>
     <h6 class="form-content-h6-style mt-3">Your Arrival Time</h6>
-    <div class="decor-check-section">
+    <div class="decor-check-section {{#if readOnly}}d-none{{/if}}" id="decorCheckSection">
         <div class="space-check-icon">
             <img src="/img/icons/general/check_circle_green.svg" alt="check icon">
         </div>
@@ -29,7 +31,7 @@
     </div>
     <div class="mt-b">
         <label for="selectArrivalTime" class="form-label">Estimated Arrival Time *</label>
-        <select class="form-select" name="arrivalTime" aria-label="Arrival Time" id="selectArrivalTime" required>
+        <select class="form-select {{#if readOnly}}no-border{{/if}}" name="arrivalTime" aria-label="Arrival Time" id="selectArrivalTime" required>
             <option selected>Please Select</option>
             <option value="15:00">15:00</option>
             <option value="15:30">15:30</option>

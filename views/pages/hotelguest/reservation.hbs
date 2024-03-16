@@ -1,58 +1,80 @@
+
 <div class="page-wrapper-flex">
     <div class="create-acc-page-container">
         <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
             <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
                 {{> _h1styled headerTitle="Reservation"}}
+
+                {{#if bookingData}}
                 <div class="subheader-container">
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                    <h2>Reservation#{{bookingData.reservationID}}</h2>
                 </div>
                 <div class="row justify-content-left">
-                        <form id="reservationForm" name="createReservation">
-                           
-                        </form>
+                    <form id="reservationDateChange" name="reservationDateChange">
+                        <div class="card mt-4">
+                            <h6 class="form-content-h6-style mt-4">Booking information</h6> 
+                            <p> Stay Period </p>
+                            <div class="d-none" id="calendar-container">
+                                <div class="calendar-wrapper">
+                                    <input type="date" readonly id="datePicker">
+                                </div>
+                            </div>
+                            <div class="row section-date-range">
+                                <div class="col-md-6">
+                                    <label id="checkinLabel" for="inputcheckin" class="form-label no-border">Check-in*</label>
+                                    <input readonly value={{bookingData.checkinDate}} type="date" name="checkin" class="form-control no-border" aria-label="Check in" id="inputcheckin" required>
+                                    <div class="invalid-feedback">
+                                        Please enter check-in Date
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2 mt-md-0">
+                                    <label for="inputcheckout" class="form-label no-border">Check-out*</label>
+                                    <input readonly value={{bookingData.checkoutDate}} type="date" name="checkout" class="form-control no-border" aria-label="Check out" id="inputcheckout" required>
+                                    <div class="invalid-feedback">
+                                        Please enter check-out Date
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="button btn-primary next-button mt-4" id="edit_date">CHANGE DATE</button>
+                            <button type="button" class="button btn-primary next-button mt-4 d-none" id="submit_date">SUBMIT</button>
+                        </div>
+                    </form>
 
+                    <form id="additionalInfoChange" name="additionalInfoChange">
+                        <div class="card mt-4 ">
+                            {{> formContents/_additionalInfo readOnly="true"}}
+                            <button type="button" class="button btn-primary next-button mt-4" id="edit_addinfo">EDIT</button>
+                                <button type="button" class="button btn-primary next-button mt-4 d-none" id="submit_addinfo">SUMBIT</button>
+                        </div>
+                    </form>
+
+                    <form id="guestInfoChange" name="guestInfoChange">
+                        <div class="card mt-4">
+                            {{> formContents/_guestInfo readOnly="true" headerText="Guest Information"}}
+                                <button type="button" class="button btn-primary next-button mt-4" id="submit_guestInfo">EDIT</button>
+                        </div>
+                    </form>
+
+                    <div>
+                        <div class="card mt-4">
+                            {{> formContents/_paymentInfo readOnly="true" headerText="Payment Information"}}
+                        </div>
                     </div>
+                    
+                </div>
+                {{/if}}
+                {{#unless bookingData}}
+                <div>
+                    <div class="subheader-container">
+                        <h2>404: booking data not found</h2>
+                    </div>
+                </div>
+                {{/unless}}  
             </div>
         </div>
-        {{> _paymentSidebar disable=disablePaymentSidebar}}
+        {{#if bookingData}}
+        {{> _paymentSidebar disable=disablePaymentSidebar readOnly="true" bookingData=bookingData}}
+        {{/if}}  
     </div>
 </div>
-
-
-                        {{!-- <div >
-                            <h1 class="text-justify mb-4 form-header-style">Account Information</h1>
-                            <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}Createaccount" method="post" name="crateaccount" id="createaccount">
-                                <div class="col-md-6">
-                                    <label for="inputName" class="form-label">First Name*</label>
-                                    <input type="text" class="form-control" aria-label="First name" id="inputName" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="inputAddress" class="form-label">Last Name*</label>
-                                    <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
-                                </div>
-                                <div class="mb-2">
-                                    <label for="email" class="form-label">Email *</label>
-                                    <input type="email" class="form-control" id="email" required autocomplete="on">
-                                </div>
-                                <div class="mb-2">
-                                    <label for="mobileNumber" class="form-label">Mobile Number</label>
-                                    <input type="tel" class="form-control" id="mobileNumber">
-                                </div>
-                                <div class="mb-2">
-                                    <label for="password" class="form-label">Password *</label>
-                                    <input type="password" class="form-control" id="password" required>
-                                </div>
-                                <div class="mb-2">
-                                    <label for="verifyPassword" class="form-label">Verify Password *</label>
-                                    <input type="password" class="form-control" id="verifyPassword" required>
-                                </div>
-                                <p class="text-justify">
-                                    To complete your registration, a verification email has been sent to the provided address.
-                                    Please click the link in the email to verify and proceed with your booking.
-                                </p>
-                                <div class="col-12 gap-2">
-                                    <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
-                                </div>
-                            </form>
-                        </div> --}}
+              

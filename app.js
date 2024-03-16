@@ -190,10 +190,6 @@ app.get("/updatepassword", (req, res) => {
     res.render( "pages/hotelguest/updatepassword");  
 })
 
-app.get("/devlinks", (req, res) => {
-    res.render( "pages/public/devlinks");  
-})
-
 // we can organize routes later like below for now we'll just write everthing in app.js
 // we will refactor later
 
@@ -346,7 +342,50 @@ app.get("/reservationinfo/:id", (req, res) => {
             {name:"h1styled.css"},
             {name:"formContents.css"},
         ] ,
+        scripts: [
+            {src:"/js/reservationinfo.js"},
+        ],
         disablePaymentSidebar: false,
+        addFlatPicker: true,
+        userData: {
+            firstName: "John",
+            lastName: "Doe",
+        },
+        bookingData: {
+            reservationID: 'ASH7DO',
+            roomDetails: {
+                roomType: "Deluxe Room",
+                amenities: ["Breakfast Included","Welcome Drinks"],
+                bedType: "Queen",
+                numberOfBeds: 1,
+                pricePerNight: 250
+            },
+            checkinDate: "2024-03-16",
+            checkoutDate: "2024-03-20",
+            thumbnail: {
+                small: {
+                    fileType: "jpg",
+                    url: "4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f"
+                }
+            },
+            status: "pending",
+            numberOfGuests: 3,
+            estimatedArrivalTime: "1:00 PM",
+            paymentDetails: {
+                cardType: "Mastercard",
+                lastFour: "9845"
+            },
+            priceBreakdown: {
+                totalCharge: 630.89,
+                totalPaid: 189.27,
+                fees: [
+                    {"Taxes & Fees": 126.18},
+                    {"Subtotal": 504.71},
+                    {"Extra Person Fees": 4.71}
+                ],
+                promotions: []
+            }
+        }
     });  
 })
 
