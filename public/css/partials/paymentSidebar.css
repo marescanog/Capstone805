@@ -266,6 +266,19 @@ ul {
         color: #E45C32;
     }
 
+    .payment-sidebar-placeholder{
+        background-color: #FEAC5E;
+        width: 8.5em;
+        height: 8.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .payment-sidebar-placeholder img{
+        width: 4.5em;
+        height: 4.5em;
+    }
+
 @media screen and (max-width: 992px) {
     .pa-right-container {
         width: 100%;
@@ -354,5 +367,15 @@ ul {
 
     ul li {
         width: 8em;
+    }
+
+    .payment-sidebar-placeholder{
+        width: 4em;
+        height: 4em;
+    }
+    
+    .payment-sidebar-placeholder img{
+        width: 2.5em;
+        height: 2.5em;
     }
 }

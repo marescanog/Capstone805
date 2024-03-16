@@ -2,7 +2,7 @@ const countdown = (serverSecondsInputDOMID, countdownElementDOMID, activationLin
   const serverSecondsInput = document.getElementById(serverSecondsInputDOMID);
   let countdownElement = document.getElementById(countdownElementDOMID);
   let activationLink = document.getElementById(activationLinkDOMID);
-  console.log(serverSecondsInput)
+
   let seconds = parseInt(serverSecondsInput.value)
   activationLink.classList.add(inactiveClassName); 
 

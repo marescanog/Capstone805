@@ -10,7 +10,14 @@
             <hr class="pa-hr h3"> 
             <div class="room-summary-section pa-left-right-container">
                 <div class="room-image-container">
-                    <img class="img-fluid thumbnail" src="{{bookingData.thumbnailSmall}}.{{bookingData.fileType}}" alt="room thumbnail">
+                     {{#if bookingData.thumbnailSmall}}
+                        <img class="img-fluid thumbnail" src="{{bookingData.thumbnailSmall}}.{{bookingData.fileType}}" alt="room thumbnail">
+                     {{/if }}
+                     {{#unless bookingData.thumbnailSmall}}
+                        <div class="payment-sidebar-placeholder">
+                            <img class="img-fluid thumbnail" src="/img/icons/general/room.svg" alt="room thumbnail">
+                        </div>
+                     {{/unless}}
                 </div>
                 <div class="room-text-container">
                     <div class="room-text-roomtype-header-container">
@@ -93,9 +100,9 @@
                     <div class="loyalty-rewards-selection-box">
                         <p>Select your reward*</p>
                         <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
-                            <option value="1">$10 off</option>
-                            <option value="2">$20 off</option>
-                            <option value="3">$50 off</option>
+                            <option value="10">$10 off</option>
+                            <option value="20">$20 off</option>
+                            <option value="50">$50 off</option>
                         </select>
                         <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
                         <p>** Up to $200 off per booking</p>

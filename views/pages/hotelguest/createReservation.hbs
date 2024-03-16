@@ -1,0 +1,134 @@
+<div class="page-wrapper-flex">
+    <div class="create-acc-page-container">
+        <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
+            <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
+                <div class="breadCrumbs-wrapper">
+                    <div class="breadCrumbs-container">
+                        {{> _breadcrumbs}}
+                    </div>
+                </div>
+                {{> _h1styled headerTitle="Guest Information"}}
+                <div class="subheader-container">
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Enter your details to proceed.</p>
+                </div>
+                <div class="row justify-content-left">
+                        
+                    <form id="reservationForm">
+                    {{!-- <form id="reservationForm" action="/createReservation" method="post"> --}}
+
+                        <div class="form-section" id="section1">
+                            <div class="card">
+                                 {{> formContents/_guestInfo }}
+                            </div>
+                            <div class="card mt-4">
+                                 {{> formContents/_additionalInfo}}
+                            </div>
+                            <button type="button" class="button btn-primary next-button mt-4" id="button_s1">Next: Enter Payment ></button>
+                        </div>
+            
+                        <div class="form-section hidden" id="section2">
+                            <div class="card">
+                                {{> formContents/_paymentInfo}}
+                            </div>
+                            <div>
+                                <button type="button" class="button btn-primary next-button" id="button_s2_back">< Back</button>
+                                <button type="button" class="button btn-primary next-button" id="button_s2">Next: Review ></button>
+                            </div>
+                        </div>
+                                                
+                        <div class="form-section hidden" id="section3">
+                            <div class="card">
+                                <h1 class="text-justify mb-4 form-header-style">Review Information</h1>
+
+                                <div>
+                                    <h6>Main Guest Details</h6>
+                                    <p>First Name: <span id="reviewfirstName"></span></p>
+                                    <p>Last Name: <span id="reviewlastName"></span></p>
+                                    <p>Mobile Number: <span id="reviewmobileNumber"></span></p>
+
+                                    <h6>Main Guest address</h6>
+                                    <p>Address: <span id="reviewaddress"></span></p>
+                                    <div>
+                                        <p>City: <span id="reviewcity"></span></p>
+                                        <p>Postal Code: <span id="reviewpostalCode"></span></p>
+                                    </div>
+                                    <p>Country: <span id="reviewCountry"></span></p>
+                                </div>
+
+                                <div>
+                                    <h6>Additional info</h6>
+                                    <p>Special Request: <span id="reviewspecialRequest"></span></p>
+                                    <p>Arrival Time: <span id="reviewarrivalTimeRequest"></span></p>
+                                </div>
+                                <div>
+                                    <h6>Payment info</h6>
+                                    <p>Card Number: <span id="reviewcardNumber"></span></p>
+                                    {{!-- Code card type detection later --}}
+                                    <p>type: <span id="reviewarrivalcardType">Mastercard</span></p>
+                                    <p>Expiration Date: <span id="reviewarrivalTimeRequest"></span></p>
+
+                                    <h6>Billing address</h6>
+                                    <p>Same as guest address</p>
+                                    <div>
+                                        <p>Address: <span id="reviewbillingAddress"></span></p>
+                                        <div>
+                                            <p>City: <span id="reviewbillingCity"></span></p>
+                                            <p>Postal Code: <span id="reviewbillingPostalCode"></span></p>
+                                        </div>
+                                        <p>Country: <span id="reviewbillingCountry"></span></p>
+                                    </div>
+                                </div>
+                                    <input type="hidden" name="loyaltyCheck" id="loyaltyCheck_DOM_El" value="unchecked">
+                                    <input type="hidden" name="loyaltyValue" id="loyaltyValue_DOM_El" value="10">
+                                <div>
+                                    <h6>Terms & Hotel Policy</h6>
+                                    <a href="">Terms & Conditions</a>
+                                    <a href="">Policy Description</a>
+                                    <p>By completing the reservation, you are confirming that you have read and agreed to the Terms & Conditions and Hotel Policy.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="button btn-primary next-button" id="btn_3Section_back">< Back</button>
+                                <button type="button" class="button btn-primary next-button" id="submitButton">COMPLETE RESERVATION</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        {{> _paymentSidebar disable=disablePaymentSidebar}}
+    </div>
+</div>
+
+
+                        {{!-- <div >
+                            <h1 class="text-justify mb-4 form-header-style">Account Information</h1>
+                            <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}Createaccount" method="post" name="crateaccount" id="createaccount">
+
+
+                                <div class="mb-2">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" required autocomplete="on">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                    <input type="tel" class="form-control" id="mobileNumber">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="verifyPassword" class="form-label">Verify Password *</label>
+                                    <input type="password" class="form-control" id="verifyPassword" required>
+                                </div>
+                                <p class="text-justify">
+                                    To complete your registration, a verification email has been sent to the provided address.
+                                    Please click the link in the email to verify and proceed with your booking.
+                                </p>
+                                <div class="col-12 gap-2">
+                                    <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
+                                </div>
+                            </form>
+                        </div> --}}

@@ -2,7 +2,7 @@ const formatMoneyValue = (value) => {
     return  `$${(parseFloat(value.toFixed(2))).toLocaleString('en-US',{ minimumFractionDigits: 2 })}`;
 }
 
-const computeTotalFees = (nightlyRate, totalNights, extraPersonFee) => {
+const computeTotalFees = (nightlyRate, totalNights, extraPersonFee, discount) => {
     const  subTotalText = document.getElementById('subTotalText');
     const  totalTaxText = document.getElementById('totalTaxText');
     const  totalChargesText = document.getElementById('totalChargesText');
@@ -12,6 +12,7 @@ const computeTotalFees = (nightlyRate, totalNights, extraPersonFee) => {
     const  disclaimerChargeText = document.getElementById('disclaimerChargeText');
     
     let subTotal = (nightlyRate * totalNights) + extraPersonFee;
+    let subTotalWithDiscounts = subTotal - discount; // TODO: code some fields to be shown/added, add/remove fields in hbs file
     let taxes = subTotal * 0.25
     let total = subTotal + taxes;
     let chargesDue = total *0.3;
@@ -55,29 +56,47 @@ document.addEventListener("DOMContentLoaded", function(e) {
     const  totalNightsText = document.getElementById('totalNightsText');
     const subTotalTextHeader = document.getElementById('subTotalTextHeader');
 
+    const  loyaltycheckBox_hiddeninput = document.getElementById('loyaltyCheck_DOM_El');
+    const loyaltyvalue_hiddeninput = document.getElementById('loyaltyValue_DOM_El');
+
     if(nightlyText && totalNightsText){
             const  extraPersonFeeText = document.getElementById('extraPersonFee');
             let nightlyRate = parseFloat(nightlyText.innerText);
             let totalNights = parseInt(totalNightsText.innerText);
             let extraPersonFee = extraPersonFeeText ? parseFloat(extraPersonFeeText.innerText) : 0;
             computeTotalFees(nightlyRate, totalNights, extraPersonFee);
-    }
 
-    if(loyaltyTrigger && subTotalTextHeader){
-        loyaltyTrigger.addEventListener('change', (event) => {
-            if(loyaltyContainer && rewardsSelect){
-                if (event.currentTarget.checked) {
-                    subTotalTextHeader.innerText = ""
-                    loyaltyContainer.classList.add("visible");
-                    rewardsSelect.disabled = false;
-                    computeTotalFees(nightlyRate, totalNights, extraPersonFee);
-                } else {
-                    loyaltyContainer.classList.remove("visible");
-                    rewardsSelect.disabled = true;
-                    computeTotalFees(nightlyRate, totalNights, extraPersonFee);
-                }
+            if(loyaltyTrigger && subTotalTextHeader){
+                loyaltyTrigger.addEventListener('change', (event) => {
+                    if(loyaltyContainer && rewardsSelect){
+                        if (event.currentTarget.checked) {
+                            subTotalTextHeader.innerText = ""
+                            loyaltyContainer.classList.add("visible");
+                            rewardsSelect.disabled = false;
+                            computeTotalFees(nightlyRate, totalNights, extraPersonFee, rewardsSelect.value); // modify to compute on select as well, add change event to select
+                            if(loyaltycheckBox_hiddeninput){
+                                loyaltycheckBox_hiddeninput.value = true;
+                            }
+                        } else {
+                            loyaltyContainer.classList.remove("visible");
+                            rewardsSelect.disabled = true;
+                            computeTotalFees(nightlyRate, totalNights, extraPersonFee, rewardsSelect.value); // modify to compute on select as well
+                            if(loyaltycheckBox_hiddeninput){
+                                loyaltycheckBox_hiddeninput.value = false;
+                            }
+                        }
+                    }
+                })
             }
-        })
+
+            if(rewardsSelect){
+                rewardsSelect.addEventListener('change', (event) => {
+                    if(loyaltyvalue_hiddeninput){
+                        loyaltyvalue_hiddeninput.value = event.currentTarget.value;
+                    }
+                    computeTotalFees(nightlyRate, totalNights, extraPersonFee, event.currentTarget.value); 
+                })
+            }
     }
 
     countdown('serverHeldSecondsInput', 'roomheldDisplaySeconds', 'reservationHeldLink', 'r-active', 'r-inactive');

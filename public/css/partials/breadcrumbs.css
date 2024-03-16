@@ -1,0 +1,56 @@
+
+.breadCrumbs-container {
+    width: 70%;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+  
+  .breadcrumb .circle {
+    width: 3.5em;
+    height: 3.5em;
+    border-radius: 50%;
+    background-color: #9A9A9A; /* Default background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+  
+  .progress {
+    flex-grow: 1;
+    height: 0.5em;
+    background-color: #9A9A9A; /* Default background */
+    margin: 0;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+    transform: translateY(-0.6em) scalex(1.01);
+    border-radius: 0;
+  }
+  
+  .breadcrumb-text-1{
+    position: absolute;
+    transform: translateY(3.25em)  translateX(-1em);
+  }
+
+  .breadcrumb-text-2{
+    position: absolute;
+    transform: translateY(3.25em)  translateX(-1.65em);
+  }
+
+  .breadcrumb-text-3{
+    position: absolute;
+    transform: translateY(3.25em)  translateX(-0.3em);
+  }
+  /* Highlighted state */
+  .highlighted {
+    background-color: #FEAC5E !important; /* Highlight color */
+  }
+  
+  .circle.highlighted {
+    color: white; /* Change text color for better visibility */
+  }
