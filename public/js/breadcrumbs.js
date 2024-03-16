@@ -23,4 +23,7 @@ function updateProgress(stage) {
       document.querySelectorAll('.progress')[1].classList.add('highlighted'); 
       document.querySelector('#middle .circle img').src = "/img/icons/general/check.svg";
     }
+    if (stage === 4) {
+      document.querySelector('#end .circle img').src = "/img/icons/general/check.svg";
+    }
   }

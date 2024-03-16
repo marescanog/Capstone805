@@ -28,6 +28,7 @@ function nextSection(targetSection) {
     if(headerTitleText){
         headerTitleText.innerText = headerTitles[targetSection-1];
     }
+    window.scrollTo(0,0);
     return true;
 }
   
