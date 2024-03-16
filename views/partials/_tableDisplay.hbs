@@ -1,0 +1,80 @@
+<div class="reservation-results-view-container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {{#if tableOptions.columns}}
+                    {{#each tableOptions.columns}}
+                        <th scope="col">{{this.label}}</th>
+                    {{/each}}
+                {{/if}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#if results}}
+                {{#each results}}
+                    <tr>
+                    {{> _tableRowDisplay columnData=../tableOptions.columns}}
+                    </tr>
+                {{/each}}
+            {{/if}}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{!-- <div class="reservation-results-view-container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Reservation #</th>
+                <th scope="col">Check-in</th>
+                <th scope="col">Check-out</th>
+                <th scope="col">Guest Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">ASD75HK</th>
+                <td>Sep 7, 2024 Fri</td>
+                <td>Sep 10, 2024 Tuesday</td>
+                <td>Biles, Gray</td>
+                <td>Upcoming</td>
+                <td>Modify</td>
+            </tr>
+            <tr>
+                <th scope="row">DF4HTS</th>
+                <td>Sep 7, 2024 Fri</td>
+                <td>Sep 10, 2024 Tuesday</td>
+                <td>Biles, Gray</td>
+                <td>Upcoming</td>
+                <td>View</td>
+            </tr>
+            <tr>
+                <th scope="row">SDF4HN</th>
+                <td>Sep 7, 2024 Fri</td>
+                <td>Sep 10, 2024 Tuesday</td>
+                <td>Biles, Gray</td>
+                <td>Upcoming</td>
+                <td>Modify</td>
+            </tr>
+        </tbody>
+    </table>
+</div> --}}

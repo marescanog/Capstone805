@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="/css/{{css}}">
             <img class="acc-info-sidebar-user-img" src={{#if img}}{{img}}{{/if}}{{#unless img}}"\img\placeholder\account.png" {{/unless}} alt="user_image">
         </div>
-        <a class="acc-info-a" href="">{{#if img}}Update Photo{{/if}}{{#unless img}}Upload New Photo{{/unless}}</a>
+        <a class="acc-info-a" href="{{urlPhoto}}">{{#if img}}Update Photo{{/if}}{{#unless img}}Upload New Photo{{/unless}}</a>
     </div>
     <div class="acc-info-sidebar-details-container">
         <div class="acc-info-title-box">
@@ -33,10 +33,10 @@
             </div>
             {{#unless employeeType}}
             <div>
-                <a class="acc-info-a" href="">Update Email</a>
+                <a class="acc-info-a" href="{{urlEmail}}">Update Email</a>
             </div>
             {{/unless}}
-            <a class="acc-info-a" href="">Change Password</a>
+            <a class="acc-info-a" href="{{urlPassword}}">Change Password</a>
         </div>
     </div>
 </div>

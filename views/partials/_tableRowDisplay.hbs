@@ -1,0 +1,18 @@
+{{#if columnData}}
+    {{#each columnData}}
+        {{#unless this.isRow}}           
+                {{#if this.isButton}}
+                    <td><button type="submit" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
+                    >
+                        {{getProperty ../this this.resultName}}
+                    </button></td>
+                {{/if }}
+                {{#unless this.isButton}}
+                    <td>{{getProperty ../this this.resultName}}</td>
+                {{/unless}}
+        {{/unless }}
+        {{#if this.isRow}}
+            <th scope="row">{{getProperty ../this this.resultName}}</th>
+        {{/if }}       
+    {{/each}}
+{{/if}}

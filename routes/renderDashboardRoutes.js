@@ -1,45 +1,56 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin } = require('./../controllers/dashboard/staffDashboardController.js');
-// const {loadManagerDashboard} = require('./../controllers/dashboard/managerDashboardController.js');
-// const {loadAdminDashboard } = require('./../controllers/dashboard/adminDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const renderDashboardRouter = express.Router();
 const staffRouter = express.Router();
-const adminRouter = express.Router();
 const managerRouter = express.Router();
+const adminRouter = express.Router();
+
 
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
 staffRouter.route('/viewReservations').get(viewStaffReservations);
-staffRouter.route('/edit/:id').get(editStaffAccount);
-staffRouter.route('/changePassword/:id').get(editStaffPassword);
-staffRouter.route('/updatePhoto/:id').get(updateStaffPhoto);
+staffRouter.route('/edit').get(editStaffAccount);
+staffRouter.route('/changePassword').get(editStaffPassword);
+staffRouter.route('/updatePhoto').get(updateStaffPhoto);
 staffRouter.route('/createReservations').get(createReservations);
 staffRouter.route('/inquiries').get(viewInquiries);
 staffRouter.route('/checkin').get(checkin);
 staffRouter.route('/:id').get(loadStaffDashboard);
 
 
-// // Manager Router
-// // Manager Router
-// dashboardRouter.use('/manager', managerRouter);
-// // Manager base route
-// staffRouter.route('/').get(loadStaffDashboard);
+// Manager Router
+renderDashboardRouter.use('/manager', managerRouter);
+// Manager Routes
 // // Manager Routes
-// staffRouter.route('/editAccount').get(editStaffAccount);
-// staffRouter.route('/changePassword').get(editStaffPassword);
-// staffRouter.route('/viewReservations').get(viewStaffReservations);
-// staffRouter.route('/createReservations').get(createReservations);
-// staffRouter.route('/inquiries').get(viewInquiries);
-// staffRouter.route('/checkin').get(checkin);
+// managerRouter.route('/viewReservations').get(viewStaffReservations);
+// managerRouter.route('/edit').get(editStaffAccount);
+// managerRouter.route('/changePassword').get(editStaffPassword);
+// managerRouter.route('/updatePhoto').get(updateStaffPhoto);
+// managerRouter.route('/createReservations').get(createReservations);
+// managerRouter.route('/inquiries').get(viewInquiries);
+// managerRouter.route('/checkin').get(checkin);
+managerRouter.route('/offers').get(viewOffers);
+managerRouter.route('/promotions').get(viewPromotions);
+managerRouter.route('/rooms').get(viewRooms);
+managerRouter.route('/:id').get(loadManagerDashboard);
 
-
-// // Staff Router
-// dashboardRouter
-// .route('/USNVMQD493')
-// .get(loadAdminDashboard);
-
-
+// Admin Router
+renderDashboardRouter.use('/USNVMQD493', adminRouter);
+// adminRouter.route('/viewReservations').get(viewStaffReservations);
+// adminRouter.route('/edit').get(editStaffAccount);
+// adminRouter.route('/changePassword').get(editStaffPassword);
+// adminRouter.route('/updatePhoto').get(updateStaffPhoto);
+// adminRouter.route('/createReservations').get(createReservations);
+// adminRouter.route('/inquiries').get(viewInquiries);
+// adminRouter.route('/checkin').get(checkin);
+// adminRouter.route('/offers').get(checkin);
+// adminRouter.route('/promotions').get(checkin);
+// adminRouter.route('/rooms').get(checkin);
+adminRouter.route('/users').get(viewUsers);
+adminRouter.route('/:id').get(loadAdminDashboard);
 
 
 // // user

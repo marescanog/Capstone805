@@ -1,0 +1,28 @@
+
+<div class="view-reservation-search-bar-container">
+    <form class="view-reservation-search-bar" action="{{searchControlUrl}}" method="get">
+        <div class="form-group search-field-container">
+            <input type="text" class="form-control search-field" id="search" name="reservationNumber" placeholder="{{#if placeholder}}{{placeholder}}{{/if}}{{#unless placeholder}}Search for...{{/unless}}" required>
+        </div>
+        <button type="submit" class="search-submit-button">
+            <img src="/img/icons/search/search_icon.svg" alt="search icon">
+        </button>
+    </form>
+</div>
+{{#equalOrGT searchOptionsList.length 0}}
+ <div class="view-reservation-filter-container">
+    <p class="search-filter-header">Search by:</p>
+    <div class="view-reservation-filter-options-container">
+        {{#if searchOptionsList}}
+            {{#each searchOptionsList}}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter" id="{{this.id}}" value="lastName">
+                    <label class="form-check-label check-style" for="{{this.id}}">
+                        {{this.label}}
+                    </label>
+                </div>
+            {{/each}}
+        {{/if}}
+    </div>
+</div> 
+{{/equalOrGT}}
