@@ -349,6 +349,12 @@ app.get("/reservationinfo/:id", (req, res) => {
     });  
 })
 
+app.post("/createReservation", (req, res) => {
+    console.log(JSON.stringify(req.body))
+    res.send(req.body)
+})
+
+
 
 // 3 - ROUTES
 app.use('/api/v1/guests', guestRouter);

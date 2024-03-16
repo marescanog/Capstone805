@@ -83,7 +83,7 @@ exports.renderVerifyPage = async (req, res) => {
 
 exports.renderReservationInfoPage = async (req, res) => {
     // h1_styled_partial
-    res.render( "pages/hotelguest/reservation",{ 
+    res.render( "pages/hotelguest/createReservation",{ 
         layout:"main", 
         css: 'createaccount.css', 
         title:'Reservation',

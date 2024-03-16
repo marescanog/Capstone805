@@ -2,16 +2,63 @@
     <div class="create-acc-page-container">
         <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
             <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
+                <div class="breadCrumbs-wrapper">
+                    <div class="breadCrumbs-container">
+                        {{> _breadcrumbs}}
+                    </div>
+                </div>
                 {{> _h1styled headerTitle="Guest Information"}}
                 <div class="subheader-container">
                     <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
                     <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
                 </div>
-                <div class="card">
-                    <div class="row justify-content-left">
-                        <div >
-                            <h1 class="text-justify mb-4 form-header-style">Enter your Details</h1>
-                            <form class="mb-4 row g-3" action="/" method="post" name="crateaccount" id="createaccount">
+                <div class="row justify-content-left">
+                        
+                    <form id="reservationForm" action="/createReservation" method="post">
+                        <div class="form-section" id="section1">
+                            <h2>Personal Information</h2>
+                            <input type="text" placeholder="First Name" name="firstName" required>
+                            <input type="text" placeholder="Last Name" name="lastName" required>
+                            <input type="email" placeholder="Email Address" name="emailAddress" required>
+                            <button type="button" id="button_s1">Next</button>
+                        </div>
+                        
+                        <div class="form-section hidden" id="section2">
+                            <h2>Payment Information</h2>
+                            <!-- Placeholder for Payment Fields, ensure they have the 'disabled' attribute by default -->
+                            <input type="text" placeholder="Card Number" name="cardNumber" required disabled>
+                            <div>
+                                <button type="button" id="button_s2_back">Back</button>
+                                <button type="button" id="button_s2">Next</button>
+                            </div>
+                        </div>
+                                                
+                        <div class="form-section hidden" id="section3">
+                            <h2>Review Information</h2>
+                            <p>First Name: <span id="reviewFirstName"></span></p>
+                            <p>Last Name: <span id="reviewLastName"></span></p>
+                            <p>Email Address: <span id="reviewEmail"></span></p>
+                            <p>Card Number: <span id="reviewCardNumber"></span></p>
+                                <input type="hidden" name="loyaltyCheck" id="loyaltyCheck_DOM_El" value="unchecked">
+                                <input type="hidden" name="loyaltyValue" id="loyaltyValue_DOM_El" value="0">
+                            <div>
+                                <button type="button" id="btn_3Section_back">Back</button>
+                                <button type="submit" id="submitButton">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        {{> _paymentSidebar disable=disablePaymentSidebar}}
+    </div>
+</div>
+
+
+                        {{!-- <div >
+                            <h1 class="text-justify mb-4 form-header-style">Account Information</h1>
+                            <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}Createaccount" method="post" name="crateaccount" id="createaccount">
                                 <div class="col-md-6">
                                     <label for="inputName" class="form-label">First Name*</label>
                                     <input type="text" class="form-control" aria-label="First name" id="inputName" required>
@@ -21,19 +68,27 @@
                                     <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
                                 </div>
                                 <div class="mb-2">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" required autocomplete="on">
+                                </div>
+                                <div class="mb-2">
                                     <label for="mobileNumber" class="form-label">Mobile Number</label>
                                     <input type="tel" class="form-control" id="mobileNumber">
                                 </div>
+                                <div class="mb-2">
+                                    <label for="password" class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="verifyPassword" class="form-label">Verify Password *</label>
+                                    <input type="password" class="form-control" id="verifyPassword" required>
+                                </div>
+                                <p class="text-justify">
+                                    To complete your registration, a verification email has been sent to the provided address.
+                                    Please click the link in the email to verify and proceed with your booking.
+                                </p>
                                 <div class="col-12 gap-2">
                                     <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{> _paymentSidebar disable=disablePaymentSidebar}}
-    </div>
-</div>
-
+                        </div> --}}
