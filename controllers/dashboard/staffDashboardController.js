@@ -29,7 +29,7 @@ exports.loadStaffDashboard = async (req, res) => {
 exports.viewStaffReservations = async (req, res) => {
 
 
-    res.render( "pages/employee/viewReservations",{ 
+    res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/viewReservations.css', 
         title:'View Reservations',
@@ -86,12 +86,14 @@ exports.viewStaffReservations = async (req, res) => {
                     }
                 }
             ]
-        }
+        },
+        headerTitle:"Find a Reservation",
+        placeholder:"Search for a Reservation"
     }); 
 }
 
 exports.checkin = async (req, res) => {
-    res.render( "pages/employee/guestCheckinList",{ 
+    res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
         title:'View Reservations',
@@ -171,7 +173,9 @@ exports.checkin = async (req, res) => {
                     }
                 }
             ]
-        }
+        },
+        headerTitle:"Find Guests Checking-In Today",
+        placeholder:"Search for a Guest"
     }); 
 }
 

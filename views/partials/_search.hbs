@@ -2,7 +2,7 @@
 <div class="view-reservation-search-bar-container">
     <form class="view-reservation-search-bar" action="{{searchControlUrl}}" method="get">
         <div class="form-group search-field-container">
-            <input type="text" class="form-control search-field" id="search" name="reservationNumber" placeholder="{{#if placeholder}}Search for...{{/if}}{{#unless placeholder}}Search for...{{/unless}}" required>
+            <input type="text" class="form-control search-field" id="search" name="reservationNumber" placeholder="{{#if placeholder}}{{placeholder}}{{/if}}{{#unless placeholder}}Search for...{{/unless}}" required>
         </div>
         <button type="submit" class="search-submit-button">
             <img src="/img/icons/search/search_icon.svg" alt="search icon">
