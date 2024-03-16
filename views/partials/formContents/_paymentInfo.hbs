@@ -1,25 +1,27 @@
-<h1 class="text-justify mb-4 form-header-style">Enter your details</h1>
-                                <!-- Placeholder for Payment Fields, ensure they have the 'disabled' attribute by default -->
-                                <div>
-                                    <h6>Card Information</h6>
-                                    <div>
-                                        <input type="text" placeholder="Card Number" name="cardNumber" required disabled>
-                                        <div>
-                                            <p>textinput</p>
-                                            <p>textinput</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6>Billing Address</h6>
-                                    <p>textinput</p>
-                                    <div>
-                                        <p>textinput</p>
-                                        <p>textinput</p>
-                                    </div>
-                                    <p>selectDropDowninput</p>
-                                    <div>
-                                        <p>checkInput</p>
-                                        <p>Same as Guest Address</p>
-                                    </div>
-                                </div>
+<h1 class="text-justify mb-4 form-header-style">{{#if headerText}}{{headerText}}{{/if}}{{#unless headerText}}Enter your details{{/unless}}</h1>
+<!-- Placeholder for Payment Fields, ensure they have the 'disabled' attribute by default -->
+{{#unless readOnly}}
+<div>
+    <h6>Card Information</h6>
+    <div>
+        <input type="text" placeholder="Card Number" name="cardNumber" required disabled>
+        <div>
+            <p>textinput</p>
+            <p>textinput</p>
+        </div>
+    </div>
+</div>
+{{/unless}}
+<div>
+    <h6>Billing Address</h6>
+    <p>textinput</p>
+    <div>
+        <p>textinput</p>
+        <p>textinput</p>
+    </div>
+    <p>selectDropDowninput</p>
+    <div>
+        <p>checkInput</p>
+        <p>Same as Guest Address</p>
+    </div>
+</div>

@@ -2,8 +2,8 @@
     {{#if selectTitle}}
         {{#if selectName}}
             <div class="mb-2">
-                <label for="{{selectId}}" class="form-label">{{selectTitle}} {{#if required}}*{{/if}}</label>
-                <select class="form-select" name="{{selectName}}" aria-label="{{selectName}}" id="{{selectId}}" {{#if required}}required{{/if}} >
+                <label for="{{selectId}}" class="form-label {{#if readOnly}}no-border{{/if}}">{{selectTitle}} {{#if required}}*{{/if}}</label>
+                <select autocomplete=false class="form-select {{#if readOnly}}no-border{{/if}}" name="{{selectName}}" aria-label="{{selectName}}" id="{{selectId}}" {{#if required}}required{{/if}} >
                     <option selected>Select a country</option>
                     <option value="Afghanistan">Afghanistan</option>
                     <option value="Albania">Albania</option>

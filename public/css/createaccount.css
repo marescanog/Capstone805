@@ -176,3 +176,26 @@ h1.form-header-style{
 /* =============================== */
 /* ===== GUEST INFO SECTION ===== */
 /* =============================== */
+
+.no-border {
+    border: 0;
+    box-shadow: none; 
+    pointer-events: none;
+}
+
+.calendar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+
+@media screen and (max-width: 992px) {
+
+
+}
+
+@media screen and (max-width: 600px) {
+
+}

@@ -1,9 +1,11 @@
 {{#unless disable}}
 <div class="pa-left-container">
+    {{#unless readOnly}}
     <div class="timeout-container" id="reservationHeldLink">
         <input type="hidden" id="serverHeldSecondsInput" value="{{serverHeldSeconds}}">
         <img src="/img/icons/general/timer.svg" alt="timer icon" class="pr-4"><p>&nbsp;Room(s) held for&nbsp;</p><span id="roomheldDisplaySeconds">15:00</span>
     </div>
+    {{/unless}}
     <div class="card pa-side-card">
         <div class="pa-card-body">
             <h3 class="pa-h3-style">YOUR SELECTION</h3>
@@ -46,18 +48,20 @@
             <hr class="pa-hr h3">
             <div class="pa-left-right-container">
                 <h3 class="pa-h3-style">Booking summary</h3>
-                <div>
-                    <div class="row">
-                        <p class="col pa-left">Check-out:</p>
-                        <p class="col pa-right">{{bookingData.checkOut}}</p>
+                {{#unless readOnly}}
+                    <div>
+                        <div class="row">
+                            <p class="col pa-left">Check-out:</p>
+                            <p class="col pa-right">{{bookingData.checkOut}}</p>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class="row">
-                        <p class="col pa-left">Check-in:</p>
-                        <p class="col pa-right">{{bookingData.checkIn}}</p>
+                    <div>
+                        <div class="row">
+                            <p class="col pa-left">Check-in:</p>
+                            <p class="col pa-right">{{bookingData.checkIn}}</p>
+                        </div>
                     </div>
-                </div>
+                {{/unless}}
                 <div>
                     <div class="row">
                         <p class="col pa-left">Guests</p>
@@ -87,28 +91,29 @@
                     {{/equalOrGT}}
                 {{/notEqual}}
 
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Id like to use my loyalty points
-                    </label>
-                </div>
-                <div class="loyalty-container displayNone" id="loyalty-container">
-                    <div class="loyalty-info-points-box">
-                        <p>You have <span>300</span> points to redeem</p>
+                {{#unless readOnly}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Id like to use my loyalty points
+                        </label>
                     </div>
-                    <div class="loyalty-rewards-selection-box">
-                        <p>Select your reward*</p>
-                        <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
-                            <option value="10">$10 off</option>
-                            <option value="20">$20 off</option>
-                            <option value="50">$50 off</option>
-                        </select>
-                        <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
-                        <p>** Up to $200 off per booking</p>
+                    <div class="loyalty-container displayNone" id="loyalty-container">
+                        <div class="loyalty-info-points-box">
+                            <p>You have <span>300</span> points to redeem</p>
+                        </div>
+                        <div class="loyalty-rewards-selection-box">
+                            <p>Select your reward*</p>
+                            <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
+                                <option value="10">$10 off</option>
+                                <option value="20">$20 off</option>
+                                <option value="50">$50 off</option>
+                            </select>
+                            <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
+                            <p>** Up to $200 off per booking</p>
+                        </div>
                     </div>
-                </div>
-
+                {{/unless}}
             </div>
 
             <hr class="pa-hr-light">
@@ -152,6 +157,30 @@
 
             <hr class="pa-hr h3">
 
+            {{#if readOnly}}
+            <div class="pa-left-right-container">
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Charges Due Now</p>
+                        <p id="paidCharges" class="col pa-right"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Paid with mastercard-XXXX4567</p>
+                        <p class="col pa-right"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <p class="col pa-left">Due at check-in</p>
+                        <p id="dueCharges" class="col pa-right"></p>
+                    </div>
+                </div>
+            </div>
+
+            {{/if}}
+            {{#unless readOnly}}
             <div class="pa-left-right-container">
                 <div>
                     <div class="row">
@@ -166,13 +195,15 @@
                     </div>
                 </div>
             </div>
-            <hr class="pa-hr-light">    
+            <hr class="pa-hr-light">   
+   
             <div class="pa-left-right-container">
                 <div> 
                     <p class="disclaimer-text">You will be charged a 30% reservation deposit fee of <span id="disclaimerChargeText">179.60</span> at the time of booking and will be charged the remaining balance of <span id="disclaimerDueText">$419.06</span> (including tax recovery charges and service fees) at the time of check-in. If you choose to change or cancel this booking please refer to our policy below.</p>
                     <a href="">Policy Description</a>
                 </div>
             </div>
+            {{/unless}}
         </div>
     </div>
 </div>
