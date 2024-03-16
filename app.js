@@ -343,7 +343,8 @@ app.get("/reservationinfo/:id", (req, res) => {
         title:'Reservation',
         partialsCSS: [
             {name:"paymentSidebar.css"},
-            {name:"h1styled.css"}
+            {name:"h1styled.css"},
+            {name:"formContents.css"},
         ] ,
         disablePaymentSidebar: false,
     });  
@@ -351,7 +352,13 @@ app.get("/reservationinfo/:id", (req, res) => {
 
 app.post("/createReservation", (req, res) => {
     // console.log(JSON.stringify(req.body))
-    res.send(req.body)
+    // res.send(req.body)
+    try {
+        res.json({ success: true, message: "Reservation created successfully!" });
+    } catch (error){
+        console.error("Save failed:", error);
+        res.json({ success: false, message: "Failed to create reservation. Please try again." });
+    }
 })
 
 

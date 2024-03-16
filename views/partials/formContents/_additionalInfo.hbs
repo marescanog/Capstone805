@@ -1,0 +1,58 @@
+<h1 class="text-justify mb-4 form-header-style">Additional Information</h1>
+<div>
+    <h6 class="form-content-h6-style mt-4">Hotel Policy</h6>
+    <div class="decor-check-section">
+        <div class="space-check-icon">
+            <img src="/img/icons/general/check_circle_green.svg" alt="check icon">
+        </div>
+        <div >
+            <p>Stay flexible: You can cancel for free {{#if lastCancellationDate}}before {{lastCancellationDate}}{{/if}}{{#unless lastCancellationDate}} 3 days before your checkin date{{/unless}}, so lock in this great price today. To learn more click on our Policy below.</p>
+            <a href="">Policy Description</a>
+        </div>
+    </div>
+</div> 
+<div>
+    <h6 class="form-content-h6-style mt-4">Special Requests</h6>
+    <p>Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Please enter your request (optional)</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+</div>
+<div>
+    <h6 class="form-content-h6-style mt-3">Your Arrival Time</h6>
+    <div class="decor-check-section">
+        <div class="space-check-icon">
+            <img src="/img/icons/general/check_circle_green.svg" alt="check icon">
+        </div>
+        <p>You can check in between 15:00 and 23:00</p>
+    </div>
+    <div class="mt-b">
+        <label for="selectArrivalTime" class="form-label">Estimated Arrival Time *</label>
+        <select class="form-select" name="arrivalTime" aria-label="Arrival Time" id="selectArrivalTime" required>
+            <option selected>Please Select</option>
+            <option value="15:00">15:00</option>
+            <option value="15:30">15:30</option>
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+            <option value="18:30">18:30</option>
+            <option value="19:00">19:00</option>
+            <option value="19:30">19:30</option>
+            <option value="20:00">20:00</option>
+            <option value="20:30">20:30</option>
+            <option value="21:00">21:00</option>
+            <option value="21:30">21:30</option>
+            <option value="22:00">22:00</option>
+            <option value="22:30">22:30</option>
+            <option value="23:00">23:00</option>
+            <option value="23:30">23:30</option>
+        </select>
+        <div class="invalid-feedback">
+            Please select your arrival time
+        </div>
+    </div>
+    <p>*Time is for Toronto Timezone</p>
+</div>

@@ -1,0 +1,19 @@
+h6.form-content-h6-style{
+    font-weight: 900;
+    font-size: 0.9em;
+}
+
+.decor-check-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.space-check-icon{
+    width: 3em;
+}
+
+@media screen and (max-width: 992px) {}
+
+@media screen and (max-width: 600px) {}

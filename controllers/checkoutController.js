@@ -82,7 +82,6 @@ exports.renderVerifyPage = async (req, res) => {
 }
 
 exports.renderReservationInfoPage = async (req, res) => {
-    // h1_styled_partial
     res.render( "pages/hotelguest/createReservation",{ 
         layout:"main", 
         css: 'createaccount.css', 
@@ -90,13 +89,15 @@ exports.renderReservationInfoPage = async (req, res) => {
         partialsCSS: [
             {name:"paymentSidebar.css"},
             {name:"breadcrumbs.css"},
-            {name:"h1styled.css"}
+            {name:"h1styled.css"},
+            {name:"formContents.css"}
         ],
         scripts: [
             {src:"/js/utils/countdown.js"},
             {src:"/js/breadcrumbs.js"},
             {src:"/js/paymentSidebar.js"},
-            {src:"/js/checkoutReservationPage.js"}
+            {src:"/js/formContents.js"},
+            {src:"/js/checkoutReservationPage.js"},
         ],
         bookingData: {
             roomType: "Deluxe Room",

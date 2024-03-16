@@ -9,148 +9,73 @@
                 </div>
                 {{> _h1styled headerTitle="Guest Information"}}
                 <div class="subheader-container">
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Create an account to proceed.</p>
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}}">Reserve your room now! Enter your details to proceed.</p>
                 </div>
                 <div class="row justify-content-left">
                         
-                    <form id="reservationForm" action="/createReservation" method="post">
-        
+                    <form id="reservationForm">
+                    {{!-- <form id="reservationForm" action="/createReservation" method="post"> --}}
+
                         <div class="form-section" id="section1">
                             <div class="card">
-                                <h1 class="text-justify mb-4 form-header-style">Enter your details</h1>
-                                <div>
-                                    <h6>Who are you booking for?</h6> 
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                                            <label class="form-check-label" for="flexRadioDefault1">
-                                                I am the main guest
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-                                            <label class="form-check-label" for="flexRadioDefault2">
-                                                booking is for someone else
-                                            </label>
-                                        </div>
-                                </div>
-                                <div>
-                                    <h6>Main Guest Details</h6> 
-                                    <input type="text" placeholder="First Name" name="firstName" required>
-                                    <input type="text" placeholder="Last Name" name="lastName" required>
-                                    <input type="email" placeholder="Email Address" name="emailAddress" required>
-                                </div>
-                                <div>
-                                    <h6>Main Guest Address</h6> 
-                                    <p>textinput</p>
-                                    <div>
-                                        <p>textinput</p>
-                                        <p>textinput</p>
-                                    </div>
-                                    <p>selectdropdown</p>
-                                </div>
+                                 {{> formContents/_guestInfo }}
                             </div>
-                            <div class="card">
-                                <h1 class="text-justify mb-4 form-header-style">Additional Information</h1>
-                                <div>
-                                    <h6>Hotel Policy</h6>
-                                    <div>
-                                        <img src="" alt="check icon">
-                                        <p>Stay flexible: You can cancel for free before 25 January 2024, so lock in this great price today. To learn more click on our Policy below.</p>
-                                        <a href="">Policy Description</a>
-                                    </div>
-                                </div> 
-                                <div>
-                                    <h6>Special Requests</h6>
-                                    <p>Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
-                                    <p>textinput</p>
-                                </div>
-                                <div>
-                                    <h6>Arrival Time</h6>
-                                    <div>
-                                        <img src="" alt="check icon">
-                                        <p>You can check in between 15:00 and 23:00</p>
-                                    </div>
-                                    <p>Estimated Arriva Time</p>
-                                    <p>Select Dropdown</p>
-                                    <p>*Time is for Toronto Timezone</p>
-                                </div>
+                            <div class="card mt-4">
+                                 {{> formContents/_additionalInfo}}
                             </div>
-                            <button type="button" class="button btn-primary next-button" id="button_s1">Next: Enter Payment ></button>
+                            <button type="button" class="button btn-primary next-button mt-4" id="button_s1">Next: Enter Payment ></button>
                         </div>
             
-                        
                         <div class="form-section hidden" id="section2">
-                            <div>
-                                <h1 class="text-justify mb-4 form-header-style">Enter your details</h1>
-                                <!-- Placeholder for Payment Fields, ensure they have the 'disabled' attribute by default -->
-                                <div>
-                                    <h6>Card Information</h6>
-                                    <div>
-                                        <input type="text" placeholder="Card Number" name="cardNumber" required disabled>
-                                        <div>
-                                            <p>textinput</p>
-                                            <p>textinput</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6>Billing Address</h6>
-                                    <p>textinput</p>
-                                    <div>
-                                        <p>textinput</p>
-                                        <p>textinput</p>
-                                    </div>
-                                    <p>selectDropDowninput</p>
-                                    <div>
-                                        <p>checkInput</p>
-                                        <p>Same as Guest Address</p>
-                                    </div>
-                                </div>
+                            <div class="card">
+                                {{> formContents/_paymentInfo}}
                             </div>
                             <div>
-                                <button type="button" class="button btn-primary next-button" id="button_s2_back">Back</button>
-                                <button type="button" class="button btn-primary next-button" id="button_s2">Next</button>
+                                <button type="button" class="button btn-primary next-button" id="button_s2_back">< Back</button>
+                                <button type="button" class="button btn-primary next-button" id="button_s2">Next: Review ></button>
                             </div>
                         </div>
                                                 
                         <div class="form-section hidden" id="section3">
                             <div class="card">
                                 <h1 class="text-justify mb-4 form-header-style">Review Information</h1>
+
                                 <div>
                                     <h6>Main Guest Details</h6>
-                                    <p>First Name: <span id="reviewFirstName"></span></p>
-                                    <p>Last Name: <span id="reviewLastName"></span></p>
-                                    <p>Email Address: <span id="reviewEmail"></span></p>
+                                    <p>First Name: <span id="reviewfirstName"></span></p>
+                                    <p>Last Name: <span id="reviewlastName"></span></p>
+                                    <p>Mobile Number: <span id="reviewmobileNumber"></span></p>
 
                                     <h6>Main Guest address</h6>
-                                    <p>Address: </p>
+                                    <p>Address: <span id="reviewaddress"></span></p>
                                     <div>
-                                        <p>City: </p>
-                                        <p>Postal Code: </p>
+                                        <p>City: <span id="reviewcity"></span></p>
+                                        <p>Postal Code: <span id="reviewpostalCode"></span></p>
                                     </div>
-                                    <p>Country: </p>
+                                    <p>Country: <span id="reviewCountry"></span></p>
                                 </div>
+
                                 <div>
                                     <h6>Additional info</h6>
-                                    <p>Special Request: </p>
-                                    <p>Arrival Time: </p>
+                                    <p>Special Request: <span id="reviewspecialRequest"></span></p>
+                                    <p>Arrival Time: <span id="reviewarrivalTimeRequest"></span></p>
                                 </div>
                                 <div>
                                     <h6>Payment info</h6>
-                                    <p>Card Number: <span id="reviewCardNumber"></span></p>
-                                    <p>type: Mastercard</p>
-                                    <p>Expiration Date: </p>
+                                    <p>Card Number: <span id="reviewcardNumber"></span></p>
+                                    {{!-- Code card type detection later --}}
+                                    <p>type: <span id="reviewarrivalcardType">Mastercard</span></p>
+                                    <p>Expiration Date: <span id="reviewarrivalTimeRequest"></span></p>
 
                                     <h6>Billing address</h6>
                                     <p>Same as guest address</p>
                                     <div>
-                                        <p>Address: </p>
+                                        <p>Address: <span id="reviewbillingAddress"></span></p>
                                         <div>
-                                            <p>City: </p>
-                                            <p>Postal Code: </p>
+                                            <p>City: <span id="reviewbillingCity"></span></p>
+                                            <p>Postal Code: <span id="reviewbillingPostalCode"></span></p>
                                         </div>
-                                        <p>Country: </p>
+                                        <p>Country: <span id="reviewbillingCountry"></span></p>
                                     </div>
                                 </div>
                                     <input type="hidden" name="loyaltyCheck" id="loyaltyCheck_DOM_El" value="unchecked">
@@ -163,8 +88,8 @@
                                 </div>
                             </div>
                             <div>
-                                <button type="button" class="button btn-primary next-button" id="btn_3Section_back">Back</button>
-                                <button type="submit" class="button btn-primary next-button" id="submitButton">Submit</button>
+                                <button type="button" class="button btn-primary next-button" id="btn_3Section_back">< Back</button>
+                                <button type="button" class="button btn-primary next-button" id="submitButton">COMPLETE RESERVATION</button>
                             </div>
                         </div>
                     </form>
@@ -180,14 +105,8 @@
                         {{!-- <div >
                             <h1 class="text-justify mb-4 form-header-style">Account Information</h1>
                             <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}Createaccount" method="post" name="crateaccount" id="createaccount">
-                                <div class="col-md-6">
-                                    <label for="inputName" class="form-label">First Name*</label>
-                                    <input type="text" class="form-control" aria-label="First name" id="inputName" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="inputAddress" class="form-label">Last Name*</label>
-                                    <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
-                                </div>
+
+
                                 <div class="mb-2">
                                     <label for="email" class="form-label">Email *</label>
                                     <input type="email" class="form-control" id="email" required autocomplete="on">

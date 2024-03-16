@@ -31,39 +31,77 @@ function nextSection(targetSection) {
     window.scrollTo(0,0);
     return true;
 }
-  
+
+// const firstName = document.querySelector('input[name="firstName"]').value;
+// document.getElementById('reviewFirstName').textContent = firstName;
 function populateReviewSection() {
-    // Fetch values from input fields
-    const firstName = document.querySelector('input[name="firstName"]').value;
-    const lastName = document.querySelector('input[name="lastName"]').value;
-    const email = document.querySelector('input[name="emailAddress"]').value;
-    const cardNumber = document.querySelector('input[name="cardNumber"]').value;
-    // Populate review placeholders
-    document.getElementById('reviewFirstName').textContent = firstName;
-    document.getElementById('reviewLastName').textContent = lastName;
-    document.getElementById('reviewEmail').textContent = email;
-    // For privacy, consider showing only the last 4 digits of the card number
-    document.getElementById('reviewCardNumber').textContent = `**** **** **** ${cardNumber.slice(-4)}`;
+    const allInputs = document.querySelectorAll('.form-section input');
+    allInputs.forEach(input => {
+        const textDomEl = document.getElementById(`review${input.name}`);
+        if(textDomEl){
+            if(input.name != "cardNumber" ){
+                if(input.value == "" || input.value == null){
+                    textDomEl.parentElement.style.display = 'none';
+                } else {
+                    textDomEl.parentElement.style.display = 'block';
+                    textDomEl.textContent = input.value;
+                }
+    
+            } else {
+                textDomEl.textContent = `**** **** **** ${(input.value).slice(-4)}`;
+            }
+        }
+    });
+}
+
+const clearInput = (input) => {
+    if(input.classList.contains('is-valid')){
+        input.classList.remove('is-valid');
+    }
+    if(input.classList.contains('is-invalid')){
+        input.classList.remove('is-invalid');
+    }
 }
 
 function validateCurrentSection(sectionNumber) {
     const section = document.getElementById(`section${sectionNumber}`);
     let isValid = true;
     let inputs = [];
-    
+    let selects = [];
+
     if(section){
-        inputs = [...(section.querySelectorAll('input:required'))]
+        inputs = [...(section.querySelectorAll('input:required'))];
+        selects = [...(section.querySelectorAll('select:required'))];
     }
   
     inputs.forEach(input => {
       // Check validity
       if (!input.checkValidity()) {
         isValid = false;
+        clearInput(input);
+        input.classList.add('is-invalid');
         // Trigger the browser's default invalid feedback
         input.reportValidity();
+      } else {
+        clearInput(input);
+        input.classList.add('is-valid');
       }
     });
   
+    selects.forEach(select => {
+        // Check validity
+        const defaultValue = select.options[0].innerText;
+        if(defaultValue === select.value){
+            isValid = false;
+            clearInput(select);
+            select.classList.add('is-invalid');
+            // select.reportValidity(); // Does nothing since select will always have a value
+        } else {
+            clearInput(select);
+            select.classList.add('is-valid');
+        }
+    });
+
     return isValid;
 }
 
@@ -72,9 +110,60 @@ function finalStepBeforeSubmit() {
     const allInputs = document.querySelectorAll('.form-section input');
     allInputs.forEach(input => input.disabled = false);
     
-    document.getElementById('reservationForm').setAttribute('novalidate', '');
+    const form = document.getElementById('reservationForm');
+
+    if(form){
+        form.setAttribute('novalidate', '');
+        const formData = new FormData(form);
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        fetch('/createReservation', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // alert(data.message); // Show success message
+                // form.reset(); // Reset form to clear fields
+                // Then redirect with swal 9replace alert messages)
+                Swal.fire({
+                    title: 'Reservation Created!',
+                    text: data.message??'Your Date is booked!.',
+                    icon: 'success',
+                    confirmButtonText: 'Cool'
+                  }).then((result) => {
+                    if (result.value || result.dismiss) {
+                      form.reset(); 
+                      window.location.href = '/reservations';
+                    }
+                  });
+            } else {
+                Swal.fire({
+                    title: "Something went wrong!",
+                    text: data.message??"please try again",
+                    icon: "error"
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    } else {
+        Swal.fire({
+            title: "Something went wrong!",
+            text: "please try again",
+            icon: "error"
+        });
+    }
+    
 }
 
+
+
+// Our Executed code
 document.addEventListener("DOMContentLoaded", function(e) {
     
     const btn_1Section = document.getElementById('button_s1');
@@ -92,10 +181,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
             page++;
             if(!nextSection(page)){
                 page--;
-            } else {
-                // headerTitleText.innerText = headerTitles[page-1];
-                // updateProgress(page);
-            }
+            } 
         })
     }
 
@@ -104,10 +190,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
             page++;
             if(!nextSection(page)){
                 page--;
-            } else {
-                // headerTitleText.innerText = headerTitles[page-1];
-                // updateProgress(page);
-            }
+            } 
         })
     }
 
@@ -127,6 +210,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
     if(submit_button){
         submit_button.addEventListener('click', finalStepBeforeSubmit);
-    }
+    }     
 
 });

@@ -165,6 +165,10 @@ h1.form-header-style{
     .breadCrumbs-container {
         width: 90%;
     }
+
+    .next-button {
+        width: 100%;
+    }
 }
 
 

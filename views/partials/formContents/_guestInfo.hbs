@@ -1,0 +1,75 @@
+<h1 class="text-justify mb-4 form-header-style">Enter your details</h1>
+<div>
+    <h6 class="form-content-h6-style">Who are you booking for?</h6> 
+    {{!-- Add javascript later for Radio Buttons --}}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox1" value="yes" checked>
+            <label class="form-check-label" for="isMainGuestcheckBox1">
+                I am the main guest
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox2" value="no">
+            <label class="form-check-label" for="isMainGuestcheckBox2">
+                booking is for someone else
+            </label>
+        </div>
+</div>
+<div class="mt-2">
+    <h6 class="form-content-h6-style mt-4">Main Guest Details</h6> 
+    <div class="row">
+        <div class="col-md-6">
+            <label for="inputfirstName" class="form-label">First Name*</label>
+            <input type="text" name="firstName" class="form-control" aria-label="First name" id="inputfirstName" required>
+            <div class="invalid-feedback">
+                Please enter your firstname
+            </div>
+        </div>
+        <div class="col-md-6 mt-2">
+            <label for="inputLastName" class="form-label">Last Name*</label>
+            <input type="text" name="lastName" class="form-control" aria-label="Last name" id="inputLastName" required>
+            <div class="invalid-feedback">
+                Please enter your lastname
+            </div>
+        </div>
+        <div class="mb-2">
+            <label for="inputMobileNumber" class="form-label">Mobile Number</label>
+            <input type="tel"  name="mobileNumber" class="form-control" aria-label="Mobile Number" id="inputMobileNumber">
+            <div class="invalid-feedback">
+                Please enter your mobile Number
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <h6 class="form-content-h6-style mt-4">Main Guest Address</h6> 
+
+    <div class="mb-2">
+        <label for="inputAddress" class="form-label">Address *</label>
+        <input type="text"  name="address" class="form-control" aria-label="Mobile Number" id="inputAddress" required>
+        <div class="invalid-feedback">
+            Please enter your Address
+        </div>
+    </div>
+
+    <div class="row mb-2 mt-2">
+        <div class="col-md-6">
+            <label for="inputCity" class="form-label">City *</label>
+            <input type="text" name="city" class="form-control" aria-label="City" id="inputCity" required>
+            <div class="invalid-feedback">
+                Please enter your City
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="inputPostalCode" class="form-label">Postal Code *</label>
+            <input type="text" name="postalCode" class="form-control" aria-label="Postal Code" id="inputPostalCode" required>
+            <div class="invalid-feedback">
+                Please enter your Postal Code
+            </div>
+        </div>
+    </div>
+
+    {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true}}
+    
+
+</div>
