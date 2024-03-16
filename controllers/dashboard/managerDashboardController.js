@@ -77,8 +77,8 @@ exports.viewOffers = async (req, res) => {
                 }
             ]
         },
-        headerTitle:"Find User Accounts",
-        placeholder:"Search for a User"
+        headerTitle:"Find Offers",
+        placeholder:"Search for an Offer"
     }); 
 }
 
@@ -143,7 +143,7 @@ exports.viewRooms = async (req, res) => {
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
-        title:'View Reservations',
+        title:'View Rooms',
         partialsCSS: [
             {name:"h1styled.css"},
             {name:"search.css"},
@@ -153,66 +153,45 @@ exports.viewRooms = async (req, res) => {
             {src:"/js/searchControl.js"},
         ],
         searchOptionsList: [
-            {id:"accountID", label:"Account ID"},
-            {id:"lastName", label:"Last Name"},
-            {id:"firstName", label: "First Name"},
-            {id:"createdOn", label: "Created On"}
+            {id:"roomID", label:"Room ID"},
+            {id:"roomType", label:"Room Type"},
+            {id:"bedType", label: "Bed Type"},
+            {id:"totalRooms", label: "Total Rooms"}
         ],
-        searchControlUrl: "/dashboard/USNVMQD493/users",
+        searchControlUrl: "/dashboard/manager/rooms",
         results: [
             {
-                accountID: "SDF4HN",
-                createdOn: "March 16, 2024 Fri",
-                firstName: "Gary",
-                lastName: "Lee",
-                isVerified: "true",
-                status: "active",
-                userType: "Guest",
-                action1: "Edit",
-                action2: "Permissions",
-                action3: "Delete"
+                roomID: "FFE4rtregdf",
+                roomType: "Budget Single",
+                bedType: "Single",
+                totalRooms: "23",
+                totaloccupied: "21",
+                action1: "Edit"
             },
             {
-                accountID: "DSADASDS",
-                createdOn: "March 16, 2024 Fri",
-                firstName: "Dean",
-                lastName: "Marsano",
-                isVerified: "true",
-                status: "active",
-                userType: "Manager",
-                action1: "Edit",
-                action2: "Permissions",
-                action3: "Delete"
+                roomID: "asdasdsdad",
+                roomType: "Deluxe",
+                bedType: "Queen",
+                totalRooms: "13",
+                totaloccupied: "5",
+                action1: "Edit"
             }
         ],
         tableOptions: {
             columns: [
-                {resultName:"accountID", label:"Accound I.D.", isRow: true},
-                {resultName:"createdOn", label:"Created On"},
-                {resultName:"firstName", label:"First Name"},
-                {resultName:"lastName", label:"Last Name"},
-                {resultName:"status", label:"Status"},
-                {resultName:"isVerified", label:"Verified"},
-                {resultName:"userType", label:"User Type"},
+                {resultName:"roomID", label:"Room I.D.", isRow: true},
+                {resultName:"roomType", label:"Room Type"},
+                {resultName:"bedType", label:"Bed Type"},
+                {resultName:"totalRooms", label:"Total Rooms"},
+                {resultName:"totaloccupied", label:"Total Occupied"},
                 {resultName:"action1", label:"Action", 
                     isButton: { 
                         classNames: [{classname:"btn-tab-lightblue", name: "Edit"}],
                     }
-                },
-                {resultName:"action2", label:"Action", 
-                    isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Permissions"}],
-                    }
-                },
-                ,
-                {resultName:"action3", label:"Action", 
-                    isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Delete"}],
-                    }
                 }
             ]
         },
-        headerTitle:"Find User Accounts",
-        placeholder:"Search for a User"
+        headerTitle:"Find Room Details",
+        placeholder:"Search for a Room"
     }); 
 }
