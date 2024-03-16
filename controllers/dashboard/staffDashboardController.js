@@ -19,9 +19,9 @@ exports.loadStaffDashboard = async (req, res) => {
             emailAddress: "shawnam@gmail.com"
         },
         buttonData: [
-            {name:"Respond to Inquiries",url:""},
-            {name:"Browse Reservations",url:""},
-            {name:"Create Reservation",url:""}
+            {name:"Respond to Inquiries",url:"/dashboard/staff/inquiries"},
+            {name:"Browse Reservations",url:"/dashboard/staff/viewReservations"},
+            {name:"Create Reservation",url:"/dashboard/staff/createReservations"}
         ]
     }); 
 }

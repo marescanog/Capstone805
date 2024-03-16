@@ -11,9 +11,9 @@ const managerRouter = express.Router();
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
 staffRouter.route('/viewReservations').get(viewStaffReservations);
-staffRouter.route('/edit/:id').get(editStaffAccount);
-staffRouter.route('/changePassword/:id').get(editStaffPassword);
-staffRouter.route('/updatePhoto/:id').get(updateStaffPhoto);
+staffRouter.route('/edit').get(editStaffAccount);
+staffRouter.route('/changePassword').get(editStaffPassword);
+staffRouter.route('/updatePhoto').get(updateStaffPhoto);
 staffRouter.route('/createReservations').get(createReservations);
 staffRouter.route('/inquiries').get(viewInquiries);
 staffRouter.route('/checkin').get(checkin);
