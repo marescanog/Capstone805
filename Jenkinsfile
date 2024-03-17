@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-
-
     stages {
         stage('Clean Workspace') {
             steps {
@@ -18,7 +16,7 @@ pipeline {
 
         stage('Use Node.js') {
             tools {
-                nodejs = '18.16.0'
+                nodejs '18.16.0'
             }
         }
 
