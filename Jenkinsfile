@@ -83,7 +83,7 @@ pipeline {
             echo 'Sending Test results.'
             script {
                 env.ARTIFACT_URL = "${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml"
-                slackSend(channel: '#your-channel', message: "Here is the link to the test results: ${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml")
+                slackSend(channel: '#jenkinscicd', message: "Here is the link to the test results: ${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml")
             }
             echo 'Pipeline execution completed.'
         }
