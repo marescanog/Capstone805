@@ -56,13 +56,12 @@ pipeline {
             steps {
                 script {
                     // Read the XML file
-                    def jestResults = readXML file: 'test_results/jest_results.xml'
-                    
-                    // Example: Extracting some information
-                    // This part highly depends on the structure of your jest_results.xml
-                    // Let's assume we want to count the number of tests
-                    def totalTests = jestResults.testsuite.'@tests'.text()
-                    def failedTests = jestResults.testsuite.'@failures'.text()
+                    def jestResults  = readFile 'test_results/jest_results.xml'
+                    // Parse XML
+                    def parsedXml = new XmlSlurper().parseText(jestResults);
+
+                    def totalTests = parsedXml.'@tests'
+                    def failedTests = jparsedXml.'@failures'
 
                     // Construct the message
                     def message = "Total Tests: ${totalTests}, Failed Tests: ${failedTests}"
