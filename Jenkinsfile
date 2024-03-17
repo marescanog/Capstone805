@@ -25,12 +25,18 @@ pipeline {
         }
 
         stage('Create .env') {
-            steps {
-                sh '''
-                echo DATABASE=${DATABASE} > .env
-                echo DATABASE_USERNAME=${DATABASE_USERNAME} >> .env
-                echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
-                '''
+           steps {
+                withCredentials([
+                    string(credentialsId: 'DATABASE', variable: 'DATABASE'),
+                    string(credentialsId: 'DATABASE_USERNAME', variable: 'DATABASE_USERNAME'),
+                    string(credentialsId: 'DATABASE_PASSWORD', variable: 'DATABASE_PASSWORD')
+                ]) {
+                    sh '''
+                    echo DATABASE=${DATABASE} > .env
+                    echo DATABASE_USERNAME=${DATABASE_USERNAME} >> .env
+                    echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
+                    '''
+                }
             }
         }
 
