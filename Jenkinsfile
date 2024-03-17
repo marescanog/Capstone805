@@ -58,13 +58,9 @@ pipeline {
                     // Specify the path to the jest_results.xml file
                     def jestResultsPath = 'test_results/jest_results.xml'
                     
-                    // Extract the total number of tests
+                    // Extract the totalTests, totalFailures and total errors
                     def totalTests = sh(script: "xmllint --xpath 'string(//testsuites/@tests)' ${jestResultsPath}", returnStdout: true).trim()
-                    
-                    // Extract the total number of failures
                     def totalFailures = sh(script: "xmllint --xpath 'string(//testsuites/@failures)' ${jestResultsPath}", returnStdout: true).trim()
-                    
-                    // Extract the total number of errors
                     def totalErrors = sh(script: "xmllint --xpath 'string(//testsuites/@errors)' ${jestResultsPath}", returnStdout: true).trim()
                     
                     // Construct the message to include tests, failures, and errors
@@ -86,6 +82,13 @@ pipeline {
             slackSend channel: '#jenkinscicd',
                 color: COLOR_MAP[currentBuild.currentResult],
                 message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+            echo 'Archiving test results'
+            archiveArtifacts artifacts: 'test_results/jest_results.xml', onlyIfSuccessful: true
+            echo 'Sending Test results.'
+            script {
+                env.ARTIFACT_URL = "${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml"
+                slackSend(channel: '#your-channel', message: "Here is the link to the test results: ${env.ARTIFACT_URL}")
+            }
             echo 'Pipeline execution completed.'
         }
     }
