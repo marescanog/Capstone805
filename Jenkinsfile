@@ -51,25 +51,25 @@ pipeline {
                 sh 'npm test'
             }
         }
-    }
 
-    stage('Parse and Send Test Results') {
-        steps {
-            script {
-                // Read the XML file
-                def jestResults = readXML file: 'test_results/jest_results.xml'
-                
-                // Example: Extracting some information
-                // This part highly depends on the structure of your jest_results.xml
-                // Let's assume we want to count the number of tests
-                def totalTests = jestResults.testsuite.'@tests'.text()
-                def failedTests = jestResults.testsuite.'@failures'.text()
+        stage('Parse and Send Test Results') {
+            steps {
+                script {
+                    // Read the XML file
+                    def jestResults = readXML file: 'test_results/jest_results.xml'
+                    
+                    // Example: Extracting some information
+                    // This part highly depends on the structure of your jest_results.xml
+                    // Let's assume we want to count the number of tests
+                    def totalTests = jestResults.testsuite.'@tests'.text()
+                    def failedTests = jestResults.testsuite.'@failures'.text()
 
-                // Construct the message
-                def message = "Total Tests: ${totalTests}, Failed Tests: ${failedTests}"
-                
-                // Send the message to Slack
-                slackSend(channel: '#jenkinscicd', message: message)
+                    // Construct the message
+                    def message = "Total Tests: ${totalTests}, Failed Tests: ${failedTests}"
+                    
+                    // Send the message to Slack
+                    slackSend(channel: '#jenkinscicd', message: message)
+                }
             }
         }
     }
