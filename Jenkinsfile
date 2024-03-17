@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'NodeJS 18.16.0'
+    }
+
     stages {
         stage('Clean Workspace') {
             steps {
@@ -11,12 +15,6 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git(branch: 'jenkins-jest', url: 'https://github.com/marescanog/Capstone805.git')
-            }
-        }
-
-        stage('Use Node.js') {
-            tools {
-                nodejs 'NodeJS 18.16.0'
             }
         }
 
