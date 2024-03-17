@@ -1,11 +1,59 @@
-<div class="row">
-	<main class="col-md-12">
+<main>
+	<div class="container">
 
 		<!-- Start your code here -->
 		<h1>Hotel Website Home page</h1>
+		<section class="lazy slider" data-sizes="50vw">
+			<div>
+				<img data-lazy="http://placehold.it/350x300?text=1-350w"
+					data-srcset="http://placehold.it/650x300?text=1-650w 650w, http://placehold.it/960x300?text=1-960w 960w"
+					data-sizes="100vw">
+			</div>
+			<div>
+				<img data-lazy="http://placehold.it/350x300?text=2-350w"
+					data-srcset="http://placehold.it/650x300?text=2-650w 650w, http://placehold.it/960x300?text=2-960w 960w"
+					data-sizes="100vw">
+			</div>
+			<div>
+				<img data-lazy="http://placehold.it/350x300?text=3-350w"
+					data-srcset="http://placehold.it/650x300?text=3-650w 650w, http://placehold.it/960x300?text=3-960w 960w"
+					data-sizes="100vw">
+			</div>
+			<div>
+				<img data-lazy="http://placehold.it/350x300?text=4-350w"
+					data-srcset="http://placehold.it/650x300?text=4-650w 650w, http://placehold.it/960x300?text=4-960w 960w"
+					data-sizes="100vw">
+			</div>
+			<div>
+				<img data-lazy="http://placehold.it/350x300?text=5-350w"
+					data-srcset="http://placehold.it/650x300?text=5-650w 650w, http://placehold.it/960x300?text=5-960w 960w"
+					data-sizes="100vw">
+			</div>
+			<div>
+				<!-- this slide should inherit the sizes attr from the parent slider -->
+				<img data-lazy="http://placehold.it/350x300?text=6-350w"
+					data-srcset="http://placehold.it/650x300?text=6-650w 650w, http://placehold.it/960x300?text=6-960w 960w">
+			</div>
+		</section>
 
 		<div class="box-shadow" style="height: 400px; width:400px; border:1px solid black;"></div>
-		
-		<!-- End your code here  -->
-	</main>
-</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).on('ready', function () {
+			$(".vertical-center-4").slick({
+				dots: true,
+				vertical: true,
+				centerMode: true,
+				slidesToShow: 4,
+				slidesToScroll: 2
+			});
+			$(".lazy").slick({
+				lazyLoad: 'ondemand', // ondemand progressive anticipated
+				dots: true,
+				infinite: true
+			});
+		});
+	</script>
+	<!-- End your code here  -->
+</main>
