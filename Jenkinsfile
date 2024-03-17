@@ -55,19 +55,24 @@ pipeline {
         stage('Parse and Send Test Results') {
             steps {
                 script {
-                    // Read the XML file
-                    def jestResults  = readFile 'test_results/jest_results.xml'
-                    // Parse XML
-                    def parsedXml = new XmlSlurper().parseText(jestResults);
-
-                    def totalTests = parsedXml.'@tests'
-                    def failedTests = jparsedXml.'@failures'
-
-                    // Construct the message
-                    def message = "Total Tests: ${totalTests}, Failed Tests: ${failedTests}"
+                    // Specify the path to the jest_results.xml file
+                    def jestResultsPath = 'test_results/jest_results.xml'
+                    
+                    // Extract the total number of tests
+                    def totalTests = sh(script: "xmllint --xpath 'string(//testsuites/@tests)' ${jestResultsPath}", returnStdout: true).trim()
+                    
+                    // Extract the total number of failures
+                    def totalFailures = sh(script: "xmllint --xpath 'string(//testsuites/@failures)' ${jestResultsPath}", returnStdout: true).trim()
+                    
+                    // Extract the total number of errors
+                    def totalErrors = sh(script: "xmllint --xpath 'string(//testsuites/@errors)' ${jestResultsPath}", returnStdout: true).trim()
+                    
+                    // Construct the message to include tests, failures, and errors
+                    def message = "Test Results: Total Tests: ${totalTests}, Failures: ${totalFailures}, Errors: ${totalErrors}"
                     
                     // Send the message to Slack
                     slackSend(channel: '#jenkinscicd', message: message)
+
                 }
             }
         }
