@@ -16,7 +16,7 @@ pipeline {
 
         stage('Use Node.js') {
             tools {
-                'NodeJS 18.16.0'
+                nodejs 'NodeJS 18.16.0'
             }
         }
 
