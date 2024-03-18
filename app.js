@@ -186,6 +186,7 @@ app.get("/roomdetails", (req, res) => {
     });  
 })
 
+// DELETE this route LATER SINCE ROUTE IS NOW /dashboard/guest/sdf
 app.get("/userdashboard", (req, res) => {
     res.render( "pages/hotelguest/userdashboard", {
         layout:"main", 
