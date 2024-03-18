@@ -7,15 +7,21 @@ pipeline {
 
     stages {
         stage('Echo 1') {
-            echo " stage 1"
+            steps {
+                echo " stage 1"
+            }
         }
 
         stage('Echo 2') {
-            echo " stage 2"
+              steps {
+                echo " stage 1"
+            }
         }
 
         stage('Echo 3') {
-            echo " stage 3"
+              steps {
+                echo " stage 1"
+            }
         }
       
     }
