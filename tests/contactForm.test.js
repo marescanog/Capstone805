@@ -23,11 +23,12 @@ describe('GET /api/v1/contactFormSubmissions/:id', () => {
       expect(response.body).toEqual(expectedResult);
     }, 10000);
   
-    // it('should return a 404 for a form that does not exist', async () => {
-    //   const contactFormID = 9999; 
-    //   const response = await request(app).get(`/api/v1/contactFormSubmissions/${contactFormID}`);
-    //   expect(response.statusCode).toBe(404);
-    // });
+    // hello
+    it('should return a 404 for a form that does not exist', async () => {
+      const contactFormID = 9999; 
+      const response = await request(app).get(`/api/v1/contactFormSubmissions/${contactFormID}`);
+      expect(response.statusCode).toBe(404);
+    });
 
     // testing it out
 });
