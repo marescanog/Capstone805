@@ -1,8 +1,3 @@
-def COLOR_MAP = [
-    'SUCCESS': 'good',
-    'FAILURE': 'danger'
-]
-
 pipeline {
     agent any
 
@@ -11,80 +6,23 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
+        stage('Echo 1') {
+            echo " stage 1"
         }
 
-        stage('Clone Repository') {
-            steps {
-                git(branch: 'jenkins-jest', url: 'https://github.com/marescanog/Capstone805.git')
-            }
+        stage('Echo 2') {
+            echo " stage 2"
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
+        stage('Echo 3') {
+            echo " stage 3"
         }
-
-        stage('Create .env') {
-           steps {
-                withCredentials([
-                    string(credentialsId: 'DATABASE', variable: 'DATABASE'),
-                    string(credentialsId: 'DATABASE_USERNAME', variable: 'DATABASE_USERNAME'),
-                    string(credentialsId: 'DATABASE_PASSWORD', variable: 'DATABASE_PASSWORD')
-                ]) {
-                    sh '''
-                    echo DATABASE=${DATABASE} > .env
-                    echo DATABASE_USERNAME=${DATABASE_USERNAME} >> .env
-                    echo DATABASE_PASSWORD=${DATABASE_PASSWORD} >> .env
-                    '''
-                }
-            }
-        }
-
-        stage('Run Server & Test') {
-            steps {
-                // Starts the Express server & runs tests using Jest
-                sh 'npm test'
-            }
-        }
+      
     }
 
     post {
         // What to do after the pipeline has finished
         always {
-            junit 'test_results/jest_results.xml'
-            echo 'Slack Notofications.'
-            slackSend channel: '#jenkinscicd',
-                color: COLOR_MAP[currentBuild.currentResult],
-                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
-            echo 'Sending test results summary'
-            script {
-                // Specify the path to the jest_results.xml file
-                def jestResultsPath = 'test_results/jest_results.xml'
-                
-                // Extract the totalTests, totalFailures and total errors
-                def totalTests = sh(script: "xmllint --xpath 'string(//testsuites/@tests)' ${jestResultsPath}", returnStdout: true).trim()
-                def totalFailures = sh(script: "xmllint --xpath 'string(//testsuites/@failures)' ${jestResultsPath}", returnStdout: true).trim()
-                def totalErrors = sh(script: "xmllint --xpath 'string(//testsuites/@errors)' ${jestResultsPath}", returnStdout: true).trim()
-                
-                // Construct the message to include tests, failures, and errors
-                def message = "Test Results: Total Tests: ${totalTests}, Failures: ${totalFailures}, Errors: ${totalErrors}"
-                
-                // Send the message to Slack
-                slackSend(channel: '#jenkinscicd', message: message)
-
-            }
-            echo 'Archiving test results'
-            archiveArtifacts artifacts: 'test_results/jest_results.xml'
-            echo 'Sending Test results.'
-            script {
-                env.ARTIFACT_URL = "${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml"
-                slackSend(channel: '#jenkinscicd', message: "Here is the link to the test results: ${env.JENKINS_URL}job/${env.JOB_NAME}/${env.BUILD_NUMBER}/artifact/test_results/jest_results.xml")
-            }
             echo 'Pipeline execution completed.'
         }
     }
