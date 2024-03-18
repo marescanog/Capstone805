@@ -3,10 +3,23 @@ const Guest = require('../models/guestModel.js');
 const {Types} = mongoose;
 
 exports.getAllGuests = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The getAllGuests route is not yet defined!'
-    });
+    try {
+        // Query the database to fetch all guest records
+        const guests = await Guest.find();
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                guests
+            }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal server error'
+        });
+    }
 }
 
 exports.getGuestById = async (req, res) => {
