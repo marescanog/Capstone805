@@ -1,5 +1,5 @@
 def COLOR_MAP = [
-    'SUCESS': 'good',
+    'SUCCESS': 'good',
     'FAILURE': 'danger'
 ]
 
