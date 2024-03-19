@@ -32,3 +32,12 @@ describe('GET /api/v1/contactFormSubmissions/:id', () => {
 
     // testing it out-asjoidjasjdioasjdisa
 });
+
+
+describe('GET /api/v1/contactFormSubmissions', () => {
+  it('should return an array of contact forms', async () => {
+    const response = await request(app).get(`/api/v1/contactFormSubmissions`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBeInstanceOf(Array);
+  }, 10000);
+});
