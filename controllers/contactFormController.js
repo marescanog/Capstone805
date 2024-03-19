@@ -5,7 +5,7 @@ const {Types} = mongoose;
 exports.getAllUnregisteredContactForms = async (req, res) => {
     try {
         
-        const unregisteredForms = await ContactForm.find({ isRegistered: false });
+        const unregisteredForms = await ContactForm.find({});
 
      if (!unregisteredForms || unregisteredForms.length === 0) {
             return res.status(404).json({
@@ -14,10 +14,7 @@ exports.getAllUnregisteredContactForms = async (req, res) => {
             });
         }
 
-        res.json({
-            status: 'success',
-            data: unregisteredForms
-        });
+        res.status(200).json(unregisteredForms);
    }catch(err){
     res.status(500).json({
         status: 'error',
