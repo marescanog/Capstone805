@@ -10,6 +10,7 @@ const roomRouter = require('./routes/roomRoutes');
 const contactFormRouter = require('./routes/contactFormRoutes');
 const renderDashboardRouter = require('./routes/renderDashboardRoutes');
 const checkoutRouter = require('./routes/checkoutRoutes');
+const guestRooms = require('./routes/guestRoomRoutes');
 // const createAccount = require('./routes/createaccount');
 // const roomDetails = require('./routes/roomdetails');
 // const userDashboard = require('./routes/userdashboard');
@@ -115,6 +116,9 @@ app.get("/", (req, res) => {
 app.get("/home", (req, res) => {
     res.render("pages/public/home",{layout:"main"});
 });
+app.get("/guestrooms", (req, res) => {   
+    res.render("pages/hotelguest/guestrooms");  // renders roomdetails
+})
 
 app.get("/about", (req, res) => {
     const memberData = [
@@ -153,9 +157,9 @@ app.get("/about", (req, res) => {
     });
 });
 
-app.get("/guestrooms", (req, res) => {
-    renderAllRooms(req, res);
-});
+// app.get("/guestrooms", (req, res) => {
+//     renderAllRooms(req, res);
+// });
 
 app.get("/restaurant", (req, res) => {
     res.render("pages/public/restaurant",{layout:"main"});
@@ -416,7 +420,8 @@ app.use('/api/v1/reservations', reservationRouter);
 app.use('/api/v1/rooms', roomRouter);
 app.use('/api/v1/contactFormSubmissions', contactFormRouter);
 app.use('/dashboard', renderDashboardRouter);
-app.use('/checkout', checkoutRouter)
+app.use('/checkout', checkoutRouter);
+app.use('/guestrooms',guestRooms);
 // app.use('/createaccount', createAccount);
 // app.use('/roomdetails', roomDetails);
 // app.use('/userdashboard', userDashboard);
