@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const {Types} = mongoose;
 
 describe('GET /api/v1/guests/:id', () => {
-    it('should return an employee for a given id', async () => {
+    it('should return a guest for a given id', async () => {
       const userID = '65edeb166f77f37cbaec2fcc'; 
 
-      const expectedResult = [{
+      const expectedResult = {
         _id: userID,
         emailAddress: "ptume6@mailsac.com",
-        keyWord: "$2a$12$tCu2TInrDf0E/U..7w.96O7XRdi/uPpRAlOTVI6eAlC8etZQXFJFq",
-        keyGen: "NOXEOZTKUL",
+        // keyWord: "$2a$12$tCu2TInrDf0E/U..7w.96O7XRdi/uPpRAlOTVI6eAlC8etZQXFJFq",
+        // keyGen: "NOXEOZTKUL",
         firstName: "Pepi",
         lastName: "Tume",
         mobileNumber: "210-879-2191",
@@ -29,11 +29,11 @@ describe('GET /api/v1/guests/:id', () => {
         formSubmissions: [],
         loyaltyHistory: [],
         __v:0
-      }];
+      };
   
       const response = await request(app).get(`/api/v1/guests/${userID}`);
-      // expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual(expectedResult);
+      expect(response.statusCode).toBe(200);
+      expect(response.body.data.guest).toEqual(expectedResult);
     }, 10000);
   
     // it('should return a 404 for a form that does not exist', async () => {
@@ -48,7 +48,7 @@ describe('GET /api/v1/guests/:id', () => {
 describe('GET /api/v1/guests', () => {
     it('should return an array of employees', async () => {
       const response = await request(app).get(`/api/v1/guests`);
-      // expect(response.statusCode).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
+      expect(response.statusCode).toBe(200);
+      expect(response.body.data.guests).toBeInstanceOf(Array);
     }, 10000);
 });
