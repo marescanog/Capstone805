@@ -1,4 +1,55 @@
-<div class="py-5">
+<style>
+    .content-contain {
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+    .profile-pic {
+        margin-top: 20px;
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+    }
+
+    .update_card {
+        background-color: #ffecc8;
+        /*  width: fit-content; */
+    }
+
+    .user-info {
+        margin-top: 20px;
+    }
+
+    .user-info p {
+        margin-bottom: 5px;
+    }
+
+    .email-confirmed {
+        color: green;
+    }
+
+    button {
+        margin-top: 5%;
+    }
+
+    .Points {
+        font-weight: 800;
+        font-size: 20px;
+    }
+
+    .histories {
+        border: 1px solid #e45c31;
+        height: 60vh;
+        overflow: auto;
+
+    }
+
+    .histories h1 {
+        color: rgba(232, 143, 59, 1)
+    }
+</style>
+
+<div class="py-3">
     <div class="container content-contain">
         <div class="row">
             <!-- User Profile Section -->
@@ -18,66 +69,196 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="w-auto">
-                                <strong class="fs-1 ">Hello, John Doe</strong>
-                                <h1>History</h1>
+                                <strong class="fs-1 " style="color: rgba(232, 143, 59, 1)">Hello, John Doe</strong>
+                                <p><span style="font-size: 8px;">Joined in 2021</span> </p>
+                                <h1 style="font-weight: 800; font-size:20px;">History</h1>
                                 <hr class="mx-auto" style="border-color: #e45c31;">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div style="color: #e45c31;">
-                                <p>You earned</p>
-                                <p><span class="Points">1,200</span> points</p>
-                                <p> Unlock Your Rewards! Book now and redeem your points.</p> 
+                                <p style="font-weight: 700;">You earned</p>
+                                <p><span class="Points">1,200 Points</span> </p>
+                                <p> Unlock Your Rewards! Book now and redeem your points.</p>
                             </div>
                         </div>
                     </div>
 
 
-                    <form>
-                        <div class="row g-3">
-                            <div class="col">
-                                <label for="FirstName" class="form-label">First Name *</label>
-                                <input type="text" class="form-control" placeholder="First name" aria-label="First name"
-                                    required>
+                    <div class="histories">
+                        <div style="border-bottom: 1px solid rgba(232, 143, 59, 1);padding-left:10px;">
+                            <h1>January</h1>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
                             </div>
-                            <div class="col">
-                                <label for="LastName" class="form-label">Last Name *</label>
-                                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name"
-                                    required>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputPassword5" class="form-label">Mobile Number</label>
-                            <input type="password" id="inputPassword5" class="form-control"
-                                placeholder="Enter your number only" aria-describedby="passwordHelpBlock">
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputPassword5" class="form-label">Address *</label>
-                            <input type="password" id="inputPassword5" class="form-control" placeholder="Address"
-                                aria-describedby="passwordHelpBlock" required>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-                        <div class="col">
-                            <label for="City" class="form-label">City *</label>
-                            <input type="text" class="form-control" placeholder="City" aria-label="First name" required>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-                        <div class="col">
-                            <label for="postalCode" class="form-label">Postal Code *</label>
-                            <input type="text" class="form-control" placeholder="Postal Code" aria-label="Postal Code"
-                                required>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="inputState" class="form-label">Country?Region</label>
-                            <select id="inputState" class="form-select">
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn btn-outline-dark me-md-2" type="button">Cancel</button>
-                            <button class="btn save-btn" type="button">Save</button>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
                         </div>
-                    </form>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex"
+                            style="border-bottom: 1px solid rgba(232, 143, 59, 1);font-color:rgb(27, 26, 26);">
+                            <div style="margin-right:20px;padding:10px;">
+                                <img src="../../img/icons/general/toll_FILL0_wght400_GRAD0_opsz24 1.png" alt="">
+                            </div>
+                            <div style="width: 60%;">
+                                <p><span style="font-weight:700;">+366 points</span> <br>Earned from Your stay on Jan 3
+                                </p>
+                            </div>
+                            <div style="width: 20%;">
+                                <p><span>Jan 12</span> <br><span>9:42 AM</span></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
