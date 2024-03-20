@@ -1,3 +1,72 @@
 <div>
-    {{> _h1styled headerTitle="Edit Account"}}
+    <div class="container content-contain">
+        <div class="row">
+            <!-- User Profile Section -->
+            <div class="col-md-4 card update_card align-items-center">
+                <img src="../../../img/about/nishchal.png" class=" profile-pic">
+                <div class="user-info  text-center">
+                    <p><strong>Hotel Guest:</strong></p>
+                    <p>John Doe</p>
+                    <p>Address</p>
+                    <p>City, Postal Code, Country</p>
+                    <p>499-999-9999</p>
+                    <p class="email-confirmed">✓ Email Confirmed</p>
+                </div>
+            </div>
+            <div class="col-md-8 form-content ">
+                <div class="px-3">
+                    <div class="w-auto">
+                        <strong class="fs-1 ">Edit Account</strong>
+                        <hr class="mx-auto" style="border-color: #e45c31;">
+                    </div>
+
+                    <form>
+                        <div class="row g-3">
+                            <div class="col">
+                                <label for="FirstName" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" placeholder="First name" aria-label="First name"
+                                    required>
+                            </div>
+                            <div class="col">
+                                <label for="LastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword5" class="form-label">Mobile Number</label>
+                            <input type="password" id="inputPassword5" class="form-control"
+                                placeholder="Enter your number only" aria-describedby="passwordHelpBlock">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword5" class="form-label">Address *</label>
+                            <input type="password" id="inputPassword5" class="form-control" placeholder="Address"
+                                aria-describedby="passwordHelpBlock" required>
+                        </div>
+                        <div class="col">
+                            <label for="City" class="form-label">City *</label>
+                            <input type="text" class="form-control" placeholder="City" aria-label="First name" required>
+                        </div>
+                        <div class="col">
+                            <label for="postalCode" class="form-label">Postal Code *</label>
+                            <input type="text" class="form-control" placeholder="Postal Code" aria-label="Postal Code"
+                                required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="inputState" class="form-label">Country?Region</label>
+                            <select id="inputState" class="form-select">
+                                <option selected>Choose...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button class="btn btn-outline-dark me-md-2" type="button">Cancel</button>
+                            <button class="btn save-btn" type="button">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

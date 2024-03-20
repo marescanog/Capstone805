@@ -40,10 +40,13 @@
     ],
     "reporters": [
       "default",
-      ["jest-junit", {
-        "outputDirectory": "test_results",
-        "outputName": "jest_results.xml"
-      }]
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test_results",
+          "outputName": "jest_results.xml"
+        }
+      ]
     ]
   }
 }
