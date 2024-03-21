@@ -1,3 +1,155 @@
-<div>
+<style>
+    .nav-item .active {
+        background: transparent !important;
+        border: none;
+        border-radius: 0 !important;
+        border-bottom: 3px solid rgba(232, 143, 59, 1) !important;
+
+    }
+
+    .pills-btn {
+        color: rgba(72, 72, 72, 1) !important;
+        padding: 5px 0 5px 0 !important;
+        margin-right: 20px;
+    }
+
+    .reservation-list {
+        display: flex;
+    }
+
+    .reservation-list p {
+        line-height: 8px;
+        color: #383849;
+    }
+
+    .reservation-list img {
+        height: 100px;
+        width: 100px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .modify-btn {
+        color: #ffffff;
+        background-color: #f57a0e;
+        border-color: #f57a0e;
+        font-family: "Montserrat", sans-serif;
+        font-weight: bold;
+    }
+
+    .modify-btn:hover {
+        opacity: 0.6;
+        background-color: #f57a0e;
+        border-color: #f57a0e
+    }
+</style>
+<div class="container py-3" style="color: rgba(72, 72, 72, 1);">
     {{> _h1styled headerTitle="Reservations"}}
+    <div class="mt-3">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link pills-btn active" id="pills-upcoming-tab" data-bs-toggle="pill"
+                    data-bs-target="#pills-upcoming" type="button" role="tab" aria-controls="pills-upcoming"
+                    aria-selected="true">Upcoming</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link pills-btn" id="pills-profile-pastb" data-bs-toggle="pill"
+                    data-bs-target="#pills-past" type="button" role="tab" aria-controls="pills-past"
+                    aria-selected="false">Past</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-upcoming" role="tabpanel"
+                aria-labelledby="pills-upcoming-tab">
+                <div class="reservation-list">
+                    <div>
+                        <img src="../../assets/images/room1.jpg" alt="">
+                    </div>
+                    <div class="px-3">
+                        <h3>Deluxe Room</h3>
+                        <p> <strong>Check In: </strong> 28 Jan 2021
+                            <strong>Check Out:</strong> 31 Jan 2021
+                            <strong>Guests:</strong> 2 Adults
+                        </p>
+                        <p><strong>$239 CAD</strong></p>
+                        <p><strong>Resevation #</strong> ADD0888</p>
+                    </div>
+                    <div>
+                        <button class="btn modify-btn ">Modify Reservatiom</button>
+                    </div>
+                </div>
+                <div class="reservation-list">
+                    <div>
+                        <img src="../../assets/images/room1.jpg" alt="">
+                    </div>
+                    <div class="px-3">
+                        <h3>Deluxe Room</h3>
+                        <p> <strong>Check In: </strong> 28 Jan 2021
+                            <strong>Check Out:</strong> 31 Jan 2021
+                            <strong>Guests:</strong> 2 Adults
+                        </p>
+                        <p><strong>$239 CAD</strong></p>
+                        <p><strong>Resevation #</strong> ADD0888</p>
+                    </div>
+                    <div>
+                        <button class="btn modify-btn ">Modify Reservatiom</button>
+                    </div>
+                </div>
+                <div class="reservation-list">
+                    <div>
+                        <img src="../../assets/images/room1.jpg" alt="">
+                    </div>
+                    <div class="px-3">
+                        <h3>Deluxe Room</h3>
+                        <p> <strong>Check In: </strong> 28 Jan 2021
+                            <strong>Check Out:</strong> 31 Jan 2021
+                            <strong>Guests:</strong> 2 Adults
+                        </p>
+                        <p><strong>$239 CAD</strong></p>
+                        <p><strong>Resevation #</strong> ADD0888</p>
+                    </div>
+                    <div>
+                        <button class="btn modify-btn ">Modify Reservatiom</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-past" role="tabpanel" aria-labelledby="pills-profile-pastb">
+                <div class="reservation-list">
+                    <div>
+                        <img src="../../assets/images/room1.jpg" alt="">
+                    </div>
+                    <div class="px-3">
+                        <h3>Deluxe Room</h3>
+                        <p> <strong>Check In: </strong> 28 Jan 2021
+                            <strong>Check Out:</strong> 31 Jan 2021
+                            <strong>Guests:</strong> 2 Adults
+                        </p>
+                        <p><strong>$239 CAD</strong></p>
+                        <p><strong>Resevation #</strong> ADD0888</p>
+                    </div>
+                    <div>
+                        <button class="btn modify-btn ">View Detail</button>
+                    </div>
+                </div>
+                <div class="reservation-list">
+                    <div>
+                        <img src="../../assets/images/room1.jpg" alt="">
+                    </div>
+                    <div class="px-3">
+                        <h3>Deluxe Room</h3>
+                        <p> <strong>Check In: </strong> 28 Jan 2021
+                            <strong>Check Out:</strong> 31 Jan 2021
+                            <strong>Guests:</strong> 2 Adults
+                        </p>
+                        <p><strong>$239 CAD</strong></p>
+                        <p><strong>Resevation #</strong> ADD0888</p>
+                    </div>
+                    <div>
+                        <button class="btn modify-btn ">View Detail</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>

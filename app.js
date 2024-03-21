@@ -182,11 +182,25 @@ app.get("/createaccount", (req, res) => {
     });  
 })
 
+app.get("/editaccount", (req, res) => {
+    res.render( "pages/hotelguest/editAccount", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'edit account',
+    });  
+})
 app.get("/roomdetails", (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
         css: 'roomdetails.css', 
         title:'RoomDetails',
+    });  
+})
+app.get("/royaltyhistory", (req, res) => {
+    res.render( "pages/hotelguest/royaltyHistory", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'royalty History',
     });  
 })
 
