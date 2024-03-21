@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 const Guest = require('../models/guestModel.js');
 const {Types} = mongoose;
 
+exports.patchGuestAccountInfo = async (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The patchGuestAccountInfo route is not yet defined!'
+    });
+}
+
 exports.getAllGuests = async (req, res) => {
     try {
         // Query the database to fetch all guest records
