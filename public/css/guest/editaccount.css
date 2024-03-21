@@ -1,0 +1,46 @@
+.content-contain {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.profile-pic {
+    margin-top: 20px;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.update_card {
+    background-color: #ffecc8;
+    /*  width: fit-content; */
+}
+
+.user-info {
+    margin-top: 20px;
+}
+
+.user-info p {
+    margin-bottom: 5px;
+}
+
+.email-confirmed {
+    color: green;
+}
+
+.form-content {
+    padding-right: 5%;
+}
+
+.cancel-btn {
+    border: 1px solid #ccc;
+    color: #333;
+}
+
+.save-btn {
+    background-color: #e45c31;
+    color: white;
+    border-radius: 10px;
+}
+button {
+    margin-top: 5%;
+}
