@@ -3,6 +3,7 @@ const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard} = require('./../controllers/dashboard/dashboardController.js'); 
+const authController = require('./../controllers/authController.js');
 
 const renderDashboardRouter = express.Router();
 const staffRouter = express.Router();
@@ -22,7 +23,7 @@ staffRouter.route('/inquiries').get(viewInquiries);
 staffRouter.route('/checkin').get(checkin);
 staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')});
 staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')});
-staffRouter.route('/:id').get(loadStaffDashboard);
+staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard);
 
 
 

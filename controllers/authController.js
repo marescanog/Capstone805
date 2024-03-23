@@ -1,3 +1,4 @@
+const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Guest = require('../models/guestModel.js');
@@ -107,4 +108,59 @@ exports.loginGuest = catchAsync(async(req, res, next) => {
         status: 'success',
         token: token
     });
+})
+
+
+exports.protect = catchAsync(async(req, res, next)=>{
+    let token;
+    // 1.) Get token & check if it exists
+    if(req?.headers?.authorization && req.headers.authorization.startsWith('Bearer')){
+        token = req.headers.authorization.split(' ')[1];
+    }
+
+    if(!token){
+        if(process.env.NODE_ENV === 'development'){
+            return next(new AppError('You are not logged in! Please login to get access.', 401));
+        } else {
+            res.redirect('/');
+        }
+    }
+
+    // 2.) Validate token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+
+
+    req.decoded = decoded;
+
+    next();
+});
+
+exports.verifyEmployee = catchAsync(async(req, res, next)=>{
+
+    // 3.) Check if user still exists
+    const existing = await Employee.findById(req.decoded.id);
+
+    if(!existing){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
+
+    // 4.) Check if user changed password after route was issued
+    if(existing.changedPasswordAfter(req.decoded.iat)){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
+
+    req.user = existing;
+    // grant access to route
+    next();
+})
+
+exports.verifyGuest = catchAsync(async(req, res, next)=>{
+    // // 3.) Check if user still exists
+    // const existing = await Employee.findById(req.decoded.id);
+
+    // // 4.) Check if user changed password after route was issued
+    // console.log(existing)
+
+    // next();
 })
