@@ -199,8 +199,21 @@ const guestSchema = new mongoose.Schema({
     },
     reservations : [reservationSubschema],
     formSubmissions : [String],
-    loyaltyHistory: [String]
+    loyaltyHistory: [String],
+    passwordChangedAt: {
+        type: Date,
+        default: new Date()
+    },
 });
+
+// refactor later
+guestSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+    if(this.passwordChangedAt){
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
+}
 
 
 guestSchema.statics.getKeywordFromCandidate = async (candidatepass, keygen) => {
