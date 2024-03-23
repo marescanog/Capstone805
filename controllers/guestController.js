@@ -3,6 +3,7 @@ const Guest = require('../models/guestModel.js');
 const {Types} = mongoose;
 
 exports.patchGuestAccountInfo = async (req, res) => {
+    // edit address, firstname, lastname, mobile number
     res.status(500).json({
         status: 'error',
         message: 'The patchGuestAccountInfo route is not yet defined!'
