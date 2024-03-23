@@ -3,6 +3,8 @@ const exphbs = require("express-handlebars");
 var path = require("path");
 // const fs = require('fs');
 
+const AppError = require('./apiUtils/appError');
+const globalErrorHandler = require('./controllers/errorController')
 const reservationRouter = require('./routes/reservationRoutes');
 const guestRouter = require('./routes/guestRoutes');
 const employeeRouter = require('./routes/employeeRoutes');
@@ -446,8 +448,16 @@ app.use('/guestrooms',guestRooms);
 
 // 4 - No matching route
 app.use((req, res) => {
-    res.status(404).send("Page Not Found");
+    next(new AppError(`Page not Found!`, 404));
 });
+
+app.all('*',(req,res,next)=>{
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+
+// 5 - Global error Handling Middleware
+app.use(globalErrorHandler)
 
 module.exports = app;
 
