@@ -74,17 +74,23 @@ const offerSchema = new mongoose.Schema({
     }
 });
 
-// checks offer calendar implementation and compares it with current date
-// to see if offer is in effect
-offerSchema.methods.isOfferInEffect = function(currentDate){
-    // TODOS
-    let retVal = false;
-    if(this.offerCalendarImplementation.dateType == "season"){
-        retVal = true;
-    }
-    return  retVal;
+
+function isThisOfferInEffectOnThisDate(currentDate) {
+    return  this.offerCalendarImplementation.isCurrentDateWithinCalendarImplementation(
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        null,
+        currentDate
+    );
 }
+
+offerSchema.methods.isThisOfferInEffectOnThisDate = isThisOfferInEffectOnThisDate;
+
+
 
 const Offer = mongoose.model('offer', offerSchema);
 
-module.exports = Offer;
+module.exports = {Offer, isThisOfferInEffectOnThisDate};

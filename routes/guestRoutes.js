@@ -1,6 +1,6 @@
 const express = require('express');
 var app = express();
-const {getAllGuests, getGuestById} = require('./../controllers/guestController.js');
+const {getAllGuests, getGuestById, patchGuestAccountInfo} = require('./../controllers/guestController.js');
 const guestRouter = express.Router();
 
 guestRouter
@@ -9,6 +9,7 @@ guestRouter
 
 guestRouter
   .route('/:id')
-  .get(getGuestById);
+  .get(getGuestById)
+  .patch(patchGuestAccountInfo)
 
 module.exports = guestRouter;
