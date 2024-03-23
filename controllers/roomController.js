@@ -1,29 +1,34 @@
 const {Room, photoSubSchema, amenitySubSchema, promotionsSubSchema, offerSubSchema, holdSubSchema} = require('./../models/roomModel');
+const catchAsync = require('./../apiUtils/catchAsync');
 
 exports.createRoom = async (req, res) => {
-    try{
+    res.status(500).json({
+        status: 'error',
+        message: 'The createRoom route is not yet defined!'
+    });
+    // try{
 
-        const newRoom = await Room.create({
-            ...req.body,
-            "basePhotos":[],
-            "baseAmenities":[],
-            "offer":[],
-            "hold":[]
-        });
+    //     const newRoom = await Room.create({
+    //         ...req.body,
+    //         "basePhotos":[],
+    //         "baseAmenities":[],
+    //         "offer":[],
+    //         "hold":[]
+    //     });
         
-        res.status(201).json({
-            status: 'success',
-            data:{
-                room: newRoom
-            }
-        });
+    //     res.status(201).json({
+    //         status: 'success',
+    //         data:{
+    //             room: newRoom
+    //         }
+    //     });
 
-    }catch(err){
-        res.status(400).json({
-            status: 'fail',
-            message:err
-        });
-    }
+    // }catch(err){
+    //     res.status(400).json({
+    //         status: 'fail',
+    //         message:err
+    //     });
+    // }
 }
 
 exports.getAllRooms = async (req, res) => {
@@ -33,23 +38,17 @@ exports.getAllRooms = async (req, res) => {
     });
 }
 
-exports.renderAllRooms = async (req, res) => {
-    try{
-        // const rooms = await Room.find().lean();
 
-        const rooms = await Room.aggregate([{$group:{_id:'$category',items:{$push:'$$ROOT'}}}]);
 
-        // console.log(rooms)
-        // console.log(JSON.stringify(rooms))
-        res.render("pages/public/guestrooms", {layout:"main", rooms:rooms})
+exports.renderAllRooms = catchAsync(async (req, res) => {
 
-    } catch (err){
-        res.status(400).json({
-            status: 'fail',
-            message:err
-        });
-    }
-}
+    const rooms = await Room.aggregate([{$group:{_id:'$category',items:{$push:'$$ROOT'}}}]);
+    
+    // console.log(rooms)
+    // console.log(JSON.stringify(rooms))
+    res.render("pages/public/guestrooms", {layout:"main", rooms:rooms});
+
+});
 
 exports.getRoom = (req, res) => {
     res.status(500).json({
