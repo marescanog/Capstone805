@@ -447,7 +447,7 @@ app.use('/guestrooms',guestRooms);
 
 
 // 4 - No matching route
-app.use((req, res) => {
+app.use((req, res, next) => {
     next(new AppError(`Page not Found!`, 404));
 });
 
