@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const {addressSubSchema} = require('./modelUtils/subSchemas.js');
 const {Decimal128} = mongoose.Types;
+const randomStr = require('random-string-alphanumeric-generator');
 
 const  promoSubschema = new mongoose.Schema({
     promoType : {
@@ -201,19 +202,51 @@ const guestSchema = new mongoose.Schema({
     loyaltyHistory: [String]
 });
 
+
+guestSchema.statics.getKeywordFromCandidate = async (candidatepass, keygen) => {
+    const secret = candidatepass+keygen;
+    const hash = crypto.createHmac('sha256',secret);
+    const update = hash.update(candidatepass);
+    const digest = update.digest('hex');
+    return new Promise((resolve, reject)=>{
+        resolve(digest)
+    })
+}
+
 guestSchema.methods.correctPassword = async function(candidatePassword, userPassword){
     return  await bcrypt.compare(candidatePassword, userPassword);
 }
 
+guestSchema.statics.correctPassword = async function(candidatePassword, userPassword){
+    return  await bcrypt.compare(candidatePassword, userPassword);
+}
+
+
 // maybe transfer to Auth Controller
 // Can also be used for updating passwords
-guestSchema.methods.generateNewHashandSalt = function(newPassword){
+guestSchema.methods.generateNewHashandSalt = async function(newPassword){
     const salt = randomStr.randomLetters(10, "uppercase");
     const secret = newPassword+salt;
     const hash = crypto.createHmac('sha256',secret);
     const update = hash.update(newPassword);
     const digest = update.digest('hex');
     return  {h:digest, s:salt};
+}
+
+guestSchema.statics.generateNewHashandSalt = async function(newPassword){
+    const salt = randomStr.randomLetters(10, "uppercase");
+    const secret = newPassword+salt;
+    const hash = crypto.createHmac('sha256',secret);
+    const update = hash.update(newPassword);
+    const digest = update.digest('hex');
+    return  {h:digest, s:salt};
+}
+
+guestSchema.statics.createEncyptPass = async (cryptoHash) => {
+    const hashedPass = await bcrypt.hash(cryptoHash.h, 12);
+    return new Promise((resolve, reject)=>{
+        resolve({h:hashedPass, s:cryptoHash.s})
+    })
 }
 
 // User.findOne({email}).select('+keyWord +keyGen') // pass to here
