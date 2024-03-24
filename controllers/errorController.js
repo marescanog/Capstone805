@@ -21,6 +21,11 @@ const handleJWTError = err => {
 }
 
 const sendErrorDev = (err, res) =>{
+    if(err.statusCode === 401){
+        // TODO later
+        return res.status(err.statusCode).render("pages/public/accessdenied",{layout:"main"});
+    }
+
     res.status(err.statusCode).json({
         status: err.status,
         error: err,
@@ -32,6 +37,12 @@ const sendErrorDev = (err, res) =>{
 const sendErrorProd = (err, res) =>{
     // Only send operational messages to the client
     if(err.isOperational){
+        
+        if(err.statusCode === 401){
+            // TODO later
+            return res.status(err.statusCode).render("pages/public/accessdenied",{layout:"main"});
+        }
+        
         res.status(err.statusCode).json({
             status: err.status,
             message: err.message,
