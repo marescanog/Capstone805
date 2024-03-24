@@ -119,11 +119,7 @@ exports.protect = catchAsync(async(req, res, next)=>{
     }
 
     if(!token){
-        if(process.env.NODE_ENV === 'development'){
-            return next(new AppError('You are not logged in! Please login to get access.', 401));
-        } else {
-            res.redirect('/');
-        }
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
 
     // 2.) Validate token
