@@ -24,18 +24,18 @@ exports.getAllGuests = async (req, res) => {
 
 exports.getGuestById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { _id } = req.params;
+return _id;
+        
+        // if (!Types.ObjectId.isValid(_id)) {
+        //     return res.status(400).json({
+        //         status: 'error',
+        //         message: 'Invalid guest ID'
+        //     });
+        // }
 
-        // Check if the provided ID is a valid ObjectId
-        if (!Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Invalid guest ID'
-            });
-        }
-
-        // Query the database to fetch the guest user by ID
-        const guest = await Guest.findById(id);
+        
+        const guest = await Guest.findById(_id);
 
         if (!guest) {
             return res.status(404).json({
