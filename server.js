@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const app = require('./app');
 const dotenv = require('dotenv');
-const HTTP_PORT = process.env.PORT || 8080;
+const HTTP_PORT = process.env.PORT || 8081;
+
+process.on('uncaughtException', err =>{
+    console.log('💥 UNCAUGHT EXCEPTION! Shutting down...');
+    console.log(err.name, err.message);
+    process.exit(1);
+});
 
 dotenv.config({path: './config.env'});
 
@@ -17,6 +23,13 @@ function onHttpStart() {
     console.log(`Express http server listening on: ${HTTP_PORT}`);
 }
 
-
 // setup http server to listen on HTTP_PORT
-app.listen(HTTP_PORT, onHttpStart);
+const server = app.listen(HTTP_PORT, onHttpStart);
+
+process.on('unhandledRejection', err => {
+    console.log('💥 UHANDLED REJECTION!');
+    console.log(err.name, err.message);
+});
+
+
+

@@ -27,7 +27,7 @@ const promotionsSchema = new mongoose.Schema({
         required: [true, 'must have a category'],
         default: 'fixed discount',
         enum: {
-            values: ['fixed discount','compensation', 'partnered', 'package'],
+            values: ['fixed discount','compensation', 'partnered', 'package','loyaltySpend'],
             message: "must be part of categories"
         }
     },

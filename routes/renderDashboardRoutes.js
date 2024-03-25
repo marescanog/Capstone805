@@ -2,11 +2,14 @@ const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
+const {loadUserDashboard} = require('./../controllers/dashboard/dashboardController.js'); 
+const authController = require('./../controllers/authController.js');
+
 const renderDashboardRouter = express.Router();
 const staffRouter = express.Router();
 const managerRouter = express.Router();
 const adminRouter = express.Router();
-
+const userRouter = express.Router();
 
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
@@ -18,7 +21,10 @@ staffRouter.route('/updatePhoto').get(updateStaffPhoto);
 staffRouter.route('/createReservations').get(createReservations);
 staffRouter.route('/inquiries').get(viewInquiries);
 staffRouter.route('/checkin').get(checkin);
-staffRouter.route('/:id').get(loadStaffDashboard);
+staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')});
+staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')});
+staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard);
+
 
 
 // Manager Router
@@ -37,6 +43,7 @@ managerRouter.route('/promotions').get(viewPromotions);
 managerRouter.route('/rooms').get(viewRooms);
 managerRouter.route('/:id').get(loadManagerDashboard);
 
+
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
 // adminRouter.route('/viewReservations').get(viewStaffReservations);
@@ -53,10 +60,15 @@ adminRouter.route('/users').get(viewUsers);
 adminRouter.route('/:id').get(loadAdminDashboard);
 
 
-// // user
-// dashboardRouter
-// .route('/user')
-// .get(loadUserDashboard);
+// Staff Router
+renderDashboardRouter.use('/guest', userRouter);
+// user
+userRouter.route('/:id').get((req, res)=>{
+    res.render( "pages/hotelguest/userdashboard", {
+        layout:"main", 
+        title:'Profile',  
+    });  
+});
 
 
 module.exports = renderDashboardRouter;

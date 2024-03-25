@@ -71,7 +71,20 @@ const employeeSchema = new mongoose.Schema({
     },
     dateTerminated: Date,
     avatarPhotoUrl: photoSubSchema,
+    passwordChangedAt: {
+        type: Date,
+        default: new Date()
+    },
 });
+
+// refactor later
+employeeSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+    if(this.passwordChangedAt){
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
+}
 
 employeeSchema.methods.correctPassword = async function(candidatePassword, userPassword){
     return  await bcrypt.compare(candidatePassword, userPassword);
