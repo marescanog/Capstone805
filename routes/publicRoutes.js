@@ -232,7 +232,10 @@ router.get("/portal", (req, res) => {
                 desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
                 desc2: "Log in to unlock the full potential of your account management."
             }
-        }
+        },
+        scripts: [
+            {src:"/js/loginStaff.js"},
+        ],
     }); 
 });
 
