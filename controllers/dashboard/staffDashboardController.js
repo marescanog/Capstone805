@@ -1,5 +1,8 @@
 
 exports.loadStaffDashboard = async (req, res) => {
+    console.log(req.user);
+    const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+
       res.render( "pages/employee/empDashboard",{ 
         layout:"main", 
         css: 'dash.css', 
@@ -11,12 +14,12 @@ exports.loadStaffDashboard = async (req, res) => {
         ],
         sidebarData : {
             img: "/img/placeholder/hotelstaff.png",
-            firstName: "Shawna",
-            lastName: "M.",
-            employeeType: "Hotel Staff",
-            mobileNumber: "499-999-999",
-            address: "address, city, postal code, country",
-            emailAddress: "shawnam@gmail.com"
+            firstName: firstName,
+            lastName: `${lastName.charAt(0)}.`,
+            employeeType: employeeType,
+            mobileNumber: mobileNumber,
+            address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            emailAddress: emailAddress
         },
         buttonData: [
             {name:"Respond to Inquiries",url:"/dashboard/staff/inquiries"},

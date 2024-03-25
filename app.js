@@ -2,6 +2,7 @@ var express = require("express");
 const exphbs = require("express-handlebars");
 var path = require("path");
 // const fs = require('fs');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./apiUtils/appError');
 const globalErrorHandler = require('./controllers/errorController')
@@ -82,7 +83,8 @@ app.engine('.hbs', exphbs.engine({
 
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.json());
+app.use(express.json({limit: '10kb'}));
+app.use(cookieParser());
 
 // setup the static folder that static resources can load from
 // like images, css files, etc.

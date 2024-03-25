@@ -40,7 +40,11 @@ const loginUser = async(req, next, Model ) => {
     }
 
     // 3.) if everything ok send token to client
-    return signToken(user._id);
+    return {
+        token: signToken(user._id),
+        id: user._id
+    };
+
 };
 
 exports.signup = catchAsync(async(req, res, next)=>{
@@ -94,11 +98,25 @@ exports.signup = catchAsync(async(req, res, next)=>{
 
 
 exports.loginEmployee = catchAsync(async(req, res, next) => {
-    const token = await loginUser(req, next, Employee);
-    res.status(201).json({
-        status: 'success',
-        token: token
-    });
+    const loginData = await loginUser(req, next, Employee);
+
+    if(loginData?.token){
+        // Set token in HTTP-only cookie
+        res.cookie('jwt', loginData.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            expiresIn: new Date(
+                Date.now() + process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000
+            )
+        });
+        res.status(201).json({
+            status: 'success',
+            token: loginData.token,
+            statusCode: 201,
+            id: loginData.id
+        });
+    }
+
 });
 
 
@@ -113,9 +131,12 @@ exports.loginGuest = catchAsync(async(req, res, next) => {
 
 exports.protect = catchAsync(async(req, res, next)=>{
     let token;
+
     // 1.) Get token & check if it exists
     if(req?.headers?.authorization && req.headers.authorization.startsWith('Bearer')){
         token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt){
+        token = req.cookies.jwt;
     }
 
     if(!token){
@@ -124,8 +145,6 @@ exports.protect = catchAsync(async(req, res, next)=>{
 
     // 2.) Validate token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-
 
     req.decoded = decoded;
 
@@ -141,7 +160,12 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
         return next(new AppError('Token expired. Please login!', 401));
     }
 
-    // 4.) Check if user changed password after route was issued
+    // // 4.) TODO Check if user is hotel staff or manager (not guest or admin)
+    // if(existing.changedPasswordAfter(req.decoded.iat)){
+    //     return next(new AppError('Token expired. Please login!', 401));
+    // }
+
+    // 5.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
         return next(new AppError('Token expired. Please login!', 401));
     }
@@ -149,7 +173,9 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     req.user = existing;
     // grant access to route
     next();
-})
+});
+
+// TODO create verifyadmin
 
 exports.verifyGuest = catchAsync(async(req, res, next)=>{
     // // 3.) Check if user still exists
