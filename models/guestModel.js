@@ -226,12 +226,12 @@ guestSchema.statics.getKeywordFromCandidate = async (candidatepass, keygen) => {
     })
 }
 
-guestSchema.methods.correctPassword = async function(candidatePassword, userPassword){
-    return  await bcrypt.compare(candidatePassword, userPassword);
+guestSchema.methods.correctPassword = async function(candidatePassword, keygen, userPassword){
+    return  await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
 }
 
-guestSchema.statics.correctPassword = async function(candidatePassword, userPassword){
-    return  await bcrypt.compare(candidatePassword, userPassword);
+guestSchema.statics.correctPassword = async function(candidatePassword, keygen, userPassword){
+    return  await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
 }
 
 

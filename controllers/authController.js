@@ -33,7 +33,7 @@ const loginUser = async(req, next, Model ) => {
 
     // 2.) check if password is correct
     // to do also create in Employee & transfer to password utility
-    const isCorrect = await Guest.correctPassword(await Guest.getKeywordFromCandidate(password, keyGen), keyWord);
+    const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
 
     if(!isCorrect){
         return next(new AppError('Incorrect email or password!', 400));
