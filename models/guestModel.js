@@ -231,7 +231,10 @@ guestSchema.methods.correctPassword = async function(candidatePassword, keygen, 
 }
 
 guestSchema.statics.correctPassword = async function(candidatePassword, keygen, userPassword){
-    return  await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
+    if(candidatePassword=="" || keygen == "" || userPassword == "" || candidatePassword == null || keygen == null || userPassword == null){
+        return false;
+    }
+    return await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
 }
 
 
@@ -303,6 +306,6 @@ guestSchema.statics.getReservationByID  = async function(reservationID){
     return reservations.length > 0 ? reservations[0] : null;
 }
 
-const Employee = mongoose.model('guest', guestSchema);
+const Guest = mongoose.model('guest', guestSchema);
 
-module.exports = Employee;
+module.exports = Guest;
