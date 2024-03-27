@@ -720,8 +720,28 @@ input[type="email"] {
     overflow-y: auto;
   }
 
+  .custom-login-btn:disabled {
+    background-color: #E45C32; 
+    opacity: 0.5; 
+  }
+
+  .custom-login-btn:active {
+    background-color: #E45C32; 
+    color: #fff; 
+    opacity: 1;
+  }
+  
+  .btn-reset {
+    background-color: #E45C32; 
+    color: #fff; 
+  }
+
+  .dropdown-item{
+    cursor: pointer !important;
+  }
   
   @media (max-width: 576px) {
+
     .modal-dialog {
       margin: 10px;
     }

@@ -1,56 +1,38 @@
-// Function to control the dismissible behavior of the modal
-function setModalDismissible(modalElement, isDismissible) {
-  if (isDismissible) {
-    modalElement.setAttribute('data-bs-backdrop', 'true');
-    modalElement.setAttribute('data-bs-keyboard', 'true');
-  } else {
-    console.log("S")
-    modalElement.setAttribute('data-bs-backdrop', 'static');
-    modalElement.setAttribute('data-bs-keyboard', 'false');
-  }
-}
 
 // Function to handle login
-function handleLogin(loginModalEl) {
-  setModalDismissible(loginModalEl, false);
+function handleLogin(loginModalCloseButton, buttonText, spinner, loginButton) {
+  loginModalCloseButton.disabled = true;
 
-  // // Start the API call
-  // fetch('your-api-endpoint', {
-  //   method: 'POST',
-  //   body: JSON.stringify({
-  //     // Your request payload
-  //   }),
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   }
-  // })
-  // .then(response => response.json())
-  // .then(data => {
-  //   // Process the response data
-  //   // ...
-  // })
-  // .catch(error => {
-  //   // Handle any error
-  //   console.error('Error:', error);
-  // })
-  // .finally(() => {
-  //   setModalDismissible(true); // Re-enable the dismissal of the modal
-  // });
+  setTimeout(() => {
+    loginModalCloseButton.disabled = false;
+    buttonText.style.display = '';
+    spinner.style.display = 'none';
+    loginButton.disabled = false;
+  }, "5000");
 
-  console.log("login user");
-  // setModalDismissible(true);
+
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function(e) {
-  const loginModalEl = document.getElementById('loginModal');
-  const loginModal = new bootstrap.Modal(loginModalEl);
+  const loginModalCloseButton = document.getElementById('loginModalCloseButton');
+  const buttonText = document.getElementById('buttonText');
+  const spinner = document.getElementById('spinner');
+  const loginButton = document.getElementById('loginButton');
 
-  document.querySelector('.custom-login-btn').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent the default form submit
-    handleLogin(loginModalEl);
+  document.getElementById('loginButton').addEventListener('click', function(event) {
+    event.preventDefault(); 
+
+
+    // Hide the button text and show the spinner
+    buttonText.style.display = 'none';
+    spinner.style.display = 'block';
+
+    // Disable the button
+    loginButton.disabled = true;
+
+    handleLogin(loginModalCloseButton, buttonText, spinner, loginButton);
   });
+
 
 });
 
