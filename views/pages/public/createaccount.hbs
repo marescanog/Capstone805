@@ -5,7 +5,7 @@
                 {{> _h1styled headerTitle="Create Account"}}
                 <div class="subheader-container">
                     {{#unless disablePaymentSidebar}}<p class="create-acc-p-subheader-style">Reserve your room now! Create an account to proceed.</p>{{/unless}}
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></p>
                 </div>
                 <div class="card">
                     <div class="row justify-content-left">
