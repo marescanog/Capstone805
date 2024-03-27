@@ -41,3 +41,27 @@ describe('GET /api/v1/contactFormSubmissions', () => {
     expect(response.body).toBeInstanceOf(Array);
   }, 10000);
 });
+
+
+// Updated not found test
+it('should return a 404 for a form that does not exist', async () => {
+  // Using a valid format but unlikely to exist ID
+  const contactFormID = '507f1f77bcf86cd799439011'; 
+  const response = await request(app).get(`/api/v1/contactFormSubmissions/${contactFormID}`);
+  expect(response.statusCode).toBe(404);
+});
+
+// Additional tests
+describe('POST /api/v1/submitContactForm', () => {
+  it('should handle empty submission', async () => {
+    const response = await request(app)
+      .post(`/api/v1/submitContactForm`)
+      .send({}); // Sending an empty body
+    // Assuming your API responds with a 400 status for bad requests
+    expect(response.statusCode).toBe(400);
+  });
+
+  // Assuming you handle server errors (like database disconnection) with a 500 status
+  // This test requires you to mock or force a server error condition, which might be complex
+  // So, it's mentioned here for completeness but might not be directly implementable without additional setup
+});
