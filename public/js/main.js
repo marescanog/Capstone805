@@ -1,16 +1,29 @@
 
 // Function to handle login
-function handleLogin(loginModalCloseButton, buttonText, spinner, loginButton) {
+function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
   loginModalCloseButton.disabled = true;
+  setDisabledLoginButton (true, loginButton, buttonText, spinner);
 
+  // fetch api call
   setTimeout(() => {
+    setDisabledLoginButton (false, loginButton, buttonText, spinner);
     loginModalCloseButton.disabled = false;
+  }, "5000");
+
+}
+
+function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
+  if(state){
+    // Hide the button text and show the spinner
+    buttonText.style.display = 'none';
+    spinner.style.display = 'block';
+    loginButton.disabled = true;
+  } else {
+    // Show button and hide spinner
     buttonText.style.display = '';
     spinner.style.display = 'none';
     loginButton.disabled = false;
-  }, "5000");
-
-
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function(e) {
@@ -21,16 +34,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
   document.getElementById('loginButton').addEventListener('click', function(event) {
     event.preventDefault(); 
-
-
-    // Hide the button text and show the spinner
-    buttonText.style.display = 'none';
-    spinner.style.display = 'block';
-
-    // Disable the button
-    loginButton.disabled = true;
-
-    handleLogin(loginModalCloseButton, buttonText, spinner, loginButton);
+    handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
 
 
