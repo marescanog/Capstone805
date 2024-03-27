@@ -30,7 +30,12 @@ app.engine('.hbs', exphbs.engine({
             href="${url}">${options.fn(this)}</a>
             </li>`;
         },
-        navHiddenLink: function(modalIdName, linkName, options){
+        navHiddenLink: function(linkName, linkUrl, options){
+            return `<li class="nav-item nav-show-small">
+            <a class="dropdown-item nav-link" href="${linkUrl}">${linkName}</a>
+            </li>`;
+        },
+        navHiddenLinkModal: function(modalIdName, linkName, options){
             return `<li class="nav-item nav-show-small">
             <a class="dropdown-item nav-link" data-bs-toggle="modal" data-bs-target="#${modalIdName}">${linkName}</a>
             </li>`;

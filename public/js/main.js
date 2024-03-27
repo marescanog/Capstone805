@@ -1,56 +1,42 @@
-// Function to control the dismissible behavior of the modal
-function setModalDismissible(modalElement, isDismissible) {
-  if (isDismissible) {
-    modalElement.setAttribute('data-bs-backdrop', 'true');
-    modalElement.setAttribute('data-bs-keyboard', 'true');
+
+// Function to handle login
+function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
+  loginModalCloseButton.disabled = true;
+  setDisabledLoginButton (true, loginButton, buttonText, spinner);
+
+  // fetch api call
+  setTimeout(() => {
+    setDisabledLoginButton (false, loginButton, buttonText, spinner);
+    loginModalCloseButton.disabled = false;
+  }, "5000");
+
+}
+
+function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
+  if(state){
+    // Hide the button text and show the spinner
+    buttonText.style.display = 'none';
+    spinner.style.display = 'block';
+    loginButton.disabled = true;
   } else {
-    console.log("S")
-    modalElement.setAttribute('data-bs-backdrop', 'static');
-    modalElement.setAttribute('data-bs-keyboard', 'false');
+    // Show button and hide spinner
+    buttonText.style.display = '';
+    spinner.style.display = 'none';
+    loginButton.disabled = false;
   }
 }
 
-// Function to handle login
-function handleLogin(loginModalEl) {
-  setModalDismissible(loginModalEl, false);
-
-  // // Start the API call
-  // fetch('your-api-endpoint', {
-  //   method: 'POST',
-  //   body: JSON.stringify({
-  //     // Your request payload
-  //   }),
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   }
-  // })
-  // .then(response => response.json())
-  // .then(data => {
-  //   // Process the response data
-  //   // ...
-  // })
-  // .catch(error => {
-  //   // Handle any error
-  //   console.error('Error:', error);
-  // })
-  // .finally(() => {
-  //   setModalDismissible(true); // Re-enable the dismissal of the modal
-  // });
-
-  console.log("login user");
-  // setModalDismissible(true);
-}
-
-
-
 document.addEventListener("DOMContentLoaded", function(e) {
-  const loginModalEl = document.getElementById('loginModal');
-  const loginModal = new bootstrap.Modal(loginModalEl);
+  const loginModalCloseButton = document.getElementById('loginModalCloseButton');
+  const buttonText = document.getElementById('buttonText');
+  const spinner = document.getElementById('spinner');
+  const loginButton = document.getElementById('loginButton');
 
-  document.querySelector('.custom-login-btn').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent the default form submit
-    handleLogin(loginModalEl);
+  document.getElementById('loginButton').addEventListener('click', function(event) {
+    event.preventDefault(); 
+    handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
+
 
 });
 
