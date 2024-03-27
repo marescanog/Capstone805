@@ -644,3 +644,89 @@ input[type="email"] {
     border: none;
     padding: 10px 15px;
 }
+
+
+
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+  
+.modal-header {
+    border-bottom: none;
+    justify-content: space-between;
+    padding-bottom: 0;
+}
+  
+  .modal-content {
+    border-radius: 10px;
+  }
+  
+  .custom-input {
+    border-radius: 20px !important;
+    padding: .5rem .75rem;
+    border: 1px solid #ced4da;
+    box-shadow: none;
+    margin-bottom: 1.5rem;
+  }
+  
+  .custom-input::placeholder {
+    font-size: .875rem;
+  }
+  
+  .custom-login-btn {
+    width: 100%;
+    background-color: #E45C32;
+    border: none;
+    border-radius: 20px;
+    padding: .5rem;
+    font-size: 1rem;
+    color: #fff;
+  }
+  
+  .custom-login-btn:hover {
+    background-color: #E45C32 !important;
+    opacity: 0.5;
+  }
+  
+  .forgot-password {
+    display: block;
+    color: #E45C32;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+  }
+  
+
+  .btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    transform: translateY(-15px);
+  }
+  
+
+  .modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100% - (1.75rem * 2)); /* 1.75rem is the default padding for Bootstrap modals. Adjust if needed. */
+  }
+  
+  .modal {
+    overflow-y: auto;
+  }
+
+  
+  @media (max-width: 576px) {
+    .modal-dialog {
+      margin: 10px;
+    }
+  
+    .modal-content {
+      padding: 15px;
+    }
+  }
