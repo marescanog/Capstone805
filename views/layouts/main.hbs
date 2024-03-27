@@ -2,4 +2,59 @@
 <div class="main_container">
 	{{{body}}}
 </div>
+
+
+<!-- Sign Up Modal-->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="signupEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="signupEmail" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="signupPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="signupPassword">
+          </div>
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">LOGIN TO YOUR ACCOUNT</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+      </div>
+	  <hr>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <input type="email" class="form-control custom-input" id="loginEmail" placeholder="Enter your email">
+          </div>
+          <div class="mb-3">
+            <input type="password" class="form-control custom-input" id="loginPassword" placeholder="Enter your password">
+          </div>
+          <div class="mb-3 text-center">
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn custom-login-btn">LOGIN</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {{> footer}}
