@@ -66,12 +66,12 @@
             {{#navLink "/restaurant"}}Restaurant{{/navLink}}
             {{#navLink "/contactUs"}}Contact Us{{/navLink}}
             {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}}
-
+  
             <div class="nav-show-small">
               <hr>
             </div>
-            {{#navHiddenLink "signUp"}}Sign Up{{/navHiddenLink}}
-            {{#navHiddenLink "login"}}Login{{/navHiddenLink}}
+            {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
+            {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
             {{!-- {{#navLink "/contactUs"}}Help Center{{/navLink}} --}}
 
             <li class="nav-item dropdown ms-auto nav-hide-small">
@@ -83,8 +83,8 @@
                 </div>
               </a>
               <div class="dropdown-menu" style="left: -50px;" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#" onClick="signUp()">Sign Up</a>
-                <a class="dropdown-item" href="#" onClick="login()">Login</a>
+                <a class="dropdown-item" href="/createaccount">Sign Up</a>
+                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/contactUs">Help Center</a>
               </div>

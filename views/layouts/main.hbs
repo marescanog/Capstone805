@@ -2,4 +2,42 @@
 <div class="main_container">
 	{{{body}}}
 </div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">LOGIN TO YOUR ACCOUNT</h5>
+        <button type="button" id="loginModalCloseButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+      </div>
+	  <hr>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <input type="email" class="form-control custom-input" id="loginEmail" placeholder="Enter your email">
+          </div>
+          <div class="mb-3">
+            <input type="password" class="form-control custom-input" id="loginPassword" placeholder="Enter your password">
+          </div>
+          <div class="mb-3 text-center">
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+
+		  <button type="button" id="loginButton" class="btn custom-login-btn d-flex justify-content-center align-items-center">
+			<div id="buttonContent">
+				<span id="buttonText">Login</span>
+				<div id="spinner" class="spinner-border spinner-border-sm text-light" role="status" style="display: none;">
+				<span class="visually-hidden">Loading...</span>
+				</div>
+			</div>
+		</button>
+		
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {{> footer}}

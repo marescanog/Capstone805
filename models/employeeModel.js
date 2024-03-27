@@ -87,6 +87,9 @@ employeeSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
 }
 
 employeeSchema.methods.correctPassword = async function(candidatePassword, userPassword){
+    if(candidatePassword=="" || keygen == "" || userPassword == "" || candidatePassword == null || keygen == null || userPassword == null){
+        return false;
+    }
     return  await bcrypt.compare(candidatePassword, userPassword);
 }
 

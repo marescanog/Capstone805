@@ -1,0 +1,44 @@
+ {{> _h1styled headerTitle="Results"}}
+<div class="container">
+
+  {{#each rooms}}
+  <div class="room-card">
+    {{#if this.offer}}
+    <div class="room-card-offer">{{this.offer}}</div>
+    {{/if}}
+    <img src="{{this.imageUrl}}" alt="{{this.name}}" class="room-image">
+    <div class="room-details">
+      <h2 class="room-title">{{this.name}}</h2>
+      <p class="room-description">{{this.description}}</p>
+      <a href="#" class="room-more-info">Learn More...</a>
+      <div class="room-amenities">
+        <!-- Here you will dynamically create icons for amenities -->
+        <img src="{{this.amenitiesImageUrl}}" alt="Amenities" class="amenities-image">
+        <!-- Repeat for other amenities -->
+      </div>
+    </div>
+    <div class="room-pricing">
+      {{#if this.originalPrice}}
+      <div class="original-price">${{this.originalPrice}}/night</div>
+      {{/if}}
+      <div class="discounted-price">Only ${{this.discount_price}}</div>
+      {{#if this.savings}}
+      <div class="savings">Save ${{this.savings}}!</div>
+      {{/if}}
+      <div class="price-details">
+        <!-- Price details like breakfast included, etc. -->
+        <p>Breakfast Included</p>
+        <p>Sq. meters: 30</p>
+        <p>In-room dining</p>
+        <p>Balcony Access</p>
+        <p>Wi-Fi and Connectivity</p>
+        <p>Laundry services</p>
+        <p>Concierge services</p>
+        <!-- Add other details -->
+      </div>
+      <button class="reserve-button">Reserve Now</button>
+    </div>
+  </div>
+  {{/each}}
+</div>
+
