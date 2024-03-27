@@ -59,7 +59,11 @@ router.get("/about", (req, res) => {
 });
 
 router.get("/restaurant", (req, res) => {
-    res.render("pages/public/restaurant",{layout:"main"});
+    res.render("pages/public/restaurant",{
+        layout:"main",
+        css: 'restaurant.css', 
+        title:'Restaurant',
+    });
 });
 
 router.get("/contactUs", (req, res) => {
@@ -333,4 +337,46 @@ router.post("/createReservation", (req, res) => {
     }
 })
 
+router.get("/faqsPolicies", (req, res) => {
+    res.render( "pages/public/faqsPolicies", { 
+        layout:"main", 
+        css: 'faqsPolicies.css', 
+        title:'Faqs & Policies',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] ,
+        // scripts: [
+        //     {src:"/js/utils/countdown.js"},
+        // ]
+    });  
+})
+
+router.get("/roomOffers", (req, res) => {
+    res.render( "pages/public/roomResults", { 
+        layout:"main", 
+        css: 'roomResults.css', 
+        title:'Offers',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] ,
+        rooms: [
+            {
+                offer: '50%',
+                name: "Queen",
+                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
+                originalPrice: 500,
+                discount_price: 440,
+                savings: 60
+            },
+            {
+                offer: '50%',
+                name: "Queen",
+                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
+                originalPrice: 500,
+                discount_price: 440,
+                savings: 60
+            }
+        ]
+    });  
+})
 module.exports = router;

@@ -1,0 +1,89 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+p {
+    color: #555;
+}
+
+button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* Hero Section */
+#hero {
+    background-image: url('restaurant-interior.jpg');
+    background-size: cover;
+    padding: 40px;
+    text-align: center;
+}
+
+.hero-content {
+    background: rgba(255, 255, 255, 0.8);
+    display: inline-block;
+    padding: 20px;
+}
+
+/* Restaurant Story Section */
+#story {
+    padding: 40px;
+    background: #f8f8f8;
+}
+
+.story-header h2 {
+    text-align: center;
+}
+
+.story-content {
+    max-width: 600px;
+    margin: auto;
+    text-align: left;
+}
+
+/* Season's Specials Section */
+#specials {
+    padding: 40px;
+    text-align: center;
+}
+
+.special-items {
+    display: flex;
+    justify-content: space-around;
+}
+
+.special-item {
+    width: 30%;
+}
+
+.special-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Dine with us Section */
+#dine-with-us {
+    padding: 40px;
+    background: #e2e2e2;
+}
+
+.reservation-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-reservations, .opening-hours, .location {
+    width: 30%;
+}
+
+/* Add responsive design as needed */
