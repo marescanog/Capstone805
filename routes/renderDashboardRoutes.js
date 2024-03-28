@@ -62,13 +62,7 @@ adminRouter.route('/:id').get(loadAdminDashboard);
 
 // Staff Router
 renderDashboardRouter.use('/guest', userRouter);
-// user
-userRouter.route('/:id').get((req, res)=>{
-    res.render( "pages/hotelguest/userdashboard", {
-        layout:"main", 
-        title:'Profile',  
-    });  
-});
-
+userRouter.route('/:id').get(loadUserDashboard);
+// authController.protect, authController.verifyGuest,
 
 module.exports = renderDashboardRouter;

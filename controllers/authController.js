@@ -25,36 +25,44 @@ const signToken = (id, empType) => {
 }
 
 const loginUser = async(req, next, Model ) => {
-    const {email, password} = req.body;
-
-    // 1.) if email and password exist
-    if(!email || !password){
-       return next(new AppError('Please provide email and password!', 400));
-    }
-
-    // 2.) check if user exists 
-    const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen');
-
-    if(!user){
-        return next(new AppError('Incorrect email or password!', 400));
-    }
-
-    const {keyWord, keyGen} = user;
-
-    // 2.) check if password is correct
-    // to do also create in Employee & transfer to password utility
-    const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
-
-    if(!isCorrect){
-        return next(new AppError('Incorrect email or password!', 400));
-    }
-
-    // 3.) if everything ok send token to client
-    return {
-        token: signToken(user._id, user?.employeeType),
-        id: user._id
-    };
-
+    return new Promise((resolve)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email, password} = req.body;
+    
+            // 1.) if email and password exist
+            if(!email || !password){
+               resolve(next(new AppError('Please provide email and password!', 400)));
+            }
+        
+            // 2.) check if user exists 
+            const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen');
+        
+            if(!user){
+                resolve(next(new AppError('Incorrect email or password!', 400)));
+            }
+        
+            const {keyWord, keyGen} = user;
+        
+            // TODO: if Guest user exists check if active, for employees check status 
+            
+            // TODO: If Guest user is active check if verified, 
+        
+            // 2.) check if password is correct
+            // to do also create in Employee & transfer to password utility
+            const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
+        
+            if(!isCorrect){
+                resolve(next(new AppError('Incorrect email or password!', 400)));
+            }
+        
+            // 3.) if everything ok send token to client
+            resolve({
+                token: signToken(user._id, user?.employeeType),
+                id: user._id
+            });
+        }, "1000");
+    });
 };
 
 exports.signup = catchAsync(async(req, res, next)=>{
