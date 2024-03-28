@@ -141,3 +141,76 @@ exports.viewCreateAccountPage = (req, res, next) => {
         res.render("pages/public/createaccount",VB.getOptions());
     }
 }
+
+exports.viewVerifyAccountPage = (req, res, next) => {
+    if(req?.decoded?.id){
+        res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+    } else {
+        // TODO Check if come from page createaccount
+        // User should not be able to access this link just by typing the URL
+        // Create cookie with email & expiry
+        const VB = new ViewBuilder({
+            alertToLogin: false,
+            userType: null,
+            id:null,
+        });
+        VB.addOptions("title", 'Verify Account');
+        VB.addOptions("css", 'verifyCreateAccount.css');
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"}
+        ]);
+        VB.addOptions("disablePaymentSidebar", true);
+        VB.addOptions("center", true);
+        VB.addOptions("scripts", [
+            {src:"/js/utils/countdown.js"},
+            {src:"/js/verifyEmail.js"},
+        ]);
+        VB.addOptions("serverSeconds", 60);
+        res.render("pages/public/verifyCreateAccount",VB.getOptions());
+    }
+}
+
+exports.viewEmployeePortalPage = (req, res, next) => {
+    if(req?.decoded?.id){
+        switch(req?.decoded?.userType){
+            case "Staff":
+                res.redirect(`/dashboard/staff/${req?.decoded?.id}`);
+                break;
+            case "Manager":
+                res.redirect(`/dashboard/manager/${req?.decoded?.id}`);
+                break;
+            case "Admin":
+                res.redirect(`/dashboard/USNVMQD493/${req?.decoded?.id}`);
+                break;
+            default:
+                res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+        }
+    } else {
+        const VB = new ViewBuilder({
+            alertToLogin: false,
+            userType: null,
+            id:null,
+        });
+        VB.addOptions("css", 'employee/portal.css');
+        VB.addOptions("title", 'Employee Portal');
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"},
+            {name:"employee/emploginform.css"}
+        ]);
+        VB.addOptions("headerTitle", "Employee Online Portal");
+        VB.addOptions("formData", {
+            staff: {
+                desc1: "Welcome to the Hotel Employee Portal. Your gateway to seamless operations and exceptional guest experiences.",
+                desc2: "Log in to make a difference!"
+            },
+            admin: {
+                desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
+                desc2: "Log in to unlock the full potential of your account management."
+            }
+        });
+        VB.addOptions("scripts", [
+            {src:"/js/loginStaff.js"},
+        ]);
+        res.render("pages/employee/portal",VB.getOptions());
+    }
+}

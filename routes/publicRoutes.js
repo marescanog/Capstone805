@@ -3,7 +3,8 @@ const router = express.Router();
 const authController = require('./../controllers/authController');
 const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
-    viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage
+    viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
+    viewEmployeePortalPage
 } = require('./../controllers/publicViewsController');
 
 /*
@@ -30,6 +31,23 @@ router.get("/roomOffers", authController.detect, viewRoomOffersPage)
 
 router.get("/createaccount", authController.detect, viewCreateAccountPage)
 
+// TODO Check if come from page createaccount
+// User should not be able to access this link just by typing the URL
+// Create cookie with email & expiry
+router.get("/verifyaccount", authController.detect, viewVerifyAccountPage);
+
+router.get("/portal", authController.detect, viewEmployeePortalPage);
+
+router.get("/faqsPolicies", (req, res) => {
+    res.render( "pages/public/faqsPolicies", { 
+        layout:"main", 
+        css: 'faqsPolicies.css', 
+        title:'Faqs & Policies',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
 
 // TODO combine with offer url
 router.get("/roomdetails", (req, res) => {
@@ -52,64 +70,9 @@ router.get("/devlinks", (req, res) => {
     res.render( "pages/public/devlinks");  
 })
 
-router.get("/portal", (req, res) => {
-    res.render( "pages/employee/portal",{ 
-        layout:"main", 
-        css: 'employee/portal.css', 
-        title:'Employee Portal',
-        partialsCSS: [
-            {name:"h1styled.css"},
-            {name:"employee/emploginform.css"}
-        ],
-        headerTitle: "Employee Online Portal",
-        formData : {
-            staff: {
-                desc1: "Welcome to the Hotel Employee Portal. Your gateway to seamless operations and exceptional guest experiences.",
-                desc2: "Log in to make a difference!"
-            },
-            admin: {
-                desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
-                desc2: "Log in to unlock the full potential of your account management."
-            }
-        },
-        scripts: [
-            {src:"/js/loginStaff.js"},
-        ],
-    }); 
-});
 
-router.get("/verifyaccount", (req, res) => {
-    res.render( "pages/public/verifyCreateAccount", { 
-        layout:"main", 
-        css: 'verifyCreateAccount.css', 
-        title:'Verify Account',
-        partialsCSS: [
-            {name:"h1styled.css"},
-            {name:"paymentSidebar.css"},
-        ] ,
-        disablePaymentSidebar: true,
-        center: true,
-        scripts: [
-            {src:"/js/utils/countdown.js"},
-            {src:"/js/verifyEmail.js"},
-        ],
-        serverSeconds: 60
-    });  
-})
 
-router.get("/faqsPolicies", (req, res) => {
-    res.render( "pages/public/faqsPolicies", { 
-        layout:"main", 
-        css: 'faqsPolicies.css', 
-        title:'Faqs & Policies',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] ,
-        // scripts: [
-        //     {src:"/js/utils/countdown.js"},
-        // ]
-    });  
-})
+
 
 
 
