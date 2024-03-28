@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const authController = require('./../controllers/authController');
+const {viewHomePage} = require('./../controllers/publicViewsController');
 
-router.get("/", (req, res) => {
-    res.render("pages/public/home",{layout:"main"});
-});
+router.get("/", authController.detect, viewHomePage);
 
-router.get("/home", (req, res) => {
-    res.render("pages/public/home",{layout:"main"});
-});
+router.get("/home", viewHomePage);
 
 // Sanam Made this page, edit later
 // Modify to the new route

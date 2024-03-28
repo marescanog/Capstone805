@@ -1,6 +1,5 @@
 
 exports.loadStaffDashboard = async (req, res) => {
-    console.log(req.user);
     const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
 
       res.render( "pages/employee/empDashboard",{ 

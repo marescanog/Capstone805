@@ -1,7 +1,14 @@
 {{> header}}
+	{{#if userType}}
+	<p>the usertype is {{userType}}</p>
+	{{/if}}
 <div class="main_container">
-	{{{body}}}
+	{{{body}}}		
 </div>
+
+{{#if alertToLogin}}
+	<input type="hidden" id="alertToLogin">
+{{/if}}
 
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" >

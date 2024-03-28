@@ -27,17 +27,25 @@ function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
 }
 
 document.addEventListener("DOMContentLoaded", function(e) {
+  const alertToLogin = document.getElementById('alertToLogin');
   const loginModalCloseButton = document.getElementById('loginModalCloseButton');
   const buttonText = document.getElementById('buttonText');
   const spinner = document.getElementById('spinner');
   const loginButton = document.getElementById('loginButton');
+
 
   document.getElementById('loginButton').addEventListener('click', function(event) {
     event.preventDefault(); 
     handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
 
-
+  if(alertToLogin){
+    Swal.fire({
+      title: "Session Expired!",
+      text: "Please login again.",
+      icon: "info"
+    })
+  }
 });
 
 
