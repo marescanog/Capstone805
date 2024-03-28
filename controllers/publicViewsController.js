@@ -58,7 +58,7 @@ exports.viewGuestRoomsPage = catchAsync( async (req, res, next) => {
     const roomTypeData = await getAllRooms(req, res, next);
 
     if(roomTypeData.status === "error"){
-        next(roomTypeData.data)
+        return next(roomTypeData.data)
     }
 
     VB.addOptions("roomTypeData", roomTypeData.data);
