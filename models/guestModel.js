@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const {addressSubSchema} = require('./modelUtils/subSchemas.js');
+const {addressSubSchema, photoSubSchema} = require('./modelUtils/subSchemas.js');
 const {Decimal128} = mongoose.Types;
 const randomStr = require('random-string-alphanumeric-generator');
 
@@ -202,13 +202,13 @@ const guestSchema = new mongoose.Schema({
     loyaltyHistory: [String],
     passwordChangedAt: {
         type: Date,
-        default: new Date()
     },
+    avatarPhotoUrl: photoSubSchema,
 });
 
 // refactor later
 guestSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
-    if(this.passwordChangedAt){
+    if(this?.passwordChangedAt){
         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
         return JWTTimestamp < changedTimestamp;
     }
