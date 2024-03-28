@@ -5,11 +5,11 @@ document.addEventListener("DOMContentLoaded", function(e) {
     if(loginStaffButton){
         loginStaffButton.addEventListener("click",()=>{
             const form = document.getElementById('EmployeeLoginForm');
-            const emailInput = form.querySelector('input[type="email"]');
-            const passwordInput = form.querySelector('input[type="password"]');
 
             if(form){
                 form.setAttribute('novalidate', '');
+                const emailInput = form.querySelector('input[type="email"]');
+                const passwordInput = form.querySelector('input[type="password"]');
                 const data = {
                     email: emailInput.value,
                     password: passwordInput.value
