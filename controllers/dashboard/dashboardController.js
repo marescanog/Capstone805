@@ -1,5 +1,7 @@
-exports.loadUserDashboard = (req, res, next) => {
+var express = require("express");
+var app = express();
 
+exports.loadUserDashboard = (req, res, next) => {
     res.render( "pages/hotelguest/userdashboard", {
         userType:"Guest",
         id: "asdasdsadsadadsa",

@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="brand-footer">
-                <img class="logo foter-logo" src="/img/placeholder/hotelCalifornia.png" alt="Hotel california">
+                <img class="logo foter-logo" src="/img/placeholder/hotel_california_logo.png" alt="Hotel california">
                 <span class="footer-brand-text ps-2 brand-name"> Hotel <br> California</span>
 
             </div>
@@ -19,22 +19,23 @@
 
                 <div class="col-md-4">
                     <p class="footer-title">COMPANY</p>
-                    <div class="">
-                        <p>About Us</p>
-                        <p>Members</p>
-                        <p>Contact Us</p>
-                        <a href="/devlinks">Devlinks</a>
-                    </div>
+                    <ul class="">
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/about#members">Members</a></li>
+                        <li><a href="/contactUs">Contact Us</a></li>
+                        <li><a href="/devlinks">Devlinks (TODO: REMOVE)</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
                     <p class="footer-title ">HELP CENTER</p>
-                    <div>
-                        <p>Find a room</p>
-                        <p>Restaurant</p>
-                        <p>Staff</p>
-                        <p>FAQs</p>
-                        <p>Popcies</p>
-                    </div>
+                    <ul>
+                        <li><a href="/roomOffers">Find a room</a></li>
+                        <li><a href="/restaurant">Restaurant</a></li>
+                        {{#unless userType}}
+                            <li><a href="/portal">Staff</a></li>
+                        {{/unless}}
+                        <li><a href="/faqsPolicies">F.A.Q.s & Policies</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
                     <p class="footer-title">CONTACT INFO</p>

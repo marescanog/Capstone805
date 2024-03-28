@@ -80,7 +80,7 @@
             {{#navLink "/contactUs"}}Contact Us{{/navLink}}
             {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}
             {{#equal userType "Guest"}}
-              {{#navLink "/dashboard/guest/{{id}}"}}Dashboard {{/navLink}}
+              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard {{/navLink}}
             {{/equal}}
 
             {{#equal userType "Staff"}}

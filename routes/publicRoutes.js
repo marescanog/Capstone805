@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controllers/authController');
-const {viewHomePage, viewAboutPage, viewGuestRoomsPage} = require('./../controllers/publicViewsController');
+const {
+    viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
+    viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
+    viewEmployeePortalPage, viewFAQPage
+} = require('./../controllers/publicViewsController');
 
 /*
     Notes: 
@@ -19,41 +23,25 @@ router.get("/about", authController.detect, viewAboutPage);
 
 router.get("/guestrooms", authController.detect, viewGuestRoomsPage)
 
-router.get("/restaurant", (req, res) => {
-    res.render("pages/public/restaurant",{
-        layout:"main",
-        css: 'restaurant.css', 
-        title:'Restaurant',
-    });
-});
+router.get("/restaurant", authController.detect, vieRestaurantPage);
 
-router.get("/contactUs", (req, res) => {
-    res.render("pages/public/contactUs",{layout:"main"});
-});
+router.get("/contactUs", authController.detect, viewContactUsPage);
 
-router.get("/createaccount", (req, res) => {
-    res.render( "pages/public/createaccount", { 
-        layout:"main", 
-        css: 'createaccount.css', 
-        title:'Create Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ],
-        disablePaymentSidebar: true,
-        center: true
-    });  
-})
+router.get("/roomOffers", authController.detect, viewRoomOffersPage)
 
-// move to guest dashboard
-router.get("/editaccount", (req, res) => {
-    res.render( "pages/hotelguest/editAccount", {
-        layout:"main", 
-        css: 'editaccount.css', 
-        title:'edit account',
-    });  
-})
+router.get("/createaccount", authController.detect, viewCreateAccountPage)
 
-// combine with offer
+// TODO Check if come from page createaccount
+// User should not be able to access this link just by typing the URL
+// Create cookie with email & expiry
+router.get("/verifyaccount", authController.detect, viewVerifyAccountPage);
+
+router.get("/portal", authController.detect, viewEmployeePortalPage);
+
+router.get("/faqsPolicies", authController.detect, viewFAQPage);
+
+// TODO combine with offer url
+// TODO add detect to these routes
 router.get("/roomdetails", (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
@@ -70,6 +58,36 @@ router.get("/roomdetails/:id", (req, res) => {
     });  
 })
 
+router.get("/devlinks", (req, res) => {
+    res.render( "pages/public/devlinks");  
+})
+
+
+
+
+
+
+
+
+
+
+
+
+// move since its a post route
+router.post("/createaccount", (req, res) => {
+    res.redirect('/verifyaccount');
+}
+);
+
+// move to guest dashboard
+router.get("/editaccount", (req, res) => {
+    res.render( "pages/hotelguest/editAccount", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'edit account',
+    });  
+})
+
 // move to guest dashbaord
 // loyalty history
 router.get("/loyaltyhistory", (req, res) => {
@@ -80,33 +98,20 @@ router.get("/loyaltyhistory", (req, res) => {
     });  
 })
 
-// router.get("/loyalty", (req, res) => {
-//     res.render( "pages/hotelguest/loyalty",{ 
+// DELETE move to guest dashboard
+// router.get("/userdashboard", (req, res) => {
+//     res.render( "pages/hotelguest/userdashboard", {
 //         layout:"main", 
-//         css: 'guest/loyalty.css', 
-//         title:'Loyalty history',
-//         partialsCSS: [
-//             {name:"h1styled.css"}
-//         ] 
+//         title:'Profile',  
 //     });  
 // })
-
-// move to guest dashboard
-router.get("/userdashboard", (req, res) => {
-    res.render( "pages/hotelguest/userdashboard", {
-        layout:"main", 
-        title:'Profile',  
-    });  
-})
 
 // move to guest dashboard
 router.get("/updatepassword", (req, res) => {
     res.render( "pages/hotelguest/updatepassword");  
 })
 
-router.get("/devlinks", (req, res) => {
-    res.render( "pages/public/devlinks");  
-})
+
 
 // move to guest dashboard
 router.get("/reservations", (req, res) => {
@@ -120,6 +125,7 @@ router.get("/reservations", (req, res) => {
     });  
 })
 
+// move to guest dashboard
 router.get("/editaccount", (req, res) => {
     res.render( "pages/hotelguest/editAccount",{ 
         layout:"main", 
@@ -131,6 +137,7 @@ router.get("/editaccount", (req, res) => {
     });  
 });
 
+// move to guest dashboard
 router.get("/update-email", (req, res) => {
     res.render( "pages/hotelguest/update-email",{ 
         layout:"main", 
@@ -142,6 +149,7 @@ router.get("/update-email", (req, res) => {
     });  
 });
 
+// move to guest dashboard
 router.get("/view-inquiries", (req, res) => {
 
     const inquiries = [
@@ -185,58 +193,8 @@ router.post('/submit-new-email', (req, res) => {
         successMessage: 'Your email has been updated.'
     });  
 });
-
-
-router.get("/portal", (req, res) => {
-    res.render( "pages/employee/portal",{ 
-        layout:"main", 
-        css: 'employee/portal.css', 
-        title:'Employee Portal',
-        partialsCSS: [
-            {name:"h1styled.css"},
-            {name:"employee/emploginform.css"}
-        ],
-        headerTitle: "Employee Online Portal",
-        formData : {
-            staff: {
-                desc1: "Welcome to the Hotel Employee Portal. Your gateway to seamless operations and exceptional guest experiences.",
-                desc2: "Log in to make a difference!"
-            },
-            admin: {
-                desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
-                desc2: "Log in to unlock the full potential of your account management."
-            }
-        },
-        scripts: [
-            {src:"/js/loginStaff.js"},
-        ],
-    }); 
-});
-
-router.get("/verifyaccount", (req, res) => {
-    res.render( "pages/public/verifyCreateAccount", { 
-        layout:"main", 
-        css: 'verifyCreateAccount.css', 
-        title:'Verify Account',
-        partialsCSS: [
-            {name:"h1styled.css"},
-            {name:"paymentSidebar.css"},
-        ] ,
-        disablePaymentSidebar: true,
-        center: true,
-        scripts: [
-            {src:"/js/utils/countdown.js"},
-            {src:"/js/verifyEmail.js"},
-        ],
-        serverSeconds: 60
-    });  
-})
-
-router.post("/createaccount", (req, res) => {
-    res.redirect('/verifyaccount');
-}
-);
-
+ 
+// move to guest dashboard
 router.get("/reservationinfo/:id", (req, res) => {
     res.render( "pages/hotelguest/reservation",{ 
         layout:"main", 
@@ -307,46 +265,7 @@ router.post("/createReservation", (req, res) => {
     }
 })
 
-router.get("/faqsPolicies", (req, res) => {
-    res.render( "pages/public/faqsPolicies", { 
-        layout:"main", 
-        css: 'faqsPolicies.css', 
-        title:'Faqs & Policies',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] ,
-        // scripts: [
-        //     {src:"/js/utils/countdown.js"},
-        // ]
-    });  
-})
 
-router.get("/roomOffers", (req, res) => {
-    res.render( "pages/public/roomResults", { 
-        layout:"main", 
-        css: 'roomResults.css', 
-        title:'Offers',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] ,
-        rooms: [
-            {
-                offer: '50%',
-                name: "Queen",
-                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
-                originalPrice: 500,
-                discount_price: 440,
-                savings: 60
-            },
-            {
-                offer: '50%',
-                name: "Queen",
-                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
-                originalPrice: 500,
-                discount_price: 440,
-                savings: 60
-            }
-        ]
-    });  
-})
+
+
 module.exports = router;
