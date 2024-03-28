@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controllers/authController');
-const {viewHomePage, viewAboutPage, viewGuestRoomsPage} = require('./../controllers/publicViewsController');
+const {
+    viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
+    viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage
+} = require('./../controllers/publicViewsController');
 
 /*
     Notes: 
@@ -19,41 +22,16 @@ router.get("/about", authController.detect, viewAboutPage);
 
 router.get("/guestrooms", authController.detect, viewGuestRoomsPage)
 
-router.get("/restaurant", (req, res) => {
-    res.render("pages/public/restaurant",{
-        layout:"main",
-        css: 'restaurant.css', 
-        title:'Restaurant',
-    });
-});
+router.get("/restaurant", authController.detect, vieRestaurantPage);
 
-router.get("/contactUs", (req, res) => {
-    res.render("pages/public/contactUs",{layout:"main"});
-});
+router.get("/contactUs", authController.detect, viewContactUsPage);
 
-router.get("/createaccount", (req, res) => {
-    res.render( "pages/public/createaccount", { 
-        layout:"main", 
-        css: 'createaccount.css', 
-        title:'Create Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ],
-        disablePaymentSidebar: true,
-        center: true
-    });  
-})
+router.get("/roomOffers", authController.detect, viewRoomOffersPage)
 
-// move to guest dashboard
-router.get("/editaccount", (req, res) => {
-    res.render( "pages/hotelguest/editAccount", {
-        layout:"main", 
-        css: 'editaccount.css', 
-        title:'edit account',
-    });  
-})
+router.get("/createaccount", authController.detect, viewCreateAccountPage)
 
-// combine with offer
+
+// TODO combine with offer url
 router.get("/roomdetails", (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
@@ -70,122 +48,9 @@ router.get("/roomdetails/:id", (req, res) => {
     });  
 })
 
-// move to guest dashbaord
-// loyalty history
-router.get("/loyaltyhistory", (req, res) => {
-    res.render( "pages/hotelguest/royaltyHistory", {
-        layout:"main", 
-        css: 'editaccount.css', 
-        title:'royalty History',
-    });  
-})
-
-// router.get("/loyalty", (req, res) => {
-//     res.render( "pages/hotelguest/loyalty",{ 
-//         layout:"main", 
-//         css: 'guest/loyalty.css', 
-//         title:'Loyalty history',
-//         partialsCSS: [
-//             {name:"h1styled.css"}
-//         ] 
-//     });  
-// })
-
-// move to guest dashboard
-router.get("/userdashboard", (req, res) => {
-    res.render( "pages/hotelguest/userdashboard", {
-        layout:"main", 
-        title:'Profile',  
-    });  
-})
-
-// move to guest dashboard
-router.get("/updatepassword", (req, res) => {
-    res.render( "pages/hotelguest/updatepassword");  
-})
-
 router.get("/devlinks", (req, res) => {
     res.render( "pages/public/devlinks");  
 })
-
-// move to guest dashboard
-router.get("/reservations", (req, res) => {
-    res.render( "pages/hotelguest/reservationList",{ 
-        layout:"main", 
-        css: 'guest/reservationList.css', 
-        title:'Reservations',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-})
-
-router.get("/editaccount", (req, res) => {
-    res.render( "pages/hotelguest/editAccount",{ 
-        layout:"main", 
-        css: 'guest/editaccount.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
-
-router.get("/update-email", (req, res) => {
-    res.render( "pages/hotelguest/update-email",{ 
-        layout:"main", 
-        css: 'style.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
-
-router.get("/view-inquiries", (req, res) => {
-
-    const inquiries = [
-        { title: 'Will the spa be', detail: 'Will the spa be open till mid night.' },
-        { title: 'Is room service', detail: 'Is room service available in single rooms ' },
-        { title: 'Is there any', detail: 'Is there any option to book hotel car service' },
-        // Add more inquiries as needed
-    ];
-
-    res.render( "pages/hotelguest/view-inquiries",{ 
-        inquiries : inquiries,
-        layout:"main", 
-        css: 'style.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
-
-
-// Handle the form submission
-// Note we werent supposed to make apis yet, just the frontend
-// Edit this out later
-router.post('/submit-feedback', (req, res) => {
-    console.log(req.body); // Log the form data to the console
-    res.send('Thank you for your feedback!'); // Send a response to the client
-});
-
-// Note again we werent supposed to make apis yet, just the frontend
-// Edit this out later
-// Handle the form submission for updating email
-router.post('/submit-new-email', (req, res) => {  
-    res.render( "pages/hotelguest/update-email",{ 
-        layout:"main", 
-        css: 'style.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ],
-        successMessage: 'Your email has been updated.'
-    });  
-});
-
 
 router.get("/portal", (req, res) => {
     res.render( "pages/employee/portal",{ 
@@ -232,11 +97,149 @@ router.get("/verifyaccount", (req, res) => {
     });  
 })
 
+router.get("/faqsPolicies", (req, res) => {
+    res.render( "pages/public/faqsPolicies", { 
+        layout:"main", 
+        css: 'faqsPolicies.css', 
+        title:'Faqs & Policies',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] ,
+        // scripts: [
+        //     {src:"/js/utils/countdown.js"},
+        // ]
+    });  
+})
+
+
+
+
+
+
+
+
+// move since its a post route
 router.post("/createaccount", (req, res) => {
     res.redirect('/verifyaccount');
 }
 );
 
+// move to guest dashboard
+router.get("/editaccount", (req, res) => {
+    res.render( "pages/hotelguest/editAccount", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'edit account',
+    });  
+})
+
+// move to guest dashbaord
+// loyalty history
+router.get("/loyaltyhistory", (req, res) => {
+    res.render( "pages/hotelguest/royaltyHistory", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'royalty History',
+    });  
+})
+
+// DELETE move to guest dashboard
+// router.get("/userdashboard", (req, res) => {
+//     res.render( "pages/hotelguest/userdashboard", {
+//         layout:"main", 
+//         title:'Profile',  
+//     });  
+// })
+
+// move to guest dashboard
+router.get("/updatepassword", (req, res) => {
+    res.render( "pages/hotelguest/updatepassword");  
+})
+
+
+
+// move to guest dashboard
+router.get("/reservations", (req, res) => {
+    res.render( "pages/hotelguest/reservationList",{ 
+        layout:"main", 
+        css: 'guest/reservationList.css', 
+        title:'Reservations',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+})
+
+// move to guest dashboard
+router.get("/editaccount", (req, res) => {
+    res.render( "pages/hotelguest/editAccount",{ 
+        layout:"main", 
+        css: 'guest/editaccount.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
+
+// move to guest dashboard
+router.get("/update-email", (req, res) => {
+    res.render( "pages/hotelguest/update-email",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
+
+// move to guest dashboard
+router.get("/view-inquiries", (req, res) => {
+
+    const inquiries = [
+        { title: 'Will the spa be', detail: 'Will the spa be open till mid night.' },
+        { title: 'Is room service', detail: 'Is room service available in single rooms ' },
+        { title: 'Is there any', detail: 'Is there any option to book hotel car service' },
+        // Add more inquiries as needed
+    ];
+
+    res.render( "pages/hotelguest/view-inquiries",{ 
+        inquiries : inquiries,
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+});
+
+
+// Handle the form submission
+// Note we werent supposed to make apis yet, just the frontend
+// Edit this out later
+router.post('/submit-feedback', (req, res) => {
+    console.log(req.body); // Log the form data to the console
+    res.send('Thank you for your feedback!'); // Send a response to the client
+});
+
+// Note again we werent supposed to make apis yet, just the frontend
+// Edit this out later
+// Handle the form submission for updating email
+router.post('/submit-new-email', (req, res) => {  
+    res.render( "pages/hotelguest/update-email",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ],
+        successMessage: 'Your email has been updated.'
+    });  
+});
+ 
+// move to guest dashboard
 router.get("/reservationinfo/:id", (req, res) => {
     res.render( "pages/hotelguest/reservation",{ 
         layout:"main", 
@@ -307,46 +310,7 @@ router.post("/createReservation", (req, res) => {
     }
 })
 
-router.get("/faqsPolicies", (req, res) => {
-    res.render( "pages/public/faqsPolicies", { 
-        layout:"main", 
-        css: 'faqsPolicies.css', 
-        title:'Faqs & Policies',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] ,
-        // scripts: [
-        //     {src:"/js/utils/countdown.js"},
-        // ]
-    });  
-})
 
-router.get("/roomOffers", (req, res) => {
-    res.render( "pages/public/roomResults", { 
-        layout:"main", 
-        css: 'roomResults.css', 
-        title:'Offers',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] ,
-        rooms: [
-            {
-                offer: '50%',
-                name: "Queen",
-                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
-                originalPrice: 500,
-                discount_price: 440,
-                savings: 60
-            },
-            {
-                offer: '50%',
-                name: "Queen",
-                imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
-                originalPrice: 500,
-                discount_price: 440,
-                savings: 60
-            }
-        ]
-    });  
-})
+
+
 module.exports = router;

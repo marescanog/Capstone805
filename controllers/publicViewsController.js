@@ -53,7 +53,7 @@ exports.viewGuestRoomsPage = catchAsync( async (req, res, next) => {
         alertToLogin: req?.alertToLogin??false,
         userType: req?.decoded?.type??null,
         id:req?.decoded?.id??null,
-    })
+    });
 
     const roomTypeData = await getAllRooms(req, res, next);
 
@@ -66,4 +66,78 @@ exports.viewGuestRoomsPage = catchAsync( async (req, res, next) => {
     VB.addOptions("title", "Guest Rooms");
     VB.addOptions("startURL", process.env.AWS_ROOM_TYPE_IMAGE_URL);
     res.render("pages/hotelguest/guestrooms", VB.getOptions());  
-})
+});
+
+exports.vieRestaurantPage = (req, res, next) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", 'restaurant.css');
+    VB.addOptions("title", 'Restaurant');
+    res.render("pages/public/restaurant",VB.getOptions());
+}
+
+exports.viewContactUsPage = (req, res, next) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("title", 'Contact Us');
+    res.render("pages/public/contactUs",VB.getOptions());
+}
+
+exports.viewRoomOffersPage = (req, res, next) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", 'roomResults.css');
+    VB.addOptions("title", 'Offers');
+    VB.addOptions("partialsCSS", [
+        {name:"h1styled.css"}
+    ]);
+    VB.addOptions("rooms", [
+        {
+            offer: '50%',
+            name: "Queen",
+            imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
+            originalPrice: 500,
+            discount_price: 440,
+            savings: 60
+        },
+        {
+            offer: '50%',
+            name: "Queen",
+            imageUrl: "https://hotel-prroject-room-photos.s3.ca-central-1.amazonaws.com/rooms/72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26.jpg",
+            originalPrice: 500,
+            discount_price: 440,
+            savings: 60
+        }
+    ]);
+    res.render("pages/public/roomResults",VB.getOptions());
+}
+
+
+exports.viewCreateAccountPage = (req, res, next) => {
+    if(req?.decoded?.id){
+        res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+    } else {
+        const VB = new ViewBuilder({
+            alertToLogin: false,
+            userType: null,
+            id:null,
+        });
+        VB.addOptions("title", 'Create Account');
+        VB.addOptions("css", 'createaccount.css');
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"}
+        ]);
+        VB.addOptions("disablePaymentSidebar", true);
+        VB.addOptions("center", true);
+        res.render("pages/public/createaccount",VB.getOptions());
+    }
+}

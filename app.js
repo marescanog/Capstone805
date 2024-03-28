@@ -81,6 +81,9 @@ app.engine('.hbs', exphbs.engine({
         getClassName: function(arr, object, property){
             const res = arr== null ? [] :arr.filter(el=>el.name === object[property]);
             return res.length > 0 ? res[0].classname : "";
+        },
+        concat: function() {
+            return Array.prototype.slice.call(arguments, 0, -1).join('');
         }
     }
 }));
