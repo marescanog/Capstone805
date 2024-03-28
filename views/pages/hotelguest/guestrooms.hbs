@@ -1,122 +1,34 @@
-<style>
-    
-    /* Custom CSS for rounded borders */
-    .room-image {
-        border-radius: 10px;
-        overflow: hidden;
-        position: relative;
-        height: 300px;
-    }
-
-    .room-image img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        object-position: center;
-    }
-
-    .room-description {
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 0 0 10px 10px;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        width: 100%;
-        color: #1a1919eb;
-    }
-
-    .underline {
-        border-bottom: 3px solid #e88f3b;
-        display: inline-block;
-        padding-bottom: 2px;
-        width: fit-content;
-    }
-</style>
-
 <!-- Guest Rooms Section -->
 <div class="container py-5">
     <h1 class="underline"><span>Guest Rooms</span></h1>
-    <div class="pt-5">
-        <h3 class="underline">Regular Rooms</h3>
-        <div class="row">
-            <!-- Regular Rooms -->
-            <div class="col-md-3 mb-2">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Single Room" class="img-fluid">
-                        <div class="room-description">
-                            Single Room<br>Single Bed
-                        </div>
-                    </div>
-                </a>
+     
+    {{#if roomTypeData}}
+        {{#each roomTypeData}}
+            <div class="pt-3">
+                <h2 class="underline">{{this._id}}s</h2>
+                <div class="row pt-2">
+                        {{#if this.items}}
+                            {{#each this.items}}
+                                <div class="col-md-3 mb-3">
+                                    <a href="/roomdetails/{{this._id}}">
+                                        <div class="room-image">
+                                            <img src="{{../../startURL}}{{this.thumbNail.small.url}}.{{this.thumbNail.small.fileType}}" alt="Executive Suite" class="img-fluid">
+                                            <div class="room-description">
+                                                {{this.roomType}}<br>{{#equalOrGT this.bedCount 2}}{{this.bedCount}}{{/equalOrGT}} {{this.bedType}}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {{/each}}
+                        {{/if}}
+                </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Single Room" class="img-fluid">
-                        <div class="room-description">
-                            Single Room<br>Single Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Single Room" class="img-fluid">
-                        <div class="room-description">
-                            Single Room<br>Single Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Single Room" class="img-fluid">
-                        <div class="room-description">
-                            Single Room<br>Single Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Single Room" class="img-fluid">
-                        <div class="room-description">
-                            Single Room<br>Single Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div>
-        <h2 class="underline">Luxuary Suites</h2>
-        <div class="row">
-            <!-- Luxury Suites -->
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Executive Suite" class="img-fluid">
-                        <div class="room-description">
-                            Executive Suite<br>King Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 mb-3">
-                <a href="#">
-                    <div class="room-image">
-                        <img src="/assets/images/room5.jpg" alt="Presidential Suite" class="img-fluid">
-                        <div class="room-description">
-                            Presidential Suite<br>King Bed
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+        {{/each}}
+    {{/if}}
+
+    {{#unless roomTypeData}}
+        <p>There are no rooms to display</p>
+    {{/unless}}
+    
+
 </div>
