@@ -61,17 +61,16 @@ adminRouter.route('/users').get(viewUsers);
 adminRouter.route('/:id').get(loadAdminDashboard);
 
 
-// Staff Router
+// Employee Router
 renderDashboardRouter.use('/guest', userRouter);
-// authController.protect, authController.verifyGuest,
-userRouter.route("/update-email").get(updateGuestEmailPage);
-userRouter.route("/upload-photo").get(uploadNewGuestPhotoPage);
-userRouter.route("/update-password").get(updateGuestPasswordPage);
-userRouter.route("/editacccount").get(editGuestProfilePage);
-userRouter.route("/loyalty-history").get(loyaltyPointsHistoryPage);
-userRouter.route("/reservations").get(reservationHistoryPage);
-userRouter.route("/view-inbox").get(viewInboxPage);
-userRouter.route("/reservationinfo/:id").get(renderGuestReservationInfoPage);
-userRouter.route('/:id').get(loadUserDashboard);
+userRouter.route("/update-email").get(authController.protect, authController.verifyGuest, updateGuestEmailPage);
+userRouter.route("/upload-photo").get(authController.protect, authController.verifyGuest, uploadNewGuestPhotoPage);
+userRouter.route("/update-password").get(authController.protect, authController.verifyGuest, updateGuestPasswordPage);
+userRouter.route("/editacccount").get(authController.protect, authController.verifyGuest, editGuestProfilePage);
+userRouter.route("/loyalty-history").get(authController.protect, authController.verifyGuest, loyaltyPointsHistoryPage);
+userRouter.route("/reservations").get(authController.protect, authController.verifyGuest, reservationHistoryPage);
+userRouter.route("/view-inbox").get(authController.protect, authController.verifyGuest, viewInboxPage);
+userRouter.route("/reservationinfo/:id").get(authController.protect, authController.verifyGuest, renderGuestReservationInfoPage);
+userRouter.route('/:id').get(authController.protect, authController.verifyGuest, loadUserDashboard);
 
 module.exports = renderDashboardRouter;

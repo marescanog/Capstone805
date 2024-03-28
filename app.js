@@ -14,6 +14,7 @@ const contactFormRouter = require('./routes/contactFormRoutes');
 const renderDashboardRouter = require('./routes/renderDashboardRoutes');
 const checkoutRouter = require('./routes/checkoutRoutes');
 const publicRouter = require('./routes/publicRoutes');
+const globalRouter = require('./routes/globalRouter');
 
 var app = express();
 
@@ -112,6 +113,7 @@ app.use('/dashboard', renderDashboardRouter);
 app.use('/checkout', checkoutRouter);
 
 // 4 - ROUTES (Api calls / Get JSON data)
+app.use('/api/v1/', globalRouter);
 app.use('/api/v1/guests', guestRouter);
 app.use('/api/v1/employees', employeeRouter);
 app.use('/api/v1/reservations', reservationRouter);

@@ -94,17 +94,42 @@ function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
   }
 }
 
+function logout () {
+  try{
+    fetch('/api/v1/logout')
+    .then(response => response.json())
+    .then(res => {
+      console.log(res);
+      if(res.statusCode && res.statusCode.toString().startsWith("2")){
+        window.location.href = '/';
+      } else {
+          launchSwalError();
+      }
+    });
+  } catch(err){
+    launchSwalError();
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function(e) {
   const alertToLogin = document.getElementById('alertToLogin');
   const loginModalCloseButton = document.getElementById('loginModalCloseButton');
   const buttonText = document.getElementById('buttonText');
   const spinner = document.getElementById('spinner');
   const loginButton = document.getElementById('loginButton');
+  const logoutButton = document.getElementById('logout');
 
-  document.getElementById('loginButton').addEventListener('click', function(event) {
+  loginButton.addEventListener('click', function(event) {
     event.preventDefault(); 
     handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
+
+  if(logoutButton){
+    logoutButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      logout();
+    });
+  }
 
   if(alertToLogin){
     Swal.fire({
