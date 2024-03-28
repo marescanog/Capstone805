@@ -1,60 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controllers/authController');
-const {viewHomePage} = require('./../controllers/publicViewsController');
+const {viewHomePage, viewAboutPage, viewGuestRoomsPage} = require('./../controllers/publicViewsController');
+
+/*
+    Notes: 
+    authController.detect checks if jwt is saved in httpcookie
+        if jwt is saved, it updates the header accordingly with correct user
+        if jwt is saved but expired or tampered, a pop up displays informing the user of session timeout
+        if no jwt, default header is displayed
+*/
 
 router.get("/", authController.detect, viewHomePage);
 
-router.get("/home", viewHomePage);
+router.get("/home", authController.detect, viewHomePage);
 
-// Sanam Made this page, edit later
-// Modify to the new route
-router.get("/guestrooms", (req, res) => {   
-    res.render("pages/hotelguest/guestrooms");  
-})
+router.get("/about", authController.detect, viewAboutPage);
 
-// this one has the function to render all rooms
-// extract the function and put into above
-// // app.get("/guestrooms", (req, res) => {
-// //     renderAllRooms(req, res);
-// // });
-
-router.get("/about", (req, res) => {
-    const memberData = [
-        {
-            name: 'Marvie Gastaya',
-            imageUrl: "/img/about/marvie.png",
-            position:"Project Leader Database application developer",
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
-        },
-        {
-            name: 'Nischal Sapkota',
-            imageUrl: "/img/about/nishchal.png",
-            position:"Database application developer",
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
-        },
-        {
-          name: 'Sanam Maharjan',
-          imageUrl: "/img/about/sanam.png",
-          position:"Database application developer",
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
-      },
-      {
-          name: 'Taslima Parvin',
-          imageUrl: "/img/about/taslima.png",
-          position:"Database application developer",
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum velit euismod in pellentesque massa. Gravida arcu ac tortor dignissim convallis aenean et tortor. Sed libero enim sed faucibus turpis. Netus et malesuada fames ac turpis egestas. Vulputate ut pharetra sit amet aliquam id. Rutrum quisque non tellus orci. Risus nullam eget felis eget nunc lobortis mattis. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Tempus iaculis urna id volutpat. Scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Vel facilisis volutpat est velit egestas dui. Justo donec enim diam vulputate ut pharetra sit. Ac tincidunt vitae semper quis lectus nulla at'
-      },
-    ];
-    const hotelStory = "Here you can provide some text about the hotel's history, vision, and values...";
-    res.render("pages/public/about",{ 
-        layout:"main", 
-        css: 'style.css', 
-        title:'About',
-        members: memberData,
-        story: hotelStory
-    });
-});
+router.get("/guestrooms", authController.detect, viewGuestRoomsPage)
 
 router.get("/restaurant", (req, res) => {
     res.render("pages/public/restaurant",{
@@ -90,7 +53,16 @@ router.get("/editaccount", (req, res) => {
     });  
 })
 
+// combine with offer
 router.get("/roomdetails", (req, res) => {
+    res.render( "pages/public/roomdetails", {
+        layout:"main", 
+        css: 'roomdetails.css', 
+        title:'RoomDetails',
+    });  
+});
+
+router.get("/roomdetails/:id", (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
         css: 'roomdetails.css', 

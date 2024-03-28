@@ -20,7 +20,10 @@ class ViewBuilder {
     getOptions() {
         return this.viewOptions;
     }
-
+    
+    addOptions(optionName, optionValue) {
+        this.viewOptions[optionName] = optionValue;
+    }
 }
 
 module.exports = ViewBuilder;

@@ -1,0 +1,32 @@
+/* Custom CSS for rounded borders */
+.room-image {
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    height: 300px;
+}
+
+.room-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.room-description {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 10px 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    width: 100%;
+    color: #1a1919eb;
+}
+
+.underline {
+    border-bottom: 3px solid #e88f3b;
+    display: inline-block;
+    padding-bottom: 2px;
+    width: fit-content;
+}
