@@ -240,6 +240,8 @@ exports.verifyGuest = catchAsync(async(req, res, next)=>{
         return next(new AppError('Token expired. Please login!', 401));
     }
 
+    req.user = existing;
+
     next();
 });
 
