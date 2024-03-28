@@ -27,9 +27,9 @@ router.get("/restaurant", authController.detect, vieRestaurantPage);
 
 router.get("/contactUs", authController.detect, viewContactUsPage);
 
-router.get("/roomOffers", authController.detect, viewRoomOffersPage)
+router.get("/roomOffers", authController.detect, viewRoomOffersPage);
 
-router.get("/createaccount", authController.detect, viewCreateAccountPage)
+router.get("/createaccount", authController.detect, viewCreateAccountPage);
 
 // TODO Check if come from page createaccount
 // User should not be able to access this link just by typing the URL
@@ -79,96 +79,6 @@ router.post("/createaccount", (req, res) => {
 }
 );
 
-// move to guest dashboard
-router.get("/editaccount", (req, res) => {
-    res.render( "pages/hotelguest/editAccount", {
-        layout:"main", 
-        css: 'editaccount.css', 
-        title:'edit account',
-    });  
-})
-
-// move to guest dashbaord
-// loyalty history
-router.get("/loyaltyhistory", (req, res) => {
-    res.render( "pages/hotelguest/royaltyHistory", {
-        layout:"main", 
-        css: 'editaccount.css', 
-        title:'royalty History',
-    });  
-})
-
-// DELETE move to guest dashboard
-// router.get("/userdashboard", (req, res) => {
-//     res.render( "pages/hotelguest/userdashboard", {
-//         layout:"main", 
-//         title:'Profile',  
-//     });  
-// })
-
-// move to guest dashboard
-router.get("/updatepassword", (req, res) => {
-    res.render( "pages/hotelguest/updatepassword");  
-})
-
-
-
-// move to guest dashboard
-router.get("/reservations", (req, res) => {
-    res.render( "pages/hotelguest/reservationList",{ 
-        layout:"main", 
-        css: 'guest/reservationList.css', 
-        title:'Reservations',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-})
-
-// move to guest dashboard
-router.get("/editaccount", (req, res) => {
-    res.render( "pages/hotelguest/editAccount",{ 
-        layout:"main", 
-        css: 'guest/editaccount.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
-
-// move to guest dashboard
-router.get("/update-email", (req, res) => {
-    res.render( "pages/hotelguest/update-email",{ 
-        layout:"main", 
-        css: 'style.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
-
-// move to guest dashboard
-router.get("/view-inquiries", (req, res) => {
-
-    const inquiries = [
-        { title: 'Will the spa be', detail: 'Will the spa be open till mid night.' },
-        { title: 'Is room service', detail: 'Is room service available in single rooms ' },
-        { title: 'Is there any', detail: 'Is there any option to book hotel car service' },
-        // Add more inquiries as needed
-    ];
-
-    res.render( "pages/hotelguest/view-inquiries",{ 
-        inquiries : inquiries,
-        layout:"main", 
-        css: 'style.css', 
-        title:'Edit Account',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
 
 
 // Handle the form submission
@@ -193,64 +103,8 @@ router.post('/submit-new-email', (req, res) => {
         successMessage: 'Your email has been updated.'
     });  
 });
- 
-// move to guest dashboard
-router.get("/reservationinfo/:id", (req, res) => {
-    res.render( "pages/hotelguest/reservation",{ 
-        layout:"main", 
-        css: 'createaccount.css', 
-        title:'Reservation',
-        partialsCSS: [
-            {name:"paymentSidebar.css"},
-            {name:"h1styled.css"},
-            {name:"formContents.css"},
-        ] ,
-        scripts: [
-            {src:"/js/reservationinfo.js"},
-        ],
-        disablePaymentSidebar: false,
-        addFlatPicker: true,
-        userData: {
-            firstName: "John",
-            lastName: "Doe",
-        },
-        bookingData: {
-            reservationID: 'ASH7DO',
-            roomDetails: {
-                roomType: "Deluxe Room",
-                amenities: ["Breakfast Included","Welcome Drinks"],
-                bedType: "Queen",
-                numberOfBeds: 1,
-                pricePerNight: 250
-            },
-            checkinDate: "2024-03-16",
-            checkoutDate: "2024-03-20",
-            thumbnail: {
-                small: {
-                    fileType: "jpg",
-                    url: "4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f"
-                }
-            },
-            status: "pending",
-            numberOfGuests: 3,
-            estimatedArrivalTime: "1:00 PM",
-            paymentDetails: {
-                cardType: "Mastercard",
-                lastFour: "9845"
-            },
-            priceBreakdown: {
-                totalCharge: 630.89,
-                totalPaid: 189.27,
-                fees: [
-                    {"Taxes & Fees": 126.18},
-                    {"Subtotal": 504.71},
-                    {"Extra Person Fees": 4.71}
-                ],
-                promotions: []
-            }
-        }
-    });  
-})
+
+
 
 // move this route since this is post and does not render any pages
 // maybe make a reservation api router

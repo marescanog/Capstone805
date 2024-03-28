@@ -2,7 +2,8 @@ const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
-const {loadUserDashboard} = require('./../controllers/dashboard/dashboardController.js'); 
+const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
+    editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
 const authController = require('./../controllers/authController.js');
 
 const renderDashboardRouter = express.Router();
@@ -62,7 +63,15 @@ adminRouter.route('/:id').get(loadAdminDashboard);
 
 // Staff Router
 renderDashboardRouter.use('/guest', userRouter);
-userRouter.route('/:id').get(loadUserDashboard);
 // authController.protect, authController.verifyGuest,
+userRouter.route("/update-email").get(updateGuestEmailPage);
+userRouter.route("/upload-photo").get(uploadNewGuestPhotoPage);
+userRouter.route("/update-password").get(updateGuestPasswordPage);
+userRouter.route("/editacccount").get(editGuestProfilePage);
+userRouter.route("/loyalty-history").get(loyaltyPointsHistoryPage);
+userRouter.route("/reservations").get(reservationHistoryPage);
+userRouter.route("/view-inbox").get(viewInboxPage);
+userRouter.route("/reservationinfo/:id").get(renderGuestReservationInfoPage);
+userRouter.route('/:id').get(loadUserDashboard);
 
 module.exports = renderDashboardRouter;

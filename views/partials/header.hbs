@@ -78,9 +78,9 @@
             {{#navLink "/guestrooms"}}Guest Rooms{{/navLink}}
             {{#navLink "/restaurant"}}Restaurant{{/navLink}}
             {{#navLink "/contactUs"}}Contact Us{{/navLink}}
-            {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}
+
             {{#equal userType "Guest"}}
-              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard {{/navLink}}
+              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard{{/navLink}}
             {{/equal}}
 
             {{#equal userType "Staff"}}
@@ -96,12 +96,13 @@
             {{/equal}}
 
 
-
+          {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}      
             <li class="nav-item">
               <a class="nav-link" href="/roomOffers">
                 <button class="book-now">Book Now</button>
               </a>
             </li>
+
 
             <div class="nav-show-small">
               <hr>
@@ -128,7 +129,9 @@
                 {{/unless}}
 
                 {{#equal userType "Guest"}}
-                  <p>Guest</p>
+                  <a class="dropdown-item" href="/dashboard/guest/reservations">Reservations</a>
+                  <a class="dropdown-item" href="/dashboard/guest/view-inbox">Inbox</a>
+                  <a class="dropdown-item" href="/dashboard/guest/loyalty-history">Loyalty History</a>
                 {{/equal}}
 
                 {{#equal userType "Staff"}}
@@ -144,6 +147,7 @@
                 {{/equal}}
 
                 {{#if userType}}
+                   <hr>
                    <a class="dropdown-item" href="#">Logout</a>
                 {{/if}}
 
