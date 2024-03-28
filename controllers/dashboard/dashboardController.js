@@ -18,9 +18,9 @@ exports.loadUserDashboard = (req, res, next) => {
             {src:"/js/userDashboard.js"},
         ],
         buttonData: [
-            {name:"View Reservation History",url:"/reservations"},
+            {name:"View Reservation History",url:"/dashboard/guest/reservations"},
             {name:"Browse Room Offers",url:"/roomOffers"},
-            {name:"View Inbox",url:"/view-inquiries"}
+            {name:"View Inbox",url:"/dashboard/guest/view-inbox"}
         ],
         reservations: [
             {
@@ -29,7 +29,7 @@ exports.loadUserDashboard = (req, res, next) => {
                 checkOut: "Jan 30,2024",
                 interval: "In 1 month",
                 img:"../../../assets/images/room1.jpg",
-                url:'/reservationinfo/adssadsa'
+                url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
             },
             {
                 roomtType: "Room Name",
@@ -37,7 +37,7 @@ exports.loadUserDashboard = (req, res, next) => {
                 checkOut: "Jan 30,2024",
                 interval: "In 1 month",
                 img:"../../../assets/images/room1.jpg",
-                url:'/reservationinfo/adssadsa'
+                url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
             },
             {
                 roomtType: "Room Name",
@@ -45,7 +45,7 @@ exports.loadUserDashboard = (req, res, next) => {
                 checkOut: "Jan 30,2024",
                 interval: "In 1 month",
                 img:"../../../assets/images/room1.jpg",
-                url:'/reservationinfo/adssadsa'
+                url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
             },
             {
                 roomtType: "Room Name",
@@ -53,7 +53,7 @@ exports.loadUserDashboard = (req, res, next) => {
                 checkOut: "Jan 30,2024",
                 interval: "In 1 month",
                 img:"../../../assets/images/room1.jpg",
-                url:'/reservationinfo/adssadsa'
+                url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
             },
             {
                 roomtType: "Room Name",
@@ -61,54 +61,134 @@ exports.loadUserDashboard = (req, res, next) => {
                 checkOut: "Jan 30,2024",
                 interval: "In 1 month",
                 img:"../../../assets/images/room1.jpg",
-                url:'/reservationinfo/adssadsa'
+                url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
             },
         ]
     });  
 }
 
+exports.uploadNewGuestPhotoPage = (req, res, next) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The uploadNewGuestPhotoPage route is not yet defined!'
+    });
+}
+
+exports.updateGuestEmailPage = (req, res, next) => {
+    res.render( "pages/hotelguest/update-email",{ 
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+}
+
+exports.updateGuestPasswordPage = (req, res, next) => {
+    res.render( "pages/hotelguest/updatepassword"); 
+}
+
+exports.editGuestProfilePage = (req, res, next) => {
+    res.render( "pages/hotelguest/editAccount", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'edit account',
+    });  
+}
+
+exports.loyaltyPointsHistoryPage = (req, res, next) => {
+    res.render( "pages/hotelguest/royaltyHistory", {
+        layout:"main", 
+        css: 'editaccount.css', 
+        title:'royalty History',
+    }); 
+}
+
+exports.reservationHistoryPage = (req, res, next) => {
+    res.render( "pages/hotelguest/reservationList",{ 
+        layout:"main", 
+        css: 'guest/reservationList.css', 
+        title:'Reservations',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+}
+
+exports.viewInboxPage = (req, res, next) => {
+    const inquiries = [
+        { title: 'Will the spa be', detail: 'Will the spa be open till mid night.' },
+        { title: 'Is room service', detail: 'Is room service available in single rooms ' },
+        { title: 'Is there any', detail: 'Is there any option to book hotel car service' },
+        // Add more inquiries as needed
+    ];
+
+    res.render( "pages/hotelguest/view-inquiries",{ 
+        inquiries : inquiries,
+        layout:"main", 
+        css: 'style.css', 
+        title:'Edit Account',
+        partialsCSS: [
+            {name:"h1styled.css"}
+        ] 
+    });  
+}
 
 
-
-
-// EDIT DELETE LATER I GUESS
-exports.renderReservationInfoPage = async (req, res) => {
-    res.render( "pages/hotelguest/createReservation",{ 
+exports.renderGuestReservationInfoPage = async (req, res) => {
+    res.render( "pages/hotelguest/reservation",{ 
         layout:"main", 
         css: 'createaccount.css', 
         title:'Reservation',
         partialsCSS: [
             {name:"paymentSidebar.css"},
-            {name:"breadcrumbs.css"},
             {name:"h1styled.css"},
-            {name:"formContents.css"}
-        ],
+            {name:"formContents.css"},
+        ] ,
         scripts: [
-            {src:"/js/utils/countdown.js"},
-            {src:"/js/breadcrumbs.js"},
-            {src:"/js/paymentSidebar.js"},
-            {src:"/js/formContents.js"},
-            {src:"/js/checkoutReservationPage.js"},
+            {src:"/js/reservationinfo.js"},
         ],
-        bookingData: {
-            roomType: "Deluxe Room",
-            offers:["Breakfast Included","Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks"],
-            bedType: "Queen",
-            bedCount: 1,
-            amenities: [
-                {name: "Bathroom", count: 1},
-                {name: "Balcony", count: 1}
-            ],
-            thumbnailSmall: process.env.AWS_IMAGE_URL+"4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f",
-            fileType: "jpg",
-            checkOut: "Jan 28, 2024",
-            checkIn: "Jan 28, 2024",
-            guests: 3,
-            rate:250,
-            totalNights: 2,
-            extraPersonFee: 4.71,
-            discounts : []
+        disablePaymentSidebar: false,
+        addFlatPicker: true,
+        userData: {
+            firstName: "John",
+            lastName: "Doe",
         },
-        serverHeldSeconds: 900,
+        bookingData: {
+            reservationID: 'ASH7DO',
+            roomDetails: {
+                roomType: "Deluxe Room",
+                amenities: ["Breakfast Included","Welcome Drinks"],
+                bedType: "Queen",
+                numberOfBeds: 1,
+                pricePerNight: 250
+            },
+            checkinDate: "2024-03-16",
+            checkoutDate: "2024-03-20",
+            thumbnail: {
+                small: {
+                    fileType: "jpg",
+                    url: "4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f"
+                }
+            },
+            status: "pending",
+            numberOfGuests: 3,
+            estimatedArrivalTime: "1:00 PM",
+            paymentDetails: {
+                cardType: "Mastercard",
+                lastFour: "9845"
+            },
+            priceBreakdown: {
+                totalCharge: 630.89,
+                totalPaid: 189.27,
+                fees: [
+                    {"Taxes & Fees": 126.18},
+                    {"Subtotal": 504.71},
+                    {"Extra Person Fees": 4.71}
+                ],
+                promotions: []
+            }
+        }
     });  
 }

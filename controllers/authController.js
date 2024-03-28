@@ -44,11 +44,23 @@ const loginUser = async(req, next, Model ) => {
         
             const {keyWord, keyGen} = user;
         
-            // TODO: if Guest user exists check if active, for employees check status 
-            
-            // TODO: If Guest user is active check if verified, 
-        
-            // 2.) check if password is correct
+            // 3.) check if user is active and verified
+            switch(Model.modelName){
+                case "employee":
+                    if(user.status != 'active'){
+                        resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                    }
+                    break;
+                default: 
+                    if(!user.isVerified){
+                        resolve(next(new AppError('Incorrect email or password!', 400)));
+                    }
+                    if(!user.isActive){
+                        resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                    }
+            }
+
+            // 4.) check if password is correct
             // to do also create in Employee & transfer to password utility
             const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
         
@@ -56,7 +68,7 @@ const loginUser = async(req, next, Model ) => {
                 resolve(next(new AppError('Incorrect email or password!', 400)));
             }
         
-            // 3.) if everything ok send token to client
+            // 6.) if everything ok send token to client
             resolve({
                 token: signToken(user._id, user?.employeeType),
                 id: user._id
@@ -211,13 +223,24 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
 // TODO create verifyadmin
 
 exports.verifyGuest = catchAsync(async(req, res, next)=>{
-    // // 3.) Check if user still exists
-    // const existing = await Employee.findById(req.decoded.id);
+    // 3.) Check if user still exists
+    const existing = await Guest.findById(req.decoded.id);
 
-    // // 4.) Check if user changed password after route was issued
-    // console.log(existing)
+    if(!existing){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
 
-    // next();
+    // 4. check if user is active and verified
+    if(!existing.isVerified || !existing.isActive){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
+
+    // 5.) Check if user changed password after route was issued
+    if(existing.changedPasswordAfter(req.decoded.iat)){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
+
+    next();
 });
 
 
@@ -242,3 +265,13 @@ exports.detect = catchAsync(async(req, res, next)=>{
     
     next();
 });
+
+exports.logout = (req, res, next) => {
+    if (req.cookies.jwt){
+        res.clearCookie("jwt");
+    }
+    res.status(200).json({
+        status: 'success',
+        statusCode: 200
+    })
+}

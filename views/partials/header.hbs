@@ -52,10 +52,6 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   {{/if}}
 </head>
-<style>
-  @import url(https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.css);
-  @import url(https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.css);
-</style>
 <body>
 
   <div class="nav-container">
@@ -78,30 +74,32 @@
             {{#navLink "/guestrooms"}}Guest Rooms{{/navLink}}
             {{#navLink "/restaurant"}}Restaurant{{/navLink}}
             {{#navLink "/contactUs"}}Contact Us{{/navLink}}
-            {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}
+
             {{#equal userType "Guest"}}
-              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard {{/navLink}}
+              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard{{/navLink}}
             {{/equal}}
 
-            {{#equal userType "Staff"}}
-              <p>Staff</p>
+            {{#equal userType "staff"}}
+              {{#navLink (concat "/dashboard/staff/" id)}}Dashboard{{/navLink}}
+              {{#navLink "/dashboard/staff/inquiries"}}Inbox{{/navLink}}
             {{/equal}}
 
-            {{#equal userType "Manager"}}
+            {{#equal userType "manager"}}
               <p>Manager</p>
             {{/equal}}
 
-            {{#equal userType "Admin"}}
+            {{#equal userType "admin"}}
               <p>Admin</p>
             {{/equal}}
 
 
-
+          {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}      
             <li class="nav-item">
               <a class="nav-link" href="/roomOffers">
                 <button class="book-now">Book Now</button>
               </a>
             </li>
+
 
             <div class="nav-show-small">
               <hr>
@@ -128,23 +126,29 @@
                 {{/unless}}
 
                 {{#equal userType "Guest"}}
-                  <p>Guest</p>
+                  <a class="dropdown-item" href="/dashboard/guest/reservations">Reservations</a>
+                  <a class="dropdown-item" href="/dashboard/guest/view-inbox">Inbox</a>
+                  <a class="dropdown-item" href="/dashboard/guest/loyalty-history">Loyalty History</a>
                 {{/equal}}
 
-                {{#equal userType "Staff"}}
-                  <p>Staff</p>
+                {{#equal userType "staff"}}
+                  <a class="dropdown-item" href="/dashboard/staff/inquiries">Inbox</a>
+                  <a class="dropdown-item" href="/dashboard/staff/checkin">Guest Checkin</a>
+                  <a class="dropdown-item" href="/dashboard/staff/createReservations">Create Reservation</a>
+                  <a class="dropdown-item" href="/dashboard/staff/viewReservations">Find Reservation</a>
                 {{/equal}}
 
-                {{#equal userType "Manager"}}
+                {{#equal userType "manager"}}
                   <p>Manager</p>
                 {{/equal}}
 
-                {{#equal userType "Admin"}}
+                {{#equal userType "admin"}}
                   <p>Admin</p>
                 {{/equal}}
 
                 {{#if userType}}
-                   <a class="dropdown-item" href="#">Logout</a>
+                   <hr>
+                   <a class="dropdown-item" id="logout">Logout</a>
                 {{/if}}
 
                

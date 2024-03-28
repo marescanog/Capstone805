@@ -2,8 +2,8 @@
     <div class="dashboard-page-wrapper">
         <div class="dashboard-page-content-container">
             {{> _accountInfoSideBar img=sidebarData.img firstName=sidebarData.firstName lastName=sidebarData.lastName employeeType=sidebarData.employeeType 
-                emailAddress=sidebarData.emailAddress address=sidebarData.address mobileNumber=sidebarData.mobileNumber urlPassword="/updatepassword"
-                urlPhoto="#" urlEmail="/update-email"
+                emailAddress=sidebarData.emailAddress address=sidebarData.address mobileNumber=sidebarData.mobileNumber urlPassword="/dashboard/guest/update-password"
+                urlPhoto="/dashboard/guest/upload-photo" urlEmail="/dashboard/guest/update-email"
             }}
 
             <div class="dashboard-main-section-container">
@@ -16,13 +16,13 @@
                             <div>
                                 <h2 class="dash-h2-style">Hello, John Doe.</h2>
                             </div>
-                            <a href="/editaccount"><button type="button" class="btn btn-outline-primary">Edit Profile</button></a>
+                            <a href="/dashboard/guest/editacccount"><button type="button" class="btn btn-outline-primary">Edit Profile</button></a>
                         </div>
                       </div>
                       <div class="col-md-4">
                         <p class="fs-5">You earned <br><strong class="fs-3">100 points</strong></p>
                         <p class="fs-7">Unlock your rewards! Book now and redeem your points</p>
-                        <a href="/loyaltyhistory">View points history</a>
+                        <a href="/dashboard/guest/loyalty-history">View points history</a>
                       </div>
                     </div>
                     <div class="">
