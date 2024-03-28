@@ -1,4 +1,75 @@
-// EDIR DELETE LATER I GUESS
+exports.loadUserDashboard = (req, res, next) => {
+
+    res.render( "pages/hotelguest/userdashboard", {
+        userType:"Guest",
+        id: "asdasdsadsadadsa",
+        layout:"main", 
+        css: 'guest/userDashboard.css', 
+        title:'Profile',  
+        addSlick: true,
+        partialsCSS: [
+            // {name:"h1styled.css"},
+            {name:"accountInfoSideBar.css"},
+            {name:"accountButtonList.css"}
+        ],
+        scripts: [
+            {src:"/js/userDashboard.js"},
+        ],
+        buttonData: [
+            {name:"View Reservation History",url:"/reservations"},
+            {name:"Browse Room Offers",url:"/roomOffers"},
+            {name:"View Inbox",url:"/view-inquiries"}
+        ],
+        reservations: [
+            {
+                roomtType: "Room Name",
+                checkIn: "Jan 28,2024",
+                checkOut: "Jan 30,2024",
+                interval: "In 1 month",
+                img:"../../../assets/images/room1.jpg",
+                url:'/reservationinfo/adssadsa'
+            },
+            {
+                roomtType: "Room Name",
+                checkIn: "Jan 28,2024",
+                checkOut: "Jan 30,2024",
+                interval: "In 1 month",
+                img:"../../../assets/images/room1.jpg",
+                url:'/reservationinfo/adssadsa'
+            },
+            {
+                roomtType: "Room Name",
+                checkIn: "Jan 28,2024",
+                checkOut: "Jan 30,2024",
+                interval: "In 1 month",
+                img:"../../../assets/images/room1.jpg",
+                url:'/reservationinfo/adssadsa'
+            },
+            {
+                roomtType: "Room Name",
+                checkIn: "Jan 28,2024",
+                checkOut: "Jan 30,2024",
+                interval: "In 1 month",
+                img:"../../../assets/images/room1.jpg",
+                url:'/reservationinfo/adssadsa'
+            },
+            {
+                roomtType: "Room Name",
+                checkIn: "Jan 28,2024",
+                checkOut: "Jan 30,2024",
+                interval: "In 1 month",
+                img:"../../../assets/images/room1.jpg",
+                url:'/reservationinfo/adssadsa'
+            },
+        ]
+    });  
+}
+
+
+
+
+
+// EDIT DELETE LATER I GUESS
 exports.renderReservationInfoPage = async (req, res) => {
     res.render( "pages/hotelguest/createReservation",{ 
         layout:"main", 

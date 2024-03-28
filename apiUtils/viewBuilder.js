@@ -11,6 +11,10 @@ class ViewBuilder {
         if(params.userType){
             this.viewOptions.userType = params.userType;
         }
+
+        if(params.id){
+            this.viewOptions.id = params.id;
+        }
     }
 
     getOptions() {
