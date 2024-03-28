@@ -116,7 +116,8 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             expiresIn: new Date(
-                Date.now() + process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
             )
         });
         res.status(201).json({
@@ -131,11 +132,24 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
 
 
 exports.loginGuest = catchAsync(async(req, res, next) => {
-    const token = await loginUser(req, next, Guest);
-    res.status(201).json({
-        status: 'success',
-        token: token
-    });
+    const loginData = await loginUser(req, next, Guest);
+    if(loginData?.token){
+        // Set token in HTTP-only cookie
+        res.cookie('jwt', loginData.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            expiresIn: new Date(
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+            )
+        });
+        res.status(201).json({
+            status: 'success',
+            token: loginData.token,
+            statusCode: 201,
+            id: loginData.id
+        });
+    }
 })
 
 

@@ -20,13 +20,58 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
 
   if(form){
     try{
-
+      const emailInput = form.querySelector('input[type="email"]');
+      const passwordInput = form.querySelector('input[type="password"]');
+      const data = {
+        email: emailInput.value,
+        password: passwordInput.value
+      };
+        try{
+          fetch('api/v1/guests/login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(res => {
+              if(res.statusCode && res.statusCode.toString().startsWith("2")){
+                  setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                  loginModalCloseButton.disabled = false;
+                  window.location.href = `dashboard/guest/${res.id}`;
+              } else if (res.statusCode && res.statusCode.toString().startsWith("4")) {
+                  launchSwalError(()=>{
+                    setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                    loginModalCloseButton.disabled = false;
+                  }, "Unable to login", res.message);
+              } else {
+                  launchSwalError(()=>{
+                    setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                    loginModalCloseButton.disabled = false;
+                  }, "Unable to login")
+              }
+          })
+          .catch(err=>{
+            launchSwalError(()=>{
+              setDisabledLoginButton (false, loginButton, buttonText, spinner);
+              loginModalCloseButton.disabled = false;
+            })
+          })
+        }catch(err){
+          launchSwalError(()=>{
+            setDisabledLoginButton (false, loginButton, buttonText, spinner);
+            loginModalCloseButton.disabled = false;
+          })
+        }
     } catch (err){
       launchSwalError(()=>{
         setDisabledLoginButton (false, loginButton, buttonText, spinner);
         loginModalCloseButton.disabled = false;
       })
     }
+
+
   } else {
     launchSwalError(()=>{
       setDisabledLoginButton (false, loginButton, buttonText, spinner);
@@ -55,7 +100,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
   const buttonText = document.getElementById('buttonText');
   const spinner = document.getElementById('spinner');
   const loginButton = document.getElementById('loginButton');
-
 
   document.getElementById('loginButton').addEventListener('click', function(event) {
     event.preventDefault(); 
