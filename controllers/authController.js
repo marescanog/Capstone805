@@ -8,8 +8,18 @@ const AppError = require('../apiUtils/appError.js');
 
 const {Types} = mongoose;
 
-const signToken = id => {
-    return jwt.sign({id: id}, process.env.JWT_SECRET, {
+const signToken = (id, empType) => {
+    const payload = {
+        id: id
+    }
+
+    if(empType){
+        payload.type = empType;
+    } else {
+        payload.type = "Guest";
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 }
@@ -41,7 +51,7 @@ const loginUser = async(req, next, Model ) => {
 
     // 3.) if everything ok send token to client
     return {
-        token: signToken(user._id),
+        token: signToken(user._id, user?.employeeType),
         id: user._id
     };
 
@@ -175,6 +185,7 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     next();
 });
 
+
 // TODO create verifyadmin
 
 exports.verifyGuest = catchAsync(async(req, res, next)=>{
@@ -185,4 +196,27 @@ exports.verifyGuest = catchAsync(async(req, res, next)=>{
     // console.log(existing)
 
     // next();
-})
+});
+
+
+exports.detect = catchAsync(async(req, res, next)=>{
+    let token;
+
+    if (req.cookies.jwt){
+        // check if token exists
+        token = req.cookies.jwt;
+    }
+
+    if(token){
+        // verify token if existing
+        try{
+            req.decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        } catch(err){
+            // remove cookie & send pop up to client when expired/incorrect token
+            req.alertToLogin = true;
+            res.clearCookie("jwt");
+        }
+    }
+    
+    next();
+});

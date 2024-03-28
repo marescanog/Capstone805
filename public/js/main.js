@@ -1,15 +1,38 @@
 
+const launchSwalError = (_callback, title, text) => {
+  Swal.fire({
+    title: title??"Something went wrong!",
+    text: text??"Please try again!",
+    icon: "error"
+  }).then(()=>{
+    if(_callback){
+      _callback();
+    }
+  })
+}
+
 // Function to handle login
 function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
   loginModalCloseButton.disabled = true;
   setDisabledLoginButton (true, loginButton, buttonText, spinner);
 
-  // fetch api call
-  setTimeout(() => {
-    setDisabledLoginButton (false, loginButton, buttonText, spinner);
-    loginModalCloseButton.disabled = false;
-  }, "5000");
+  const form = document.getElementById('loginUserForm');
 
+  if(form){
+    try{
+
+    } catch (err){
+      launchSwalError(()=>{
+        setDisabledLoginButton (false, loginButton, buttonText, spinner);
+        loginModalCloseButton.disabled = false;
+      })
+    }
+  } else {
+    launchSwalError(()=>{
+      setDisabledLoginButton (false, loginButton, buttonText, spinner);
+      loginModalCloseButton.disabled = false;
+    })
+  }
 }
 
 function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
@@ -27,17 +50,25 @@ function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
 }
 
 document.addEventListener("DOMContentLoaded", function(e) {
+  const alertToLogin = document.getElementById('alertToLogin');
   const loginModalCloseButton = document.getElementById('loginModalCloseButton');
   const buttonText = document.getElementById('buttonText');
   const spinner = document.getElementById('spinner');
   const loginButton = document.getElementById('loginButton');
+
 
   document.getElementById('loginButton').addEventListener('click', function(event) {
     event.preventDefault(); 
     handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
 
-
+  if(alertToLogin){
+    Swal.fire({
+      title: "Session Expired!",
+      text: "Please login again.",
+      icon: "info"
+    })
+  }
 });
 
 

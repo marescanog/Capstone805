@@ -1,4 +1,4 @@
-
+// EDIR DELETE LATER I GUESS
 exports.renderReservationInfoPage = async (req, res) => {
     res.render( "pages/hotelguest/createReservation",{ 
         layout:"main", 
