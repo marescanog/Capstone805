@@ -4,7 +4,7 @@ const authController = require('./../controllers/authController');
 const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
     viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
-    viewEmployeePortalPage
+    viewEmployeePortalPage, viewFAQPage
 } = require('./../controllers/publicViewsController');
 
 /*
@@ -38,18 +38,10 @@ router.get("/verifyaccount", authController.detect, viewVerifyAccountPage);
 
 router.get("/portal", authController.detect, viewEmployeePortalPage);
 
-router.get("/faqsPolicies", (req, res) => {
-    res.render( "pages/public/faqsPolicies", { 
-        layout:"main", 
-        css: 'faqsPolicies.css', 
-        title:'Faqs & Policies',
-        partialsCSS: [
-            {name:"h1styled.css"}
-        ] 
-    });  
-});
+router.get("/faqsPolicies", authController.detect, viewFAQPage);
 
 // TODO combine with offer url
+// TODO add detect to these routes
 router.get("/roomdetails", (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 

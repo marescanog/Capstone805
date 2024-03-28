@@ -214,3 +214,18 @@ exports.viewEmployeePortalPage = (req, res, next) => {
         res.render("pages/employee/portal",VB.getOptions());
     }
 }
+
+
+exports.viewFAQPage = (req, res, next) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    })
+    VB.addOptions("css", 'faqsPolicies.cs');
+    VB.addOptions("title", 'Faqs & Policies');
+    VB.addOptions("partialsCSS", [
+        {name:"h1styled.css"}
+    ]);
+    res.render("pages/public/faqsPolicies", VB.getOptions());
+}
