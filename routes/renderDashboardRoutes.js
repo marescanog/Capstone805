@@ -16,15 +16,15 @@ const userRouter = express.Router();
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
 staffRouter.route('/viewReservations').get(viewStaffReservations);
-staffRouter.route('/edit').get(editStaffAccount);
-staffRouter.route('/changePassword').get(editStaffPassword);
-staffRouter.route('/updatePhoto').get(updateStaffPhoto);
-staffRouter.route('/createReservations').get(createReservations);
-staffRouter.route('/inquiries').get(viewInquiries);
-staffRouter.route('/checkin').get(checkin);
-staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')});
-staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')});
-staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard);
+staffRouter.route('/edit').get(authController.protect, authController.verifyEmployee, editStaffAccount); //done
+staffRouter.route('/changePassword').get(authController.protect, authController.verifyEmployee, editStaffPassword); //done
+staffRouter.route('/updatePhoto').get(authController.protect, authController.verifyEmployee, updateStaffPhoto); //done
+staffRouter.route('/createReservations').get(createReservations); // no page
+staffRouter.route('/inquiries').get(authController.protect, authController.verifyEmployee, viewInquiries); //semi-done rushed html & css
+staffRouter.route('/checkin').get(checkin); // no modal
+staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')}); // no page
+staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')}); // no page
+staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard); //done
 
 
 

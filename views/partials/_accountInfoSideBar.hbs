@@ -4,7 +4,9 @@
     <link rel="stylesheet" href="/css/{{css}}">
             <img class="acc-info-sidebar-user-img" src={{#if img}}{{img}}{{/if}}{{#unless img}}"\img\placeholder\account.png" {{/unless}} alt="user_image">
         </div>
-        <a class="acc-info-a" href="{{urlPhoto}}">{{#if img}}Update Photo{{/if}}{{#unless img}}Upload New Photo{{/unless}}</a>
+        {{#unless editMode}}
+            <a class="acc-info-a" href="{{urlPhoto}}">{{#if img}}Update Photo{{/if}}{{#unless img}}Upload New Photo{{/unless}}</a>
+        {{/unless}}
     </div>
     <div class="acc-info-sidebar-details-container">
         <div class="acc-info-title-box">
@@ -31,12 +33,14 @@
                 <img class="acc-info-item-img" src="\img\icons\dash\mobile.svg" alt="mobile icon">
                 <p class="acc-info-item-text">{{#if mobileNumber}}{{mobileNumber}}{{/if}}{{#unless mobileNumber}}Edit your account to add a number{{/unless}}</p>
             </div>
-            {{#unless employeeType}}
-            <div>
-                <a class="acc-info-a" href="{{urlEmail}}">Update Email</a>
-            </div>
+            {{#unless editMode}}
+                {{#unless employeeType}}
+                <div>
+                    <a class="acc-info-a" href="{{urlEmail}}">Update Email</a>
+                </div>
+                {{/unless}}
+                <a class="acc-info-a" href="{{urlPassword}}">Change Password</a>
             {{/unless}}
-            <a class="acc-info-a" href="{{urlPassword}}">Change Password</a>
         </div>
     </div>
 </div>

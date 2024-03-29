@@ -1,17 +1,21 @@
+const catchAsync = require('./../../apiUtils/catchAsync');
+const ViewBuilder = require('./../../apiUtils/viewBuilder');
 
 exports.loadStaffDashboard = async (req, res) => {
-    const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
-
-      res.render( "pages/employee/empDashboard",{ 
-        layout:"main", 
-        css: 'dash.css', 
-        title:'Employee Dashboard',
-        partialsCSS: [
-            // {name:"h1styled.css"},
+    if(req.user){
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Employee Dashboard");
+        VB.addOptions("partialsCSS", [,
             {name:"accountInfoSideBar.css"},
             {name:"accountButtonList.css"}
-        ],
-        sidebarData : {
+        ]);
+        VB.addOptions("sidebarData", {
             img: "/img/placeholder/hotelstaff.png",
             firstName: firstName,
             lastName: `${lastName.charAt(0)}.`,
@@ -19,18 +23,133 @@ exports.loadStaffDashboard = async (req, res) => {
             mobileNumber: mobileNumber,
             address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
             emailAddress: emailAddress
-        },
-        buttonData: [
+        });
+        VB.addOptions("buttonData", [
             {name:"Respond to Inquiries",url:"/dashboard/staff/inquiries"},
             {name:"Browse Reservations",url:"/dashboard/staff/viewReservations"},
             {name:"Create Reservation",url:"/dashboard/staff/createReservations"}
-        ]
-    }); 
+        ]);
+        res.render( "pages/employee/empDashboard", VB.getOptions());
+    } else {
+        // redirect or something
+    }
 }
 
+exports.updateStaffPhoto = async (req, res) => {
+    if(req.user){
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Edit Account");
+        VB.addOptions("partialsCSS", [,
+            {name:"accountInfoSideBar.css"},
+            {name:"h1styled.css"}
+        ]);
+        VB.addOptions("sidebarData", {
+            img: "/img/placeholder/hotelstaff.png",
+            firstName: firstName,
+            lastName: `${lastName.charAt(0)}.`,
+            employeeType: employeeType,
+            mobileNumber: mobileNumber,
+            address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            emailAddress: emailAddress,
+        });
+        VB.addOptions("headerTitle", "Update Photo");
+        res.render( "pages/employee/editAcc", VB.getOptions());
+    } else {
+        // redirect or something
+    }
+}
+
+exports.editStaffAccount = async (req, res) => {
+    if(req.user){
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Edit Account");
+        VB.addOptions("partialsCSS", [,
+            {name:"accountInfoSideBar.css"},
+            {name:"h1styled.css"}
+        ]);
+        VB.addOptions("sidebarData", {
+            img: "/img/placeholder/hotelstaff.png",
+            firstName: firstName,
+            lastName: `${lastName.charAt(0)}.`,
+            employeeType: employeeType,
+            mobileNumber: mobileNumber,
+            address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            emailAddress: emailAddress,
+            editMode: true
+        });
+        VB.addOptions("headerTitle", "Edit Account Details");
+        res.render( "pages/employee/editAcc", VB.getOptions());
+    } else {
+        // redirect or something
+    }
+    
+}
+
+exports.editStaffPassword = async (req, res) => {
+    if(req.user){
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Edit Account");
+        VB.addOptions("partialsCSS", [,
+            {name:"accountInfoSideBar.css"},
+            {name:"h1styled.css"}
+        ]);
+        VB.addOptions("sidebarData", {
+            img: "/img/placeholder/hotelstaff.png",
+            firstName: firstName,
+            lastName: `${lastName.charAt(0)}.`,
+            employeeType: employeeType,
+            mobileNumber: mobileNumber,
+            address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            emailAddress: emailAddress,
+            editMode: true
+        });
+        VB.addOptions("headerTitle", "Update Password");
+        res.render( "pages/employee/editAcc", VB.getOptions());
+    } else {
+        // redirect or something
+    }
+}
+
+
+exports.viewInquiries = async (req, res) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "employee/viewInquiries.css");
+        VB.addOptions("title", "View Inquiries");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"}
+        ]);
+        res.render( "pages/employee/viewInquiries", VB.getOptions());
+    } else {
+        // redirect or something
+    }
+}
+
+
+
 exports.viewStaffReservations = async (req, res) => {
-
-
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/viewReservations.css', 
@@ -181,19 +300,6 @@ exports.checkin = async (req, res) => {
     }); 
 }
 
-exports.editStaffAccount = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The editStaffAccount route is not yet defined!'
-    });
-}
-
-exports.editStaffPassword = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The editStaffPassword route is not yet defined!'
-    });
-}
 
 exports.createReservations = async (req, res) => {
     res.status(500).json({
@@ -202,17 +308,7 @@ exports.createReservations = async (req, res) => {
     });
 }
 
-exports.viewInquiries = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The viewInquiries route is not yet defined!'
-    });
-}
 
-exports.updateStaffPhoto = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The updateStaffPhoto route is not yet defined!'
-    });
-}
+
+
 
