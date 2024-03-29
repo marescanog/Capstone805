@@ -1,6 +1,90 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder')
  
+exports.viewReportPage = async (req, res) => {
+    const chartData = {
+        labels: ['January', 'February', 'March', 'April'], // Example labels
+        values: [10, 20, 30, 40] // Example data
+      }
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", "reports.css");
+    VB.addOptions("title", "Reporting Tool");
+    VB.addOptions("headerTitle", "Generate Report");
+    VB.addOptions("partialsCSS", [,
+        {name:"h1styled.css"},
+    ]);
+    VB.addOptions("addChartsJS", true);
+    VB.addOptions("chartData", chartData);
+    VB.addOptions("scripts",[
+        {src:"/js/initChart.js"},
+    ]);
+    res.render( "pages/employee/manager/generateReport", VB.getOptions());
+}
+
+// exports.viewReportPage = async (req, res) => {
+//     const VB = new ViewBuilder({
+//         alertToLogin: req?.alertToLogin??false,
+//         userType: req?.decoded?.type??null,
+//         id:req?.decoded?.id??null,
+//     });
+//     VB.addOptions("css", "reports.css");
+//     VB.addOptions("title", "Reporting Tool");
+//     VB.addOptions("headerTitle", "Generate Report");
+//     VB.addOptions("partialsCSS", [,
+//         {name:"h1styled.css"},
+//     ]);
+//     res.render( "pages/employee/empDashboard", VB.getOptions());
+// }
+
+// exports.viewReportPage = async (req, res) => {
+//     const VB = new ViewBuilder({
+//         alertToLogin: req?.alertToLogin??false,
+//         userType: req?.decoded?.type??null,
+//         id:req?.decoded?.id??null,
+//     });
+//     VB.addOptions("css", "reports.css");
+//     VB.addOptions("title", "Reporting Tool");
+//     VB.addOptions("headerTitle", "Generate Report");
+//     VB.addOptions("partialsCSS", [,
+//         {name:"h1styled.css"},
+//     ]);
+//     res.render( "pages/employee/empDashboard", VB.getOptions());
+// }
+
+// exports.viewReportPage = async (req, res) => {
+//     const VB = new ViewBuilder({
+//         alertToLogin: req?.alertToLogin??false,
+//         userType: req?.decoded?.type??null,
+//         id:req?.decoded?.id??null,
+//     });
+//     VB.addOptions("css", "reports.css");
+//     VB.addOptions("title", "Reporting Tool");
+//     VB.addOptions("headerTitle", "Generate Report");
+//     VB.addOptions("partialsCSS", [,
+//         {name:"h1styled.css"},
+//     ]);
+//     res.render( "pages/employee/empDashboard", VB.getOptions());
+// }
+
+// exports.viewReportPage = async (req, res) => {
+//     const VB = new ViewBuilder({
+//         alertToLogin: req?.alertToLogin??false,
+//         userType: req?.decoded?.type??null,
+//         id:req?.decoded?.id??null,
+//     });
+//     VB.addOptions("css", "reports.css");
+//     VB.addOptions("title", "Reporting Tool");
+//     VB.addOptions("headerTitle", "Generate Report");
+//     VB.addOptions("partialsCSS", [,
+//         {name:"h1styled.css"},
+//     ]);
+//     res.render( "pages/employee/empDashboard", VB.getOptions());
+// }
+
 exports.loadManagerDashboard = async (req, res) => {
     if(req.user){
         const today = new Date();
@@ -28,7 +112,7 @@ exports.loadManagerDashboard = async (req, res) => {
             emailAddress: emailAddress
         });
         VB.addOptions("buttonData", [
-            {name:"Generate Report",url:"/dashboard/manager/dfgdfg"},
+            {name:"Generate Report",url:"/dashboard/manager/report"},
             {name:"Manage Promotions",url:"/dashboard/manager/promotions"},
             {name:"Manage Reservations",url:"/dashboard/staff/viewReservations"}
         ]);
