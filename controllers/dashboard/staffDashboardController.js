@@ -1,5 +1,6 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder');
+const AppError = require('./../../apiUtils/appError.js');
 
 exports.loadStaffDashboard = async (req, res) => {
     if(req.user){
@@ -31,7 +32,7 @@ exports.loadStaffDashboard = async (req, res) => {
         ]);
         res.render( "pages/employee/empDashboard", VB.getOptions());
     } else {
-        // redirect or something
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
 }
 
@@ -61,7 +62,7 @@ exports.updateStaffPhoto = async (req, res) => {
         VB.addOptions("headerTitle", "Update Photo");
         res.render( "pages/employee/editAcc", VB.getOptions());
     } else {
-        // redirect or something
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
 }
 
@@ -92,7 +93,7 @@ exports.editStaffAccount = async (req, res) => {
         VB.addOptions("headerTitle", "Edit Account Details");
         res.render( "pages/employee/editAcc", VB.getOptions());
     } else {
-        // redirect or something
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
     
 }
@@ -124,7 +125,7 @@ exports.editStaffPassword = async (req, res) => {
         VB.addOptions("headerTitle", "Update Password");
         res.render( "pages/employee/editAcc", VB.getOptions());
     } else {
-        // redirect or something
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
 }
 
@@ -143,32 +144,85 @@ exports.viewInquiries = async (req, res) => {
         ]);
         res.render( "pages/employee/viewInquiries", VB.getOptions());
     } else {
-        // redirect or something
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
 }
 
 
+exports.createReservations = async (req, res) => {
+    if(req.user){
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "employee/createReservation.css");
+        VB.addOptions("title", "View Inquiries");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+            {name:"formContents.css"},
+        ]);
+        VB.addOptions("scripts", [
+            {src:"/js/reservationinfo.js"},
+        ]);
+        VB.addOptions("addFlatPicker", true);
+        VB.addOptions("bookingData", {
+            checkinDate: `${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`,
+            checkoutDate:  `${tomorrow.getDate()}/${tomorrow.getMonth()}/${tomorrow.getFullYear()}`,
+        });
+        res.render( "pages/employee/createReservation", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+}
+
 
 exports.viewStaffReservations = async (req, res) => {
-    res.render( "pages/employee/viewList",{ 
-        layout:"main", 
-        css: 'employee/viewReservations.css', 
-        title:'View Reservations',
-        partialsCSS: [
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "employee/viewReservations.css");
+        VB.addOptions("title", "View Reservations");
+        VB.addOptions("headerTitle", "Find a Reservation");
+        VB.addOptions("placeholder", "Search for a Reservation");
+        VB.addOptions("partialsCSS", [
             {name:"h1styled.css"},
             {name:"search.css"},
             {name:"table.css"},
-        ],
-        scripts: [
+        ]);
+        VB.addOptions("scripts", [
             {src:"/js/searchControl.js"},
-        ],
-        searchOptionsList: [
+        ]);
+
+        VB.addOptions("searchControlUrl", "/dashboard/staff/viewReservations");
+        VB.addOptions("searchOptionsList", [
             {id:"reservationNumber", label:"Reservation Number"},
             {id:"lastName", label:"Last Name"},
             {id:"date", label: "Date"}
-        ],
-        searchControlUrl: "/dashboard/staff/viewReservations",
-        results: [
+        ]);
+
+        VB.addOptions("tableOptions", {
+            columns: [
+                {resultName:"reservationID", label:"Reservation #", isRow: true},
+                {resultName:"checkinDate", label:"Check-in"},
+                {resultName:"checkoutDate", label:"Check-out"},
+                {resultName:"guestName", label:"Guest Name"},
+                {resultName:"status", label:"Status"},
+                {resultName:"action", label:"Action", 
+                    isButton: { 
+                        classNames: [{classname:"btn-tab-lightblue", name: "View"}, {classname:"btn-tab-lightorange", name: "Modify"}],
+                    }
+                }
+            ]
+        });
+
+        VB.addOptions("results", [
             {
                 reservationID: "ASD75HK",
                 checkinDate: "Sep 7, 2024 Fri",
@@ -192,48 +246,60 @@ exports.viewStaffReservations = async (req, res) => {
                 guestName: "Alpha, Betty",
                 status: "Upcoming",
                 action: "View"
-            }
-        ],
-        tableOptions: {
-            columns: [
-                {resultName:"reservationID", label:"Reservation #", isRow: true},
-                {resultName:"checkinDate", label:"Check-in"},
-                {resultName:"checkoutDate", label:"Check-out"},
-                {resultName:"guestName", label:"Guest Name"},
-                {resultName:"status", label:"Status"},
-                {resultName:"action", label:"Action", 
-                    isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "View"}, {classname:"btn-tab-lightorange", name: "Modify"}],
-                    }
                 }
-            ]
-        },
-        headerTitle:"Find a Reservation",
-        placeholder:"Search for a Reservation"
-    }); 
+        ]);
+
+
+        res.render( "pages/employee/viewList", VB.getOptions()); 
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 exports.checkin = async (req, res) => {
-    res.render( "pages/employee/viewList",{ 
-        layout:"main", 
-        css: 'employee/checkin.css', 
-        title:'Checkin Guest',
-        partialsCSS: [
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "employee/checkin.css");
+        VB.addOptions("title", "Checkin Guest");
+        VB.addOptions("headerTitle", "Find Guests Checking-In Today");
+        VB.addOptions("placeholder", "Search for a Guest");
+        VB.addOptions("partialsCSS", [
             {name:"h1styled.css"},
             {name:"search.css"},
             {name:"table.css"},
-        ],
-        scripts: [
+        ]);
+        VB.addOptions("scripts",[
             {src:"/js/searchControl.js"},
-        ],
-        searchOptionsList: [
+        ]);
+        VB.addOptions("searchOptionsList", [
             {id:"reservationNumber", label:"Reservation Number"},
             {id:"lastName", label:"Last Name"},
             {id:"firstName", label: "First Name"},
             {id:"arrivalTime", label: "Arrival Time"}
-        ],
-        searchControlUrl: "/dashboard/staff/checkin",
-        results: [
+        ]);
+        VB.addOptions("searchControlUrl", "/dashboard/staff/checkin");
+
+        VB.addOptions("tableOptions", {
+            columns: [
+                {resultName:"reservationID", label:"Reservation #", isRow: true},
+                {resultName:"checkinDate", label:"Check-in"},
+                {resultName:"checkoutDate", label:"Check-out"},
+                {resultName:"arrivalTime", label:"Arrival Time"},
+                {resultName:"guestName", label:"Guest Name"},
+                {resultName:"status", label:"Status"},
+                {resultName:"action", label:"Action", 
+                    isButton: { 
+                        classNames: [{classname:"btn-tab-lightblue", name: "Check-In"}, {classname:"btn-tab-lightorange", name: "View"}],
+                    }
+                }
+            ]
+        });
+
+        VB.addOptions("results", [
             {
                 reservationID: "SDF4HN",
                 checkinDate: "March 16, 2024 Fri",
@@ -279,34 +345,16 @@ exports.checkin = async (req, res) => {
                 status: "Checked",
                 action: "View"
             },
-        ],
-        tableOptions: {
-            columns: [
-                {resultName:"reservationID", label:"Reservation #", isRow: true},
-                {resultName:"checkinDate", label:"Check-in"},
-                {resultName:"checkoutDate", label:"Check-out"},
-                {resultName:"arrivalTime", label:"Arrival Time"},
-                {resultName:"guestName", label:"Guest Name"},
-                {resultName:"status", label:"Status"},
-                {resultName:"action", label:"Action", 
-                    isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Check-In"}, {classname:"btn-tab-lightorange", name: "View"}],
-                    }
-                }
-            ]
-        },
-        headerTitle:"Find Guests Checking-In Today",
-        placeholder:"Search for a Guest"
-    }); 
+        ]);
+
+        res.render( "pages/employee/viewList", VB.getOptions()); 
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 
-exports.createReservations = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The createReservations route is not yet defined!'
-    });
-}
+
 
 
 

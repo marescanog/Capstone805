@@ -1,0 +1,268 @@
+<div class="reservation-page-wrapper">
+    {{> _h1styled headerTitle="Create Reservation"}}
+
+    <div class="price-card-container mt-3 mb-3">
+        <div class="card price-card">
+        <div class="card-header">
+            Pricing Information
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Price per night before tax:</li>
+            <li class="list-group-item">Total Nights:</li>
+            <li class="list-group-item">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                            Fee Breakdown
+                        </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                            <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">HST: </li>
+                                    <li class="list-group-item">Extra Person Fee:</li>
+                            </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">Total After Tax and fees</li>
+        </ul>
+        </div>
+    </div>
+
+    <form >
+        <div class="form-create-reservation">
+            <div class="section-room-selection">
+                <div class="card mb-3" >
+                    <div class="card-body">
+                    <h5 class="card-title">Select Dates</h5>
+                    <h6 class="form-content-h6-style mt-4">Booking information</h6> 
+                        <p> Stay Period </p>
+                        <div class="d-none" id="calendar-container">
+                            <div class="calendar-wrapper">
+                                <input type="date" readonly id="datePicker">
+                            </div>
+                        </div>
+                        <div class="row section-date-range">
+                            <div class="col-md-6">
+                                <label id="checkinLabel" for="inputcheckin" class="form-label no-border">Check-in*</label>
+                                <input readonly value={{bookingData.checkinDate}} type="date" name="checkin" class="form-control no-border" aria-label="Check in" id="inputcheckin" required>
+                                <div class="invalid-feedback">
+                                    Please enter check-in Date
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-2 mt-md-0">
+                                <label for="inputcheckout" class="form-label no-border">Check-out*</label>
+                                <input readonly value={{bookingData.checkoutDate}} type="date" name="checkout" class="form-control no-border" aria-label="Check out" id="inputcheckout" required>
+                                <div class="invalid-feedback">
+                                    Please enter check-out Date
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="button btn-primary next-button mt-4" id="edit_date">SELECT DATE</button>
+                        <button type="button" class="button btn-primary next-button mt-4 d-none" id="submit_date">CONFIRM DATE SELECTION</button>
+                    </div>
+                </div>
+
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">Rooms Available</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Single (1 Single Bed) 
+                                        </label>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Double (1 Queen Bed)
+                                        </label>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" >
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Deluxe (1 Queen Bed)
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">Select Offers</h5>
+                            <ul class="list-group list-group-flush">
+
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="offer" id="offer1" checked>
+                                        <label class="form-check-label" for="offer1">
+                                            <div class="accordion" id="accordionExample2">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingOne">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        Budget - 80/night
+                                                    </button>
+                                                    </h2>
+                                                    <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                        <ul class="list-group list-group-flush">
+                                                                <li class="list-group-item">Description: </li>
+                                                                <li class="list-group-item">Inclusions:</li>
+                                                                <li class="list-group-item">Amenities:</li>
+                                                        </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">        
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="offer" id="offer1">
+                                        <label class="form-check-label" for="offer1">
+                                            <div class="accordion" id="accordionExample2">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingOne">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#offer2" aria-expanded="true" aria-controls="offer2">
+                                                        W/ Breakfast - 80/night
+                                                    </button>
+                                                    </h2>
+                                                    <div id="offer2" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                        <ul class="list-group list-group-flush">
+                                                                <li class="list-group-item">Description: </li>
+                                                                <li class="list-group-item">Inclusions:</li>
+                                                                <li class="list-group-item">Amenities:</li>
+                                                        </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="offer" id="offer1">
+                                        <label class="form-check-label" for="offer1">
+                                            <div class="accordion" id="accordionExample2">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingOne">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#offer3" aria-expanded="true" aria-controls="offer3">
+                                                        W/ Dinner - 80/night
+                                                    </button>
+                                                    </h2>
+                                                    <div id="offer3" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                        <ul class="list-group list-group-flush">
+                                                                <li class="list-group-item">Description: </li>
+                                                                <li class="list-group-item">Inclusions:</li>
+                                                                <li class="list-group-item">Amenities:</li>
+                                                        </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </li>
+
+                            </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="section-guest-information">
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">Guest Details</h5>
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Guest" id="g1" checked>
+                                <label class="form-check-label" for="g1">
+                                    Enter Existing Guest Email
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Guest" id="g2" >
+                                <label class="form-check-label" for="g2">
+                                    Create New Account for Guest
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="Guest" id="g2" >
+                                <label class="form-check-label" for="g2">
+                                    One-time Reservation
+                                </label>
+                            </div>
+                        </div>
+                        <section>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                <button>Search</button>
+                            </div>
+                        </section>
+                        <section>
+                            <div class="col-md-6">
+                                <label for="inputName" class="form-label">First Name*</label>
+                                <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputAddress" class="form-label">Last Name*</label>
+                                <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
+                            </div>
+                            <div class="mb-2">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" required autocomplete="on">
+                            </div>
+                            <div class="mb-2">
+                                <label for="mobileNumber" class="form-label">Mobile Number</label>
+                                <input type="tel" class="form-control" id="mobileNumber">
+                            </div>
+                            <button>Verify Email</button>
+                        </section>
+                    </div>
+                </div>
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">Payment Information</h5>
+                            <div class="col-md-6">
+                                <label for="inputName" class="form-label">Card Number*</label>
+                                <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputName" class="form-label">CVV</label>
+                                <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputName" class="form-label">Expiry</label>
+                                <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button type="button" class="btn btn-primary">
+            Submit
+        </button>
+    </form>
+</div>

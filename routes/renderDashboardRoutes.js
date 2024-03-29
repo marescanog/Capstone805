@@ -15,13 +15,13 @@ const userRouter = express.Router();
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
-staffRouter.route('/viewReservations').get(viewStaffReservations);
+staffRouter.route('/viewReservations').get(authController.protect, authController.verifyEmployee, viewStaffReservations); //done - no linking yet
 staffRouter.route('/edit').get(authController.protect, authController.verifyEmployee, editStaffAccount); //done
 staffRouter.route('/changePassword').get(authController.protect, authController.verifyEmployee, editStaffPassword); //done
 staffRouter.route('/updatePhoto').get(authController.protect, authController.verifyEmployee, updateStaffPhoto); //done
-staffRouter.route('/createReservations').get(createReservations); // no page
+staffRouter.route('/createReservations').get(authController.protect, authController.verifyEmployee, createReservations); //semi-done rushed html & css
 staffRouter.route('/inquiries').get(authController.protect, authController.verifyEmployee, viewInquiries); //semi-done rushed html & css
-staffRouter.route('/checkin').get(checkin); // no modal
+staffRouter.route('/checkin').get(authController.protect, authController.verifyEmployee, checkin); //done - no modal
 staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')}); // no page
 staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')}); // no page
 staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard); //done
@@ -43,6 +43,10 @@ managerRouter.route('/offers').get(viewOffers);
 managerRouter.route('/promotions').get(viewPromotions);
 managerRouter.route('/rooms').get(viewRooms);
 managerRouter.route('/:id').get(loadManagerDashboard);
+// generate repor
+// create edit room
+// create edit offer
+// create edit promotions
 
 
 // Admin Router
@@ -59,9 +63,10 @@ renderDashboardRouter.use('/USNVMQD493', adminRouter);
 // adminRouter.route('/rooms').get(checkin);
 adminRouter.route('/users').get(viewUsers);
 adminRouter.route('/:id').get(loadAdminDashboard);
+// create user
+// manage user permissions8
 
-
-// Employee Router
+// Guest Router
 renderDashboardRouter.use('/guest', userRouter);
 userRouter.route("/update-email").get(authController.protect, authController.verifyGuest, updateGuestEmailPage);
 userRouter.route("/upload-photo").get(authController.protect, authController.verifyGuest, uploadNewGuestPhotoPage);
