@@ -87,7 +87,8 @@ const loginUser = async(req, next, Model, userType="Guest" ) => {
             // 6.) if everything ok send token to client
             resolve({
                 token: signToken(user._id, user?.employeeType),
-                id: user._id
+                id: user._id,
+                type: user?.employeeType
             });
         }, "1000");
     });
@@ -178,12 +179,12 @@ exports.loginManagement = catchAsync(async(req, res, next) => {
                 Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
             )
         });
-
         res.status(201).json({
             status: 'success',
             token: loginData.token,
             statusCode: 201,
-            id: loginData.id
+            id: loginData.id,
+            url: loginData.type == "admin" ? `/dashboard/USNVMQD493/${loginData.id}` : `/dashboard/manager/${loginData.id}`
         });
     } 
 });

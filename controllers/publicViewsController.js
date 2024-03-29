@@ -172,14 +172,14 @@ exports.viewVerifyAccountPage = (req, res, next) => {
 
 exports.viewEmployeePortalPage = (req, res, next) => {
     if(req?.decoded?.id){
-        switch(req?.decoded?.userType){
-            case "Staff":
+        switch(req?.decoded?.type){
+            case "staff":
                 res.redirect(`/dashboard/staff/${req?.decoded?.id}`);
                 break;
-            case "Manager":
+            case "manager":
                 res.redirect(`/dashboard/manager/${req?.decoded?.id}`);
                 break;
-            case "Admin":
+            case "admin":
                 res.redirect(`/dashboard/USNVMQD493/${req?.decoded?.id}`);
                 break;
             default:
@@ -187,9 +187,9 @@ exports.viewEmployeePortalPage = (req, res, next) => {
         }
     } else {
         const VB = new ViewBuilder({
-            alertToLogin: false,
-            userType: null,
-            id:null,
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
         });
         VB.addOptions("css", 'employee/portal.css');
         VB.addOptions("title", 'Employee Portal');
