@@ -8,6 +8,55 @@ const AppError = require('../apiUtils/appError.js');
 
 const {Types} = mongoose;
 
+exports.signup = catchAsync(async(req, res, next)=>{
+  
+    // const hashedData = await Guest.generateNewHashandSalt(req.body.password)
+    // .then(Guest.createEncyptPass);
+
+    // const guestObject = {
+    //     emailAddress: req.body.emailAddress,
+    //     keyWord: hashedData.h,
+    //     keyGen: hashedData.s,
+    //     firstName: req.body.firstName,
+    //     lastName: req.body.lastName,
+    //     isVerified: false,
+    //     createdOn: new Date(),
+    //     address: {
+    //         address: req.body.address,
+    //         city: req.body.city,
+    //         postalCode: req.body.postalCode,
+    //         country: req.body.country
+    //     },
+    //     isActive: false,
+    //     reservations: [],
+    //     formSubmissions: [],
+    //     loyaltyHistory: []
+    // }
+
+    // if(req.body.mobileNumber){
+    //     guestObject.mobileNumber = req.body.mobileNumber;
+    // }
+
+    // const newUser = await Guest.create(guestObject);
+
+    // const token = signToken(newUser._id);
+
+    // res.status(201).json({
+    //     status: 'success',
+    //     token: token,
+    //     data: {
+    //         user: newUser
+    //     }
+    //     // data: guestObject,
+
+    // });
+
+    res.status(500).json({
+        status: 'error',
+        message: 'The signup route is not yet defined!'
+    });
+});
+
 const signToken = (id, empType) => {
     const payload = {
         id: id
@@ -93,56 +142,6 @@ const loginUser = async(req, next, Model, userType="Guest" ) => {
         }, "1000");
     });
 };
-
-exports.signup = catchAsync(async(req, res, next)=>{
-  
-    // const hashedData = await Guest.generateNewHashandSalt(req.body.password)
-    // .then(Guest.createEncyptPass);
-
-    // const guestObject = {
-    //     emailAddress: req.body.emailAddress,
-    //     keyWord: hashedData.h,
-    //     keyGen: hashedData.s,
-    //     firstName: req.body.firstName,
-    //     lastName: req.body.lastName,
-    //     isVerified: false,
-    //     createdOn: new Date(),
-    //     address: {
-    //         address: req.body.address,
-    //         city: req.body.city,
-    //         postalCode: req.body.postalCode,
-    //         country: req.body.country
-    //     },
-    //     isActive: false,
-    //     reservations: [],
-    //     formSubmissions: [],
-    //     loyaltyHistory: []
-    // }
-
-    // if(req.body.mobileNumber){
-    //     guestObject.mobileNumber = req.body.mobileNumber;
-    // }
-
-    // const newUser = await Guest.create(guestObject);
-
-    // const token = signToken(newUser._id);
-
-    // res.status(201).json({
-    //     status: 'success',
-    //     token: token,
-    //     data: {
-    //         user: newUser
-    //     }
-    //     // data: guestObject,
-
-    // });
-
-    res.status(500).json({
-        status: 'error',
-        message: 'The signup route is not yet defined!'
-    });
-});
-
 
 exports.loginEmployee = catchAsync(async(req, res, next) => {
     const loginData = await loginUser(req, next, Employee, 'staff');
@@ -233,31 +232,33 @@ exports.protect = catchAsync(async(req, res, next)=>{
     next();
 });
 
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if( req.user && !roles.includes(req.user.employeeType)) {
+            res.clearCookie("jwt");
+            return next(new AppError('You do not have access to this resource/action!', 403));
+        }
+        next();
+    }
+}
+
 exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     // 3.) Check if user still exists
     const existing = await Employee.findById(req.decoded.id);
 
     if(!existing){
-        res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('You do not have access to this resource/action!', 403));
     }
 
-    // 4.) Check if user is hotel staff (not manager or admin)
-    if(!(existing.employeeType === "staff")){
-        res.clearCookie("jwt");
-        return next(new AppError('You are not allowed to access this resource!', 403));
-    }
-
-    // 5.) Check if user is active
+    // 4.) Check if user is active
     if(!(existing.status === "active")){
-        res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('You do not have access to this resource/action!', 403));
     }
 
-    // 6.) Check if user changed password after route was issued
+    // 5.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
         res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('Session expired. Please login!', 401));
     }
 
     req.user = existing;
@@ -273,24 +274,26 @@ exports.verifyGuest = catchAsync(async(req, res, next)=>{
     const existing = await Guest.findById(req.decoded.id);
 
     if(!existing){
-        res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('You do not have access to this resource/action!', 403));
     }
 
     // 4. check if user is active and verified
-    if(!existing.isVerified || !existing.isActive){
+    if(!existing.isVerified){
         res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('Session expired. Please login!', 401));
+    }
+    if(!existing.isActive){
+        return next(new AppError('You do not have access to this resource/action!', 403));
     }
 
     // 5.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
         res.clearCookie("jwt");
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('Session expired. Please login!', 401));
     }
 
     req.user = existing;
-
+    req.user.employeeType = existing?.employeeType??"guest";
     next();
 });
 

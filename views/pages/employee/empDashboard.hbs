@@ -17,10 +17,24 @@
                         <h3 class="dash-h3-style">Today is Feb 23, 2024</h3>
                     </div>
                 </div>
-                <div class="dashboard-main-mid">
-                    <p class="dash-p-mid-style">3 Guests are checking in today</p>
-                    <a class="dash-a-mid-style" href="/dashboard/staff/checkin">VIEW LIST</a>
-                </div>
+                {{#if sidebarData.employeeType}}
+                    {{#equal sidebarData.employeeType "staff"}}
+                        <div class="dashboard-main-mid">
+                            <p class="dash-p-mid-style">3 Guests are checking in today</p>
+                            <a class="dash-a-mid-style" href="/dashboard/staff/checkin">VIEW LIST</a>
+                        </div>
+                    {{/equal}}
+                    {{#equal sidebarData.employeeType "manager"}}
+                        <div>
+                            <p>Manager Functions</p>
+                        </div>
+                    {{/equal}}
+                    {{#equal sidebarData.employeeType "admin"}}
+                        <div>
+                            <p>Admin Functions</p>
+                        </div>
+                    {{/equal}}
+                {{/if}}
                 <hr>
                 <div class="dashboard-main-bottom">
                      {{> _accountButtonList buttonData=buttonData}}

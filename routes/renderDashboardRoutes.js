@@ -15,15 +15,15 @@ const userRouter = express.Router();
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
-staffRouter.route('/viewReservations').get(authController.protect, authController.verifyEmployee, viewStaffReservations); //done
-staffRouter.route('/edit').get(authController.protect, authController.verifyEmployee, editStaffAccount); //done
-staffRouter.route('/changePassword').get(authController.protect, authController.verifyEmployee, editStaffPassword); //done
-staffRouter.route('/updatePhoto').get(authController.protect, authController.verifyEmployee, updateStaffPhoto); //done
-staffRouter.route('/createReservations').get(authController.protect, authController.verifyEmployee, createReservations); //semi-done rushed html & css
-staffRouter.route('/inquiries').get(authController.protect, authController.verifyEmployee, viewInquiries); //semi-done rushed html & css
-staffRouter.route('/checkin').get(authController.protect, authController.verifyEmployee, checkin); //done - no modal
-staffRouter.route('/reservation/:id').get(authController.protect, authController.verifyEmployee, viewSingleReservationStafPOV); //done - modify for staff pov
-staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard); //done
+staffRouter.route('/viewReservations').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), viewStaffReservations); //done
+staffRouter.route('/edit').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), editStaffAccount); //done
+staffRouter.route('/changePassword').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), editStaffPassword); //done
+staffRouter.route('/updatePhoto').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), updateStaffPhoto); //done
+staffRouter.route('/createReservations').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), createReservations); //semi-done rushed html & css
+staffRouter.route('/inquiries').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), viewInquiries); //semi-done rushed html & css
+staffRouter.route('/checkin').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), checkin); //done - no modal
+staffRouter.route('/reservation/:id').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff', 'manager', 'admin'), viewSingleReservationStafPOV); //done - modify for staff pov
+staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, authController.restrictTo('staff'), loadStaffDashboard); //done
 
 
 
@@ -67,14 +67,15 @@ adminRouter.route('/:id').get(loadAdminDashboard);
 
 // Guest Router
 renderDashboardRouter.use('/guest', userRouter);
-userRouter.route("/update-email").get(authController.protect, authController.verifyGuest, updateGuestEmailPage);
-userRouter.route("/upload-photo").get(authController.protect, authController.verifyGuest, uploadNewGuestPhotoPage);
-userRouter.route("/update-password").get(authController.protect, authController.verifyGuest, updateGuestPasswordPage);
-userRouter.route("/editacccount").get(authController.protect, authController.verifyGuest, editGuestProfilePage);
-userRouter.route("/loyalty-history").get(authController.protect, authController.verifyGuest, loyaltyPointsHistoryPage);
-userRouter.route("/reservations").get(authController.protect, authController.verifyGuest, reservationHistoryPage);
-userRouter.route("/view-inbox").get(authController.protect, authController.verifyGuest, viewInboxPage);
-userRouter.route("/reservationinfo/:id").get(authController.protect, authController.verifyGuest, renderGuestReservationInfoPage);
-userRouter.route('/:id').get(authController.protect, authController.verifyGuest, loadUserDashboard);
-
+// authController.restrictTo('guest')
+userRouter.route("/update-email").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), updateGuestEmailPage);
+userRouter.route("/upload-photo").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), uploadNewGuestPhotoPage);
+userRouter.route("/update-password").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), updateGuestPasswordPage);
+userRouter.route("/editacccount").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), editGuestProfilePage);
+userRouter.route("/loyalty-history").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), loyaltyPointsHistoryPage);
+userRouter.route("/reservations").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), reservationHistoryPage);
+userRouter.route("/view-inbox").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), viewInboxPage);
+userRouter.route("/reservationinfo/:id").get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), renderGuestReservationInfoPage);
+userRouter.route('/:id').get(authController.protect, authController.verifyGuest, authController.restrictTo('guest'), loadUserDashboard);
+// ,
 module.exports = renderDashboardRouter;

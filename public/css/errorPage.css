@@ -1,0 +1,13 @@
+.error-page-wrapper {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.error-page-content-container {
+    width: 90%;
+    margin-top: 2em;
+}
+
+
