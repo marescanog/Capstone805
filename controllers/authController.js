@@ -336,3 +336,10 @@ exports.logoutRedirect = (req, res, next) => {
     }
     res.redirect('/');
 }
+
+exports.cacheControl = catchAsync(async(req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
