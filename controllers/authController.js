@@ -235,7 +235,6 @@ exports.protect = catchAsync(async(req, res, next)=>{
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         if( req.user && !roles.includes(req.user.employeeType)) {
-            res.clearCookie("jwt");
             return next(new AppError('You do not have access to this resource/action!', 403));
         }
         next();
@@ -265,9 +264,6 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     // grant access to route
     next();
 });
-
-
-// TODO create verifyadmin
 
 exports.verifyGuest = catchAsync(async(req, res, next)=>{
     // 3.) Check if user still exists
