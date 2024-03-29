@@ -133,8 +133,14 @@
               <hr>
             </div>
 
-            {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
-            {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
+            {{#unless userType}}
+              {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
+              {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
+            {{/unless}}
+
+            {{#if userType}}
+              {{#navHiddenLink "Log out" "/api/v1//logout/redirect" }}Logout{{/navHiddenLink}}
+            {{/if}}
 
             <li class="nav-item dropdown ms-auto nav-hide-small">
 

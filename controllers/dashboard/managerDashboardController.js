@@ -1,9 +1,38 @@
-
+const catchAsync = require('./../../apiUtils/catchAsync');
+const ViewBuilder = require('./../../apiUtils/viewBuilder')
+ 
 exports.loadManagerDashboard = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The loadManagerDashboard route is not yet defined!'
-    });
+    // if(req.user){
+        // const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Employee Dashboard");
+        VB.addOptions("partialsCSS", [,
+            {name:"accountInfoSideBar.css"},
+            {name:"accountButtonList.css"}
+        ]);
+        VB.addOptions("sidebarData", {
+            img: "/img/placeholder/hotelstaff.png",
+            // firstName: firstName,
+            // lastName: `${lastName.charAt(0)}.`,
+            employeeType: 'manager',
+            // mobileNumber: mobileNumber,
+            // address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            // emailAddress: emailAddress
+        });
+        VB.addOptions("buttonData", [
+            {name:"Generate Report",url:"/dashboard/staff/dfgdfg"},
+            {name:"Manage Promotions",url:"/dashboard/staff/asdads"},
+            {name:"Manage Reservations",url:"/dashboard/staff/viewReservations"}
+        ]);
+        res.render( "pages/employee/empDashboard", VB.getOptions());
+    // } else {
+    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
+    // }
 }
 
 exports.viewOffers = async (req, res) => {

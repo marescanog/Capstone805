@@ -6,7 +6,7 @@ const employeeRouter = express.Router();
 
 
 employeeRouter.post('/login', authController.loginEmployee);
-
+employeeRouter.post('/managementLogin', authController.loginManagement);
 employeeRouter
   .route('/')
   .get(getAllEmployees);
