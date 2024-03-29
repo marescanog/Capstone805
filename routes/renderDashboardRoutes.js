@@ -101,9 +101,30 @@ staffRouter.route('/:id').get(
 // Manager Router
 renderDashboardRouter.use('/manager', managerRouter);
 // Manager Routes
-managerRouter.route('/offers').get(viewOffers);
-managerRouter.route('/promotions').get(viewPromotions);
-managerRouter.route('/rooms').get(viewRooms);
+managerRouter.route('/offers').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOffers
+); // need link with view
+
+managerRouter.route('/promotions').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewPromotions
+); // need to link views
+
+managerRouter.route('/rooms').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRooms
+); // need to link views
+
 managerRouter.route('/report').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/createroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/createoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
@@ -111,7 +132,14 @@ managerRouter.route('/createpromotion').get((req,res,next)=>{res.send({message:"
 managerRouter.route('/viewroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/vieweoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/viewpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/:id').get(loadManagerDashboard);
+
+managerRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager'), 
+    authController.cacheControl, 
+    loadManagerDashboard
+); // done
 
 
 
