@@ -23,6 +23,11 @@ const handleJWTError = err => {
 const sendErrorDev = (err, res) =>{
     if(err.statusCode === 401){
         // TODO later
+        return res.status(err.statusCode).render("pages/public/accessRestricted",{layout:"main"});
+    }
+
+    if(err.statusCode === 403){
+        // TODO later
         return res.status(err.statusCode).render("pages/public/accessdenied",{layout:"main"});
     }
 
@@ -41,9 +46,14 @@ const sendErrorProd = (err, res) =>{
         
         if(err.statusCode === 401){
             // TODO later
-            return res.status(err.statusCode).render("pages/public/accessdenied",{layout:"main"});
+            return res.status(err.statusCode).render("pages/public/accessrestricted",{layout:"main"});
         }
         
+        if(err.statusCode === 403){
+            // TODO later
+            return res.status(err.statusCode).render("pages/public/accessdenied",{layout:"main"});
+        }
+
         res.status(err.statusCode).json({
             status: err.status,
             message: err.message,

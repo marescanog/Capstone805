@@ -1,5 +1,5 @@
 const express = require('express');
-const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin } = require('./../controllers/dashboard/staffDashboardController.js');
+const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
@@ -15,15 +15,14 @@ const userRouter = express.Router();
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
 // Staff Routes
-staffRouter.route('/viewReservations').get(authController.protect, authController.verifyEmployee, viewStaffReservations); //done - no linking yet
+staffRouter.route('/viewReservations').get(authController.protect, authController.verifyEmployee, viewStaffReservations); //done
 staffRouter.route('/edit').get(authController.protect, authController.verifyEmployee, editStaffAccount); //done
 staffRouter.route('/changePassword').get(authController.protect, authController.verifyEmployee, editStaffPassword); //done
 staffRouter.route('/updatePhoto').get(authController.protect, authController.verifyEmployee, updateStaffPhoto); //done
 staffRouter.route('/createReservations').get(authController.protect, authController.verifyEmployee, createReservations); //semi-done rushed html & css
 staffRouter.route('/inquiries').get(authController.protect, authController.verifyEmployee, viewInquiries); //semi-done rushed html & css
 staffRouter.route('/checkin').get(authController.protect, authController.verifyEmployee, checkin); //done - no modal
-staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')}); // no page
-staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')}); // no page
+staffRouter.route('/reservation/:id').get(authController.protect, authController.verifyEmployee, viewSingleReservationStafPOV); //done - modify for staff pov
 staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard); //done
 
 

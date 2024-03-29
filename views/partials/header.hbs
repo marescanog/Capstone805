@@ -73,7 +73,16 @@
             {{#navLink "/about"}}About Us{{/navLink}}
             {{#navLink "/guestrooms"}}Guest Rooms{{/navLink}}
             {{#navLink "/restaurant"}}Restaurant{{/navLink}}
-            {{#navLink "/contactUs"}}Contact Us{{/navLink}}
+
+{{!-- contact us should not display for staff --}}
+            {{#unless userType}}
+              {{#navLink "/contactUs"}}Contact Us{{/navLink}}
+            {{/unless}}
+            {{#if userType}}
+              {{#equal userType "Guest"}}
+                {{#navLink "/contactUs"}}Contact Us{{/navLink}}
+              {{/equal}}
+            {{/if}}
 
             {{#equal userType "Guest"}}
               {{#navLink (concat "/dashboard/guest/" id)}}Dashboard{{/navLink}}
@@ -100,13 +109,15 @@
                 </a>
               </li>
             {{/unless}}
-            {{#equal userType "Guest"}}
-              <li class="nav-item">
-                <a class="nav-link" href="/roomOffers">
-                  <button class="book-now">Book Now</button>
-                </a>
-              </li>
-            {{/equal}}
+            {{#if userType}}
+              {{#equal userType "Guest"}}
+                <li class="nav-item">
+                  <a class="nav-link" href="/roomOffers">
+                    <button class="book-now">Book Now</button>
+                  </a>
+                </li>
+              {{/equal}}
+            {{/if}}
             {{#if userType}}
               {{#notEqual userType "Guest"}}
                 <li class="nav-item">

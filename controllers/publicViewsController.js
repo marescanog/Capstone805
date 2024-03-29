@@ -204,7 +204,7 @@ exports.viewEmployeePortalPage = (req, res, next) => {
                 desc2: "Log in to make a difference!"
             },
             admin: {
-                desc1: "Welcome to the Admin Portal. Your control center for overseeing and optimizing user accounts within the hotel.",
+                desc1: "Welcome to the Management Access Portal. Your control center for overseeing and optimizing the hotel website.",
                 desc2: "Log in to unlock the full potential of your account management."
             }
         });

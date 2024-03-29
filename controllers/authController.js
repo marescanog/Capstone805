@@ -200,21 +200,25 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     const existing = await Employee.findById(req.decoded.id);
 
     if(!existing){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 
-    // 4.) Check if user is hotel staff or manager (not guest or admin)
-    if(!(existing.employeeType === "staff" || existing.employeeType === "manager")){
-        return next(new AppError('Token expired. Please login!', 401));
+    // 4.) Check if user is hotel staff (not manager or admin)
+    if(!(existing.employeeType === "staff")){
+        res.clearCookie("jwt");
+        return next(new AppError('You are not allowed to access this resource!', 403));
     }
 
     // 5.) Check if user is active
     if(!(existing.status === "active")){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 
     // 6.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 
@@ -231,16 +235,19 @@ exports.verifyGuest = catchAsync(async(req, res, next)=>{
     const existing = await Guest.findById(req.decoded.id);
 
     if(!existing){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 
     // 4. check if user is active and verified
     if(!existing.isVerified || !existing.isActive){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 
     // 5.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
+        res.clearCookie("jwt");
         return next(new AppError('Token expired. Please login!', 401));
     }
 

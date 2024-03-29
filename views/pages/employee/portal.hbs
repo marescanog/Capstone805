@@ -9,7 +9,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                    Admin
+                    Management Access Gateway
                 </button>
             </li>
         </ul>
@@ -30,7 +30,7 @@
                                 <h3>Employee Portal Features</h3>
                                 <ul>
                                     <li class="feature-desc-item">
-                                        <h4>View and Modify Reservations</h4>
+                                        <h4>View, Create and Modify Reservations</h4>
                                         <p>Review and update reservation details effortlessly.</p>
                                     </li>
                                     <li class="feature-desc-item">
@@ -38,11 +38,8 @@
                                         <p>Access and manage guest inquiries efficiently.</p>
                                     </li>
                                     <li class="feature-desc-item">
-                                        <h4>Manager Privileges:</h4>
-                                        <h6>Generate Reports</h6>
-                                        <p class="no-margin">Create and analyze insightful reports for effective decision-making.</p>
-                                        <h6>Add Promotions</h6>
-                                        <p>Elevate guest experiences by introducing special promotions.</p>
+                                        <h4>Check-in Guests</h4>
+                                        <p>Manage guest check-in</p>
                                     </li>
                                 </ul>
                             </div>
@@ -58,7 +55,7 @@
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="portal-box-container">
                     <div class="portal-box-left-container">
-                      {{> employee/_emploginform desc1=formData.admin.desc1 desc2=formData.admin.desc2 type='Admin'}}
+                      {{> employee/_emploginform desc1=formData.admin.desc1 desc2=formData.admin.desc2 type='Hotel'}}
                     </div>
                     <hr class="portal-h1-style">
 
@@ -67,19 +64,26 @@
                     <div class="portal-box-right-container">
                         <div class="feature-description-container">
                             <div class="feature-desc-body">
-                                <h3>Admin Portal Features</h3>
+                                <h3>Management Access Features</h3>
                                 <ul>
+                                    {{!-- <li class="feature-desc-item">
+                                        <h4>Manager Privileges:</h4>
+                                        <h6>Generate Reports</h6>
+                                        <p class="no-margin">Create and analyze insightful reports for effective decision-making.</p>
+                                        <h6>Add Promotions</h6>
+                                        <p>Elevate guest experiences by introducing special promotions.</p>
+                                    </li> --}}
                                     <li class="feature-desc-item">
-                                        <h4>Manage User Accounts</h4>
-                                        <p>Add, edit, or deactivate staff accounts as needed.</p>
+                                        <h4>Generate Reports</h4>
+                                        <p>Create and analyze insightful reports for effective decision-making.</p>
                                     </li>
                                     <li class="feature-desc-item">
-                                        <h4>User Permissions</h4>
-                                        <p>Set and modify access levels for staff and managers.</p>
+                                        <h4>Add Promotions</h4>
+                                        <p>Elevate guest experiences by introducing special promotions.</p>
                                     </li>
                                     <li class="feature-desc-item">
-                                        <h4>Account Activation</h4>
-                                        <p>Activate or deactivate user accounts as required.</p>
+                                        <h4>Modify Offers</h4>
+                                        <p>Keep track of offers and adjust based on business needs.</p>
                                     </li>
                                 </ul>
                             </div>
