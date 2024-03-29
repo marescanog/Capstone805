@@ -3,6 +3,11 @@
         {{#unless this.isRow}}           
                 {{#if this.isButton}}
                     <td><button type="submit" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
+                        {{#if this.isButton.buttonActions}}
+                            {{#if ../this.variableName}}
+                                onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}('{{getProperty ../this ../this.variableName}}')"
+                            {{/if}}
+                        {{/if}}
                     >
                         {{getProperty ../this this.resultName}}
                     </button></td>
