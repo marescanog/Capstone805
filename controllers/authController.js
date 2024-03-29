@@ -24,7 +24,7 @@ const signToken = (id, empType) => {
     });
 }
 
-const loginUser = async(req, next, Model ) => {
+const loginUser = async(req, next, Model, userType="Guest" ) => {
     return new Promise((resolve)=>{
         // Set timeout of 1 second to delay brute force attacks
         setTimeout(async () => {
@@ -42,13 +42,26 @@ const loginUser = async(req, next, Model ) => {
                 return resolve(next(new AppError('Incorrect email or password!', 400)));
             }
         
-            const {keyWord, keyGen} = user;
+            const {keyWord, keyGen, employeeType} = user;
         
             // 3.) check if user is active and verified
             switch(Model.modelName){
                 case "employee":
                     if(user.status != 'active'){
-                        return resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+                    if(employeeType){
+                        if(userType === 'management'){
+                            if(!(employeeType === 'admin' || employeeType === 'manager')){
+                                return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                            }
+                        } else {
+                            if(employeeType != userType){
+                                return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                            }
+                        }
+                    } else {
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
                     }
                     break;
                 default: 
@@ -56,7 +69,10 @@ const loginUser = async(req, next, Model ) => {
                         return resolve(next(new AppError('Incorrect email or password!', 400)));
                     }
                     if(!user.isActive){
-                        return resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+                    if(employeeType!=null){
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
                     }
             }
 
@@ -128,7 +144,7 @@ exports.signup = catchAsync(async(req, res, next)=>{
 
 
 exports.loginEmployee = catchAsync(async(req, res, next) => {
-    const loginData = await loginUser(req, next, Employee);
+    const loginData = await loginUser(req, next, Employee, 'staff');
 
     if(loginData?.token){
         // Set token in HTTP-only cookie
@@ -146,10 +162,31 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
             statusCode: 201,
             id: loginData.id
         });
-    }
-
+    } 
 });
 
+exports.loginManagement = catchAsync(async(req, res, next) => {
+    const loginData = await loginUser(req, next, Employee, 'management');
+
+    if(loginData?.token){
+        // Set token in HTTP-only cookie
+        res.cookie('jwt', loginData.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            expiresIn: new Date(
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+            )
+        });
+
+        res.status(201).json({
+            status: 'success',
+            token: loginData.token,
+            statusCode: 201,
+            id: loginData.id
+        });
+    } 
+});
 
 exports.loginGuest = catchAsync(async(req, res, next) => {
     const loginData = await loginUser(req, next, Guest);
@@ -169,7 +206,7 @@ exports.loginGuest = catchAsync(async(req, res, next) => {
             statusCode: 201,
             id: loginData.id
         });
-    }
+    } 
 })
 
 
@@ -287,4 +324,11 @@ exports.logout = (req, res, next) => {
         status: 'success',
         statusCode: 200
     })
+}
+
+exports.logoutRedirect = (req, res, next) => {
+    if (req.cookies.jwt){
+        res.clearCookie("jwt");
+    }
+    res.redirect('/');
 }

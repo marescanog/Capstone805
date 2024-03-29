@@ -41,9 +41,18 @@ const sendErrorDev = (err, res) =>{
 }
 
 const sendErrorProd = (err, res) =>{
+
     // Only send operational messages to the client
     if(err.isOperational){
-        
+ 
+        if(err.sendJSON == true){
+            return res.status(err.statusCode).json({
+                status: err.status,
+                message: err.message??err.errMessage,
+                statusCode: err.statusCode
+            });
+        }
+
         if(err.statusCode === 401){
             // TODO later
             return res.status(err.statusCode).render("pages/public/accessrestricted",{layout:"main"});
@@ -56,7 +65,7 @@ const sendErrorProd = (err, res) =>{
 
         res.status(err.statusCode).json({
             status: err.status,
-            message: err.message,
+            message: err.message??err.errMessage,
             statusCode: err.statusCode
         });
 
