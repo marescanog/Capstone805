@@ -25,8 +25,8 @@ exports.loadManagerDashboard = async (req, res) => {
             // emailAddress: emailAddress
         });
         VB.addOptions("buttonData", [
-            {name:"Generate Report",url:"/dashboard/staff/dfgdfg"},
-            {name:"Manage Promotions",url:"/dashboard/staff/asdads"},
+            {name:"Generate Report",url:"/dashboard/manager/dfgdfg"},
+            {name:"Manage Promotions",url:"/dashboard/manager/promotions"},
             {name:"Manage Reservations",url:"/dashboard/staff/viewReservations"}
         ]);
         res.render( "pages/employee/empDashboard", VB.getOptions());

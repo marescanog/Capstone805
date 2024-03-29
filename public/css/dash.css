@@ -93,6 +93,40 @@ h3.dash-h3-style {
     box-shadow: 0 0 0 .2rem rgba(119, 204, 204, 0.5)
 }
 
+.button-action-style:hover {
+    background-color: #EFB47C;
+    opacity: 0.65;
+}
+
+.button-action-style {
+    background-color: #EFB47C ;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    width: 8em;
+    height: 6em;
+}
+
+.button-action-style p {
+    padding: 0;
+    margin: 0;
+    margin-top: 0.25em;
+    color: black;
+    font-weight: 700;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #FFECC8;
+}
+
+.container-wrapper-contents {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.container-fluid a {
+    text-decoration: none;
+}
 
 @media screen and (max-width: 992px) {
     .dashboard-main-section-container{
@@ -101,6 +135,11 @@ h3.dash-h3-style {
 
     .dashboard-main-top{
         flex-direction: column;
+    }
+
+    .button-action-style {
+        width: 6em;
+        height: 6.5em;
     }
 }
 
@@ -119,5 +158,10 @@ h3.dash-h3-style {
     .btn-outline-primary {
         width: 100%;
         margin-bottom: 1em;
+    }
+
+    .button-action-style {
+        width: 5.5em;
+        height: 7.5em;
     }
 }

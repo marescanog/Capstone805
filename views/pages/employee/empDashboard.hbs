@@ -9,14 +9,15 @@
                 <div class="dashboard-main-top">
                     <div>
                         <div>
-                            <h2 class="dash-h2-style">Hello, {{sidebarData.firstName}} {{sidebarData.lastName}}</h2>
+                            <h2 class="dash-h2-style">Hello, {{#unless sidebarData.firstName}}{{#unless sidebarData.lastName}}Guest{{/unless}}{{/unless}}{{sidebarData.firstName}} {{sidebarData.lastName}}</h2>
                         </div>
                         <a href="/dashboard/staff/edit"><button type="button" class="btn btn-outline-primary">Edit Profile</button></a>
                     </div>
                     <div>
-                        <h3 class="dash-h3-style">Today is Feb 23, 2024</h3>
+                        <h3 class="dash-h3-style">Today is {{#if date}}{{date}}{{/if}}{{#unless date}}Feb 23, 2024{{/unless}}</h3>
                     </div>
                 </div>
+
                 {{#if sidebarData.employeeType}}
                     {{#equal sidebarData.employeeType "staff"}}
                         <div class="dashboard-main-mid">
@@ -25,17 +26,189 @@
                         </div>
                     {{/equal}}
                     {{#equal sidebarData.employeeType "manager"}}
-                        <div>
-                            <p>Manager Functions</p>
+                        <div class="dashboard-main-mid">
+                            <div class="accordion" id="managerFunctionsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="managerHeadingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#managerCollapseOne" aria-expanded="true" aria-controls="managerCollapseOne">
+                                        Manager Actions
+                                    </button>
+                                    </h2>
+                                    <div id="managerCollapseOne" class="accordion-collapse collapse show" aria-labelledby="managerHeadingOne" data-bs-parent="#managerFunctionsAccordion">
+                                    <div class="accordion-body">
+                                        <div class="container-fluid container-wrapper-contents">
+
+                                            <a href="/dashboard/manager/offers">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Offers</p>
+                                                </button>
+                                            </a>
+                                            
+                                            <a href="/dashboard/manager/rooms">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Rooms</p>
+                                                </button>
+                                            </a>
+
+
+                                            <a href="/dashboard/manager/createoffer">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Offer</p>
+                                                </button>
+                                            </a>
+                                            
+                                            <a href="/dashboard/manager/createroom">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Room</p>
+                                                </button>
+                                            </a>
+
+                                            <a href="/dashboard/manager/createpromotion">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Promotion</p>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="managerHeadingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#managerCollapseTwo" aria-expanded="false" aria-controls="managerCollapseTwo">
+                                        Staff Actions
+                                    </button>
+                                    </h2>
+                                    <div id="managerCollapseTwo" class="accordion-collapse collapse" aria-labelledby="managerHeadingTwo" data-bs-parent="#managerFunctionsAccordion">
+                                    <div class="accordion-body">
+                                        <div class="container-fluid">
+                                            <a href="/dashboard/staff/checkin">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Check-in Guests</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/staff/createReservations">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Booking</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/staff/inquiries">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Inquiries</p>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     {{/equal}}
+
+
                     {{#equal sidebarData.employeeType "admin"}}
-                        <div>
-                            <p>Admin Functions</p>
+                        <div class="dashboard-main-mid">
+                            <div class="accordion" id="adminFunctionsAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="adminHeadingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#adminCollapseOne" aria-expanded="true" aria-controls="adminCollapseOne">
+                                        Admin Actions
+                                    </button>
+                                    </h2>
+                                    <div id="adminCollapseOne" class="accordion-collapse collapse show" aria-labelledby="adminHeadingOne" data-bs-parent="#adminFunctionsAccordion">
+                                    <div class="accordion-body">
+                                        <div class="container-fluid container-wrapper-contents">
+                                            <a href="#">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Guest</p>
+                                                </button>
+                                            </a>
+                                            <a href="#">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Employee</p>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="adminHeadingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminCollapseTwo" aria-expanded="false" aria-controls="adminCollapseTwo">
+                                        Staff/Manager Actions
+                                    </button>
+                                    </h2>
+                                    <div id="adminCollapseTwo" class="accordion-collapse collapse" aria-labelledby="adminHeadingTwo" data-bs-parent="#adminFunctionsAccordion">
+                                    <div class="accordion-body">
+                                        <div class="container-fluid">
+                                            <a href="/dashboard/staff/checkin">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Check-in Guests</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/staff/createReservations">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Booking</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/staff/inquiries">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Inquiries</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/manager/offers">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Offers</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/manager/rooms">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>View Rooms</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/manager/createoffer">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Offer</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/manager/createroom">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Room</p>
+                                                </button>
+                                            </a>
+                                            <a href="/dashboard/manager/createpromotion">
+                                                <button class="btn button-action-style">
+                                                    <img src="/img/icons/general/review.svg" alt="icon">
+                                                    <p>Create Promotion</p>
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     {{/equal}}
                 {{/if}}
+
                 <hr>
+
                 <div class="dashboard-main-bottom">
                      {{> _accountButtonList buttonData=buttonData}}
                 </div>
