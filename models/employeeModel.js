@@ -73,7 +73,6 @@ const employeeSchema = new mongoose.Schema({
     avatarPhotoUrl: photoSubSchema,
     passwordChangedAt: {
         type: Date,
-        default: new Date()
     },
 });
 

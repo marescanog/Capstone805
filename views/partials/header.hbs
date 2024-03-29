@@ -92,14 +92,31 @@
               <p>Admin</p>
             {{/equal}}
 
-
-          {{!-- {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}} --}}      
-            <li class="nav-item">
-              <a class="nav-link" href="/roomOffers">
-                <button class="book-now">Book Now</button>
-              </a>
-            </li>
-
+{{!-- Book Now button  redirects to room results for guest/public--}}
+            {{#unless userType}}
+              <li class="nav-item">
+                <a class="nav-link" href="/roomOffers">
+                  <button class="book-now">Book Now</button>
+                </a>
+              </li>
+            {{/unless}}
+            {{#equal userType "Guest"}}
+              <li class="nav-item">
+                <a class="nav-link" href="/roomOffers">
+                  <button class="book-now">Book Now</button>
+                </a>
+              </li>
+            {{/equal}}
+            {{#if userType}}
+              {{#notEqual userType "Guest"}}
+                <li class="nav-item">
+                  <a class="nav-link" href="/dashboard/staff/createReservations">
+                    <button class="book-now">Book Now</button>
+                  </a>
+                </li>
+              {{/notEqual}}
+            {{/if}}
+{{!-- Book Now button  redirects to create reservation for any staff--}}
 
             <div class="nav-show-small">
               <hr>

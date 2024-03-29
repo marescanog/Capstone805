@@ -32,14 +32,14 @@ const loginUser = async(req, next, Model ) => {
     
             // 1.) if email and password exist
             if(!email || !password){
-               resolve(next(new AppError('Please provide email and password!', 400)));
+                return resolve(next(new AppError('Please provide email and password!', 400)));
             }
         
             // 2.) check if user exists 
             const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen');
         
             if(!user){
-                resolve(next(new AppError('Incorrect email or password!', 400)));
+                return resolve(next(new AppError('Incorrect email or password!', 400)));
             }
         
             const {keyWord, keyGen} = user;
@@ -48,15 +48,15 @@ const loginUser = async(req, next, Model ) => {
             switch(Model.modelName){
                 case "employee":
                     if(user.status != 'active'){
-                        resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403)));
                     }
                     break;
                 default: 
                     if(!user.isVerified){
-                        resolve(next(new AppError('Incorrect email or password!', 400)));
+                        return resolve(next(new AppError('Incorrect email or password!', 400)));
                     }
                     if(!user.isActive){
-                        resolve(next(new AppError('Please contact your administrator for account access!', 403)));
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403)));
                     }
             }
 
@@ -65,7 +65,7 @@ const loginUser = async(req, next, Model ) => {
             const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
         
             if(!isCorrect){
-                resolve(next(new AppError('Incorrect email or password!', 400)));
+                return resolve(next(new AppError('Incorrect email or password!', 400)));
             }
         
             // 6.) if everything ok send token to client
@@ -196,7 +196,6 @@ exports.protect = catchAsync(async(req, res, next)=>{
 });
 
 exports.verifyEmployee = catchAsync(async(req, res, next)=>{
-
     // 3.) Check if user still exists
     const existing = await Employee.findById(req.decoded.id);
 
@@ -204,12 +203,17 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
         return next(new AppError('Token expired. Please login!', 401));
     }
 
-    // // 4.) TODO Check if user is hotel staff or manager (not guest or admin)
-    // if(existing.changedPasswordAfter(req.decoded.iat)){
-    //     return next(new AppError('Token expired. Please login!', 401));
-    // }
+    // 4.) Check if user is hotel staff or manager (not guest or admin)
+    if(!(existing.employeeType === "staff" || existing.employeeType === "manager")){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
 
-    // 5.) Check if user changed password after route was issued
+    // 5.) Check if user is active
+    if(!(existing.status === "active")){
+        return next(new AppError('Token expired. Please login!', 401));
+    }
+
+    // 6.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
         return next(new AppError('Token expired. Please login!', 401));
     }

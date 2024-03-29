@@ -1,0 +1,121 @@
+.inquiry-screen-wrapper{
+    padding: 1em 2em;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 80vh;
+}
+
+.inquiry-screen-container{
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+}
+
+.inquiry-header{
+    display: flex;
+    flex-direction: row;
+    margin: 1em 0
+}
+
+.inquiry-message-box-container {
+    height: 40em;
+    display: flex;
+    flex-direction: row;
+}
+
+ul.inquiry-ul-style {
+    list-style-type: none;
+    background-color: none;
+    height: 40em;
+    overflow-y: scroll;
+    flex: 1.5;
+    direction: rtl;
+    padding: 0;
+    margin: 0;
+}
+
+.inquiry-message-screen{
+    flex: 5;
+    background-color: #D3D3D3;
+    height: 40em;
+    overflow-y: scroll;
+}
+
+.inquiry-ul-style > li {
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.inquiry-ul-style li button {
+    width: 100%;
+    background-color: transparent;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.inquiry-message-tab.active {
+    background-color: #D3D3D3
+}
+
+.circle {
+    background-color: #4BC0C8;
+    width: 1em;
+    height: 1em;
+    border-radius: 2em;
+}
+
+.circle.opacity {
+    opacity: 0;
+}
+
+.inquiry-message-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inquiry-message {
+    width: 90%;
+    background-color: #7C7C7C;
+    margin-top: 0.5em;
+    padding: 0.5em;
+}
+
+.inquiry-reply {
+    width: 90%;
+    background-color: #E5C2A1;
+    margin-top: 0.5em;
+    padding: 0.5em;
+}
+
+@media screen and (max-width: 992px) {
+    .inquiry-screen-container{
+        width: 100%;
+    }
+    
+    ul.inquiry-ul-style {
+        flex: 1.75;
+    }
+    
+    .inquiry-message-screen{
+        flex: 4;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .inquiry-screen-wrapper{
+        padding: 1em;
+    }
+    .inquiry-screen-container{
+
+    }
+}

@@ -99,7 +99,6 @@ function logout () {
     fetch('/api/v1/logout')
     .then(response => response.json())
     .then(res => {
-      console.log(res);
       if(res.statusCode && res.statusCode.toString().startsWith("2")){
         window.location.href = '/';
       } else {
