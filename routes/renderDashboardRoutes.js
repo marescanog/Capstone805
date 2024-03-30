@@ -1,7 +1,8 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage, viewCreatePromotionPage, viewPromotionPage} = require('./../controllers/dashboard/managerDashboardController.js');
-const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
+const {loadAdminDashboard, viewUsers, viewEmployees, viewUserPage,
+    createUserPage, viewEmployeePage, createEmployeePage, managePermissionsPage } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
 const authController = require('./../controllers/authController.js');
@@ -197,7 +198,64 @@ managerRouter.route('/:id').get(
 
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
-adminRouter.route('/users').get(viewUsers);
+adminRouter.route('/users').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewUsers
+);
+
+// /dashboard/USNVMQD493/user/:id
+adminRouter.route('/user/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewUserPage
+);
+
+adminRouter.route('/createuser').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    createUserPage
+);
+
+adminRouter.route('/employees').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl,
+    viewEmployees
+);
+
+///dashboard/USNVMQD493/employee/:id
+adminRouter.route('/employee/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewEmployeePage
+);
+
+adminRouter.route('/createemployee').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    createEmployeePage
+);
+
+adminRouter.route('/managepermissions').get(
+    managePermissionsPage
+);
+
+adminRouter.route('/managepermissions/:id').get(
+    managePermissionsPage
+);
+
 adminRouter.route('/:id').get(
     authController.protect, 
     authController.verifyEmployee, 

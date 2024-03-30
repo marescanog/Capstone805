@@ -217,9 +217,14 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 {resultName:"arrivalTime", label:"Arrival Time"},
                 {resultName:"guestName", label:"Guest Name"},
                 {resultName:"status", label:"Status"},
-                {resultName:"action", label:"Action", 
+                {resultName:"action1", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Check-In"}, {classname:"btn-tab-lightorange", name: "View"}],
+                        classNames: [{classname:"btn-success", name: "Check-In"}, {classname:"btn-warning", name: "Check-out/Transfer"}, {classname:"btn-secondary", name: "View Status"}],
+                    }
+                },
+                {resultName:"action2", label:"Action", 
+                    isButton: { 
+                        classNames: [{classname:"btn-tab-lightorange", name: "View"}],
                     }
                 }
             ]
@@ -233,7 +238,8 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 arrivalTime: "16:30",
                 guestName: "Alpha, Betty",
                 status: "Upcoming",
-                action: "Check-In"
+                action1: "Check-In",
+                action2: "View"
             },
             {
                 reservationID: "DVHG80",
@@ -242,7 +248,8 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 arrivalTime: "18:00",
                 guestName: "Mila, Waters",
                 status: "Upcoming",
-                action: "Check-In"
+                action1: "Check-In",
+                action2: "View"
             },
             {
                 reservationID: "DF8HTR",
@@ -251,7 +258,8 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 arrivalTime: "15:00",
                 guestName: "Stephen, Carol",
                 status: "Checked",
-                action: "View"
+                action1: "Check-out/Transfer",
+                action2: "View"
             },
             {
                 reservationID: "B7DFIG",
@@ -260,16 +268,18 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 arrivalTime: "16:00",
                 guestName: "Jamima, Sean",
                 status: "Upcoming",
-                action: "Check-In"
+                action1: "Check-In",
+                action2: "View"
             },
             {
                 reservationID: "HJKS80",
                 checkinDate: "March 16, 2024 Fri",
                 checkoutDate: "Sep 17, 2024 Tuesday",
                 arrivalTime: "15:00",
-                guestName: "Wtaers, Jameson",
-                status: "Checked",
-                action: "View"
+                guestName: "Waters, Jameson",
+                status: "Completed",
+                action1: "View Status",
+                action2: "View"
             },
         ]);
 

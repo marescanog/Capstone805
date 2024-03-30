@@ -1,0 +1,57 @@
+.create-form-page-container {
+    min-height: 80vh;
+    display: flex;
+}
+
+.create-form-page-wrapper{
+    padding: 3em 4em;
+    flex: 1;
+}
+
+.form-wrap {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 1em;
+}
+
+.form-card-create {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.amenity-item {
+    min-width: 6em;
+    margin-left: 1em;
+}
+
+.amenity-group {
+    height: 5em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    background-color: rgb(227, 230, 231);
+}
+
+.section-style {
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Slight border radius */
+    padding: 20px; /* Optional: Adds some space inside the section */
+    margin: 20px 0; /* Optional: Adds some space outside the section */
+}
+@media screen and (max-width: 992px) {
+    .form-wrap {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .create-form-page-container {
+        padding: 1em;
+    }
+    
+}
