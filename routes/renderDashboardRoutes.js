@@ -172,7 +172,7 @@ managerRouter.route('/createpromotion').get(
     authController.cacheControl, 
     viewCreatePromotionPage
 );
-managerRouter.route('/viewpromotion').get(
+managerRouter.route('/viewpromotion/:id').get(
     authController.protect, 
     authController.verifyEmployee, 
     authController.restrictTo('manager', 'admin'), 

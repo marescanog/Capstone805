@@ -256,6 +256,7 @@ exports.viewOffers = async (req, res) => {
         ]);
         VB.addOptions("scripts",[
             {src:"/js/searchControl.js"},
+            {src:"/js/tableButtonFunc/viewOffersTableButtons.js"},
         ]);
         VB.addOptions("searchOptionsList", [
             {id:"offerID", label:"Offer ID"},
@@ -273,12 +274,14 @@ exports.viewOffers = async (req, res) => {
                 {resultName:"roomsApplied", label:"Rooms"},
                 {resultName:"action1", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Edit"}],
+                        classNames: [{classname:"btn-primary", name: "View/Edit"}],
+                        buttonActions: [{classname:'Redirect', name: "View/Edit"}],
                     }
                 },
                 {resultName:"action2", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Delete"}],
+                        classNames: [{classname:"btn-danger", name: "Delete"}],
+                        buttonActions: [{classname:'Delete', name: "Delete"}],
                     }
                 }
             ]
@@ -291,8 +294,9 @@ exports.viewOffers = async (req, res) => {
                 offerStartDate: "March 16, 2024 Fri",
                 offerEndDate: "Indefinate",
                 roomsApplied: "All",
-                action1: "Edit",
-                action2: "Delete"
+                action1: "View/Edit",
+                action2: "Delete",
+                variableName: "offerID"
             },
             {
                 offerID: "DFHEJ7",
@@ -301,8 +305,9 @@ exports.viewOffers = async (req, res) => {
                 offerStartDate: "March 16, 2024 Fri",
                 offerEndDate: "March 16, 2025 Fri",
                 roomsApplied: "All",
-                action1: "Edit",
-                action2: "Delete"
+                action1: "View/Edit",
+                action2: "Delete",
+                variableName: "offerID"
             },
             {
                 offerID: "SDHFJ7",
@@ -311,8 +316,9 @@ exports.viewOffers = async (req, res) => {
                 offerStartDate: "March 16, 2024 Fri",
                 offerEndDate: "March 16, 2025 Fri",
                 roomsApplied: "Queen",
-                action1: "Edit",
-                action2: "Delete"
+                action1: "View/Edit",
+                action2: "Delete",
+                variableName: "offerID"
             }
         ]);
         res.render( "pages/employee/viewList", VB.getOptions());
@@ -339,6 +345,7 @@ exports.viewPromotions = async (req, res) => {
         ]);
         VB.addOptions("scripts",[
             {src:"/js/searchControl.js"},
+            {src:"/js/tableButtonFunc/viewPromotionsTableButtons.js"},
         ]);
         VB.addOptions("searchOptionsList", [
             {id:"promotionID", label:"Promo ID"},
@@ -358,12 +365,14 @@ exports.viewPromotions = async (req, res) => {
                 {resultName:"description", label:"Description"},
                 {resultName:"action1", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Edit"}],
+                        classNames: [{classname:"btn-tab-lightblue", name: "View/Edit"}],
+                        buttonActions: [{classname:'Redirect', name: "View/Edit"}],
                     }
                 },
                 {resultName:"action2", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Delete"}],
+                        classNames: [{classname:"btn-danger", name: "Delete"}],
+                        buttonActions: [{classname:'Delete', name: "Delete"}],
                     }
                 }
             ]
@@ -376,8 +385,9 @@ exports.viewPromotions = async (req, res) => {
                 startDate: "March 16, 2024 Fri",
                 endDate: "March 16, 2025 Fri",
                 description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos ",
-                action1: "Edit",
+                action1: "View/Edit",
                 action2: "Delete",
+                variableName: "promotionID"
             }
         ]);
         res.render( "pages/employee/viewList", VB.getOptions());
@@ -404,6 +414,7 @@ exports.viewRooms = async (req, res) => {
         ]);
         VB.addOptions("scripts",[
             {src:"/js/searchControl.js"},
+            {src:"/js/tableButtonFunc/viewRoomTableButtons.js"},
         ]);
 
         VB.addOptions("searchOptionsList", [
@@ -424,7 +435,8 @@ exports.viewRooms = async (req, res) => {
                 {resultName:"totaloccupied", label:"Total Occupied"},
                 {resultName:"action1", label:"Action", 
                     isButton: { 
-                        classNames: [{classname:"btn-tab-lightblue", name: "Edit"}],
+                        classNames: [{classname:"btn-primary", name: "View/Edit"}],
+                        buttonActions: [{classname:'Redirect', name: "View/Edit"}],
                     }
                 }
             ]
@@ -437,7 +449,8 @@ exports.viewRooms = async (req, res) => {
                 bedType: "Single",
                 totalRooms: "23",
                 totaloccupied: "21",
-                action1: "Edit"
+                action1: "View/Edit",
+                variableName: "roomID"
             },
             {
                 roomID: "asdasdsdad",
@@ -445,7 +458,8 @@ exports.viewRooms = async (req, res) => {
                 bedType: "Queen",
                 totalRooms: "13",
                 totaloccupied: "5",
-                action1: "Edit"
+                action1: "View/Edit",
+                variableName: "roomID"
             }
         ]);
 
