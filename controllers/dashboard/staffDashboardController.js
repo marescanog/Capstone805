@@ -2,7 +2,7 @@ const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder');
 const AppError = require('./../../apiUtils/appError.js');
 
-exports.loadStaffDashboard = async (req, res) => {
+exports.loadStaffDashboard = catchAsync(async (req, res, next) => {
     if(req.user){
         const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
         const VB = new ViewBuilder({
@@ -34,9 +34,9 @@ exports.loadStaffDashboard = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.updateStaffPhoto = async (req, res) => {
+exports.updateStaffPhoto = catchAsync(async (req, res, next) => {
     if(req.user){
         const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
         const VB = new ViewBuilder({
@@ -64,9 +64,9 @@ exports.updateStaffPhoto = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.editStaffAccount = async (req, res) => {
+exports.editStaffAccount = catchAsync(async (req, res, next) => {
     if(req.user){
         const today = new Date();
         const dateString = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`
@@ -99,9 +99,9 @@ exports.editStaffAccount = async (req, res) => {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
     
-}
+})
 
-exports.editStaffPassword = async (req, res) => {
+exports.editStaffPassword = catchAsync(async (req, res, next) => {
     if(req.user){
         const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
         const VB = new ViewBuilder({
@@ -130,10 +130,10 @@ exports.editStaffPassword = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
-exports.viewInquiries = async (req, res) => {
+exports.viewInquiries = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -149,10 +149,10 @@ exports.viewInquiries = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
-exports.createReservations = async (req, res) => {
+exports.createReservations = catchAsync(async (req, res, next) => {
     if(req.user){
         const today = new Date();
         const tomorrow = new Date();
@@ -180,9 +180,9 @@ exports.createReservations = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.checkin = async (req, res) => {
+exports.checkin = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -277,10 +277,10 @@ exports.checkin = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
-exports.viewStaffReservations = async (req, res) => {
+exports.viewStaffReservations = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -361,11 +361,11 @@ exports.viewStaffReservations = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
 
-exports.viewSingleReservationStafPOV = async (req, res) => {
+exports.viewSingleReservationStafPOV = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -428,7 +428,7 @@ exports.viewSingleReservationStafPOV = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
 

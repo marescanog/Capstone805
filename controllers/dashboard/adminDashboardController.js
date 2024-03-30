@@ -1,12 +1,49 @@
 
-exports.loadAdminDashboard = async (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The loadAdminDashboard route is not yet defined!'
-    });
-}
+const catchAsync = require('./../../apiUtils/catchAsync');
+const ViewBuilder = require('./../../apiUtils/viewBuilder');
+const AppError = require('./../../apiUtils/appError.js');
 
-exports.viewUsers = async (req, res) => {
+exports.loadAdminDashboard = catchAsync(async (req, res, next) => {
+    if(req.user){
+        const today = new Date();
+        const dateString = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("date", dateString);
+        VB.addOptions("css", "dash.css");
+        VB.addOptions("title", "Admin Dashboard");
+        VB.addOptions("partialsCSS", [,
+            {name:"accountInfoSideBar.css"},
+            {name:"accountButtonList.css"}
+        ]);
+        VB.addOptions("sidebarData", {
+            img: "/img/placeholder/hotelstaff.png",
+            firstName: firstName,
+            lastName: `${lastName.charAt(0)}.`,
+            employeeType: req?.decoded?.type,
+            mobileNumber: mobileNumber,
+            address: `${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`,
+            emailAddress: emailAddress
+        });
+        VB.addOptions("buttonData", [
+            {name:"Manage Guests",url:"/dashboard/USNVMQD493/users"},
+            {name:"Manage Employees",url:"#"},
+            {name:"Manage Permissions",url:"#"}
+        ]);
+        VB.addOptions("scripts",[
+            {src:"/js/managerDash.js"},
+        ]);
+        res.render( "pages/employee/empDashboard", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+} )
+
+exports.viewUsers = catchAsync(async (req, res, next) => {
     res.render( "pages/employee/viewList",{ 
         layout:"main", 
         css: 'employee/checkin.css', 
@@ -82,4 +119,4 @@ exports.viewUsers = async (req, res) => {
         headerTitle:"Find User Accounts",
         placeholder:"Search for a User"
     }); 
-}
+})

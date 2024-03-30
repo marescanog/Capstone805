@@ -62,8 +62,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="button btn-primary next-button mt-4" id="edit_date">SELECT DATE</button>
-                        <button type="button" class="button btn-primary next-button mt-4 d-none" id="submit_date">CONFIRM DATE SELECTION</button>
+                        <button type="button" class="btn button btn-primary next-button mt-4" id="edit_date">SELECT DATE</button>
+                        <button type="button" class="btn button btn-primary next-button mt-4 d-none" id="submit_date">CONFIRM DATE SELECTION</button>
                     </div>
                 </div>
 
@@ -185,8 +185,39 @@
                             </ul>
                     </div>
                 </div>
-            </div>
 
+                <div class="card mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">Add Manager Promotion (optional)</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="col-md-6">
+                                    <label for="inputName" class="form-label">Discount Amount*</label>
+                                    <input type="number" class="form-control" aria-label="First name" id="inputName" required {{#if readOnly}}disabled{{/if}}>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="mb-3">
+                                    <label for="priceChangeType" class="form-label">Discount Type</label>
+                                    <select class="form-select" id="priceChangeType" name="priceChangeType" required {{#if readOnly}}disabled{{/if}}>
+                                    <option value="flatRateIncrease">Flat Rate Increase</option>
+                                    <option value="percentIncrease">Percent Increase</option>
+                                    </select>
+                                </div>
+                            </li>
+                            {{#unless readOnly}}
+                                <li class="list-group-item">
+                                    <div class="col-md-6">
+                                        <label for="inputManagerCode" class="form-label">Manager Code*</label>
+                                        <input type="password" class="form-control" aria-label="Manager Code" id="inputManagerCode" required {{#if readOnly}}disabled{{/if}}>
+                                    </div>
+                                </li>
+                            {{/unless}}
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
 
             <div class="section-guest-information">
                 <div class="card mb-3" >
@@ -216,7 +247,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email address</label>
                                 <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                                <button>Search</button>
+                                <button class="btn btn-primary">Search</button>
                             </div>
                         </section>
                         <section>
@@ -236,7 +267,7 @@
                                 <label for="mobileNumber" class="form-label">Mobile Number</label>
                                 <input type="tel" class="form-control" id="mobileNumber">
                             </div>
-                            <button>Verify Email</button>
+                            <button class="btn btn-primary">Verify Email</button>
                         </section>
                     </div>
                 </div>
