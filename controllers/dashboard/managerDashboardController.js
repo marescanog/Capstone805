@@ -25,20 +25,68 @@ exports.viewReportPage = async (req, res) => {
     res.render( "pages/employee/manager/generateReport", VB.getOptions());
 }
 
-// exports.viewReportPage = async (req, res) => {
-//     const VB = new ViewBuilder({
-//         alertToLogin: req?.alertToLogin??false,
-//         userType: req?.decoded?.type??null,
-//         id:req?.decoded?.id??null,
-//     });
-//     VB.addOptions("css", "reports.css");
-//     VB.addOptions("title", "Reporting Tool");
-//     VB.addOptions("headerTitle", "Generate Report");
-//     VB.addOptions("partialsCSS", [,
-//         {name:"h1styled.css"},
-//     ]);
-//     res.render( "pages/employee/empDashboard", VB.getOptions());
-// }
+exports.viewCreateRoomPage = async (req, res) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", "/employee/createRoom.css");
+    VB.addOptions("title", "Create Room");
+    VB.addOptions("headerTitle", "Create Room");
+    VB.addOptions("partialsCSS", [,
+        {name:"h1styled.css"},
+    ]);
+    VB.addOptions("scripts",[
+        {src:"/js/createRoom.js"},
+    ]);
+    VB.addOptions("amenities", [
+        "Microwave",
+        "Balcony",
+        "Pool",
+    ]);
+    VB.addOptions("priceChangeTrend", [
+        {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
+        {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
+    ]);
+    VB.addOptions("offers", [
+        {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
+        {name: "Dinner", id:"asdasd", type:"type", value:"value"}
+    ]);
+    res.render( "pages/employee/manager/createRoom", VB.getOptions());
+}
+
+exports.viewRoomPage = async (req, res) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", "/employee/createRoom.css");
+    VB.addOptions("title", "View Room");
+    VB.addOptions("readOnly", true);
+    VB.addOptions("headerTitle", "View Room");
+    VB.addOptions("partialsCSS", [,
+        {name:"h1styled.css"},
+    ]);
+    VB.addOptions("scripts",[
+        {src:"/js/createRoom.js"},
+    ]);
+    VB.addOptions("amenities", [
+        "Microwave",
+        "Balcony",
+        "Pool",
+    ]);
+    VB.addOptions("priceChangeTrend", [
+        {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
+        {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
+    ]);
+    VB.addOptions("offers", [
+        {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
+        {name: "Dinner", id:"asdasd", type:"type", value:"value"}
+    ]);
+    res.render( "pages/employee/manager/createRoom", VB.getOptions());
+}
 
 // exports.viewReportPage = async (req, res) => {
 //     const VB = new ViewBuilder({

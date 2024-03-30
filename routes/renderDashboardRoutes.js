@@ -1,6 +1,6 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
-const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
@@ -133,8 +133,21 @@ managerRouter.route('/report').get(
     viewReportPage
 ); // done
 
-managerRouter.route('/createroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/viewroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
+managerRouter.route('/createroom').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateRoomPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewroom/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRoomPage 
+); //semi-done rushed html & css
 
 managerRouter.route('/createoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/viewoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
@@ -158,16 +171,6 @@ managerRouter.route('/:id').get(
 
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
-// adminRouter.route('/viewReservations').get(viewStaffReservations);
-// adminRouter.route('/edit').get(editStaffAccount);
-// adminRouter.route('/changePassword').get(editStaffPassword);
-// adminRouter.route('/updatePhoto').get(updateStaffPhoto);
-// adminRouter.route('/createReservations').get(createReservations);
-// adminRouter.route('/inquiries').get(viewInquiries);
-// adminRouter.route('/checkin').get(checkin);
-// adminRouter.route('/offers').get(checkin);
-// adminRouter.route('/promotions').get(checkin);
-// adminRouter.route('/rooms').get(checkin);
 adminRouter.route('/users').get(viewUsers);
 adminRouter.route('/:id').get(loadAdminDashboard);
 // create user

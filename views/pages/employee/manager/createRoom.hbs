@@ -1,0 +1,202 @@
+<div class="create-room-page-container">
+    <div class="create-room-page-wrapper">
+        {{> _h1styled headerTitle=headerTitle}}
+
+        <form >
+            <div class="form-wrap">
+                <div class="card form-card-create-room">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="roomType">Room Type</label>
+                            <input type="text" class="form-control" id="roomType" name="roomType" placeholder="Enter room type" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Describe the room" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="basePrice">Base Price</label>
+                            <input type="number" class="form-control" id="basePrice" name="basePrice" placeholder="Enter base price" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select class="form-control" id="category" name="category" {{#if readOnly}}disabled{{/if}}>
+                                <option value="Budget Room">Budget Room</option>
+                                <option value="Luxury Suites">Luxury Suites</option>
+                                <option value="Regular Rooms">Regular Rooms</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bedType">Bed Type</label>
+                            <select class="form-control" id="bedType" name="bedType" {{#if readOnly}}disabled{{/if}}>
+                                <option value="Single">Single</option>
+                                <option value="Queen">Queen</option>
+                                <option value="King">King</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bedCount">Bed Count</label>
+                            <input type="number" class="form-control" id="bedCount" name="bedCount" placeholder="Enter Number of Beds" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        {{#if readOnly}}
+                            <div>
+                                <p>Large Thumbnail</p>
+                                <img src="/img/placeholder/hotel_california_logo.png" alt="largeThumbnail">
+                            </div>
+                            <div>
+                                <p>Small Thumbnail</p>
+                                <img src="/img/placeholder/hotel_california_logo.png" alt="smallThumbnail">
+                            </div>
+                            {{#if photoList}}
+                                <div>
+                                    <p>Photos</p>
+                                    {{#each photoList}}
+                                        <img src="/img/placeholder/hotel_california_logo.png" alt="smallThumbnail">
+                                    {{/each}}
+                                </div>
+                            {{/if}}
+                        {{/if}}
+
+                        {{#unless readOnly}}
+                            <div class="form-group">
+                                <label for="largeThumbnail">Large Thumbnail Photo</label>
+                                <input type="file" class="form-control-file" id="largeThumbnail" name="largeThumbnail" {{#if readOnly}}disabled{{/if}}>
+                                <small class="form-text text-muted">Upload a single large thumbnail photo.</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="smallThumbnail">Small Thumbnail Photo</label>
+                                <input type="file" class="form-control-file" id="smallThumbnail" name="smallThumbnail" {{#if readOnly}}disabled{{/if}}>
+                                <small class="form-text text-muted">Upload a single small thumbnail photo.</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="roomPhotos">Room Photos</label>
+                                <input type="file" class="form-control-file" id="roomPhotos" name="roomPhotos" multiple {{#if readOnly}}disabled{{/if}}>
+                                <small class="form-text text-muted">Select multiple photos by holding down the 'Ctrl' or 'Command' key while selecting files.</small>
+                            </div>
+                        {{/unless}}
+                    </div>
+                </div>
+                <div class="card form-card-create-room">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Amenities</label>
+                            <div class="amenity-group">
+                                {{#if readOnly}}
+                                    {{#each amenities}}
+                                        <p>{{this}}, </p>
+                                    {{/each}}
+                                {{/if}}
+                                {{#unless readOnly}}
+                                    {{#each amenities}}
+                                        <div class="form-check amenity-item">
+                                            <input class="form-check-input" type="checkbox" name="amenities" value="{{this}}" id="{{this}}">
+                                            <label class="form-check-label" for="{{this}}">
+                                                {{this}}
+                                            </label>
+                                        </div>
+                                    {{/each}}
+                                {{/unless}}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="totalQuantity">Total Quantity</label>
+                            <input type="number" class="form-control" id="totalQuantity" name="totalQuantity" placeholder="Available quantity" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <!-- Dynamically Added Elements for Room Number Assignment -->
+                        <div id="roomNumberAssignmentSection" style="display: none;">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="roomNumberInput" placeholder="Enter room number">
+                                <button type="button" id="addRoomNumber" class="btn btn-primary mt-2">Add Room Number Assignment</button>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Input for Storing Room Numbers -->
+                        <input type="hidden" name="roomNumbers" id="roomNumbers">
+
+                        <!-- Container for Displaying Assigned Room Numbers -->
+                        <div id="assignedRoomNumbersContainer"></div>
+
+                        <h6>Offers</h6>
+                            <div class="accordion" id="offeraccordion">
+                                {{#each offers}}
+                                    <div class="accordion-item">
+                                        <div class="accordion-header" id="offerheading{{@index}}">
+                                            <h5 class="mb-0">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ocollapse{{@index}}" aria-expanded="true" aria-controls="ocollapse{{@index}}">
+                                                    {{#unless ../readOnly}}
+                                                        <input name="offers" type="checkbox" class="align-middle" value="{{id}}" style="margin-right: 15px;"> 
+                                                    {{/unless}}
+                                                    {{this.name}}
+                                                </button>
+                                            </h5>
+                                        </div>
+
+                                        <div id="ocollapse{{@index}}" class="collapse" aria-labelledby="offerheading{{@index}}" data-parent="#offeraccordion">
+                                            <div class="card-body">
+                                                ID: {{this.id}}<br>
+                                                Type: {{this.type}}<br>
+                                                Value: {{this.value}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/each}}
+                            </div>
+   
+                        <h6 class="mt-3">Price Change Trends</h6>
+                        <div class="accordion" id="priceChangeaccordion">
+                            {{#each priceChangeTrend}}
+                                <div class="accordion-item">
+                                    <div class="accordion-header" id="priceChangeheading{{@index}}">
+                                        <h5 class="mb-0">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pccollapse{{@index}}" aria-expanded="true" aria-controls="pccollapse{{@index}}">
+                                                {{#unless ../readOnly}}
+                                                    <input name="priceChangeTrends" type="checkbox" class="align-middle" value="{{id}}" style="margin-right: 15px;"> 
+                                                {{/unless}}
+                                                {{this.name}}
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="pccollapse{{@index}}" class="collapse" aria-labelledby="priceChangeheading{{@index}}" data-parent="#priceChangeaccordion">
+                                        <div class="card-body">
+                                            ID: {{this.id}}<br>
+                                            Type: {{this.type}}<br>
+                                            Value: {{this.value}}
+                                        </div>
+                                    </div>
+                                </div>
+                            {{/each}}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxGuests">Max Allowed Guests</label>
+                            <input type="number" class="form-control" id="maxGuests" name="maxGuests" placeholder="Enter Max Guests" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxExtraPersonFee">Extra person Fee</label>
+                            <input type="number" class="form-control" id="maxExtraPersonFee" name="maxExtraPersonFee" placeholder="Enter Extra Person Fee" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxExtraPersonsAllowed">Max Extra Person allowed</label>
+                            <input type="number" class="form-control" id="maxExtraPersonsAllowed" maxExtraPersonsAllowed="basePrice" placeholder="Enter Max Extra Person Allowed" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                    </div>
+                </div>
+            </div>          
+            {{#unless readOnly}}<button type="submit" class="btn btn-primary">Submit</button> {{/unless}}
+        </form>
+    </div>
+</div>
