@@ -208,10 +208,18 @@ adminRouter.route('/users').get(
 
 // /dashboard/USNVMQD493/user/:id
 adminRouter.route('/user/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     viewUserPage
 );
 
 adminRouter.route('/createuser').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     createUserPage
 );
 
@@ -225,10 +233,18 @@ adminRouter.route('/employees').get(
 
 ///dashboard/USNVMQD493/employee/:id
 adminRouter.route('/employee/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     viewEmployeePage
 );
 
 adminRouter.route('/createemployee').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     createEmployeePage
 );
 

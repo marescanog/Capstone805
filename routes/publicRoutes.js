@@ -36,7 +36,7 @@ router.get("/createaccount", authController.detect, viewCreateAccountPage);
 // Create cookie with email & expiry
 router.get("/verifyaccount", authController.detect, viewVerifyAccountPage);
 
-router.get("/portal", authController.detect, viewEmployeePortalPage);
+router.get("/portal", authController.detect,  authController.cacheControl, viewEmployeePortalPage);
 
 router.get("/faqsPolicies", authController.detect, viewFAQPage);
 
