@@ -1,6 +1,6 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
-const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
@@ -149,8 +149,21 @@ managerRouter.route('/viewroom/:id').get(
     viewRoomPage 
 ); //semi-done rushed html & css
 
-managerRouter.route('/createoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/viewoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
+managerRouter.route('/createoffer').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateOfferPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewoffer/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOfferPage
+); //semi-done rushed html & css
 
 managerRouter.route('/createpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/viewpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});

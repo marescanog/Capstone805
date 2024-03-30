@@ -88,50 +88,55 @@ exports.viewRoomPage = async (req, res) => {
     res.render( "pages/employee/manager/createRoom", VB.getOptions());
 }
 
-// exports.viewReportPage = async (req, res) => {
-//     const VB = new ViewBuilder({
-//         alertToLogin: req?.alertToLogin??false,
-//         userType: req?.decoded?.type??null,
-//         id:req?.decoded?.id??null,
-//     });
-//     VB.addOptions("css", "reports.css");
-//     VB.addOptions("title", "Reporting Tool");
-//     VB.addOptions("headerTitle", "Generate Report");
-//     VB.addOptions("partialsCSS", [,
-//         {name:"h1styled.css"},
-//     ]);
-//     res.render( "pages/employee/empDashboard", VB.getOptions());
-// }
+exports.viewCreateOfferPage = async (req, res) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("css", "/employee/createOffer.css");
+    VB.addOptions("title", "Create Offer");
+    VB.addOptions("headerTitle", "Create Offer");
+    VB.addOptions("partialsCSS", [,
+        {name:"h1styled.css"},
+    ]);
+    // VB.addOptions("scripts",[
+    //     {src:"/js/createRoom.js"},
+    // ]);
+    VB.addOptions("amenities", [
+        "Welcome drinks",
+        "microwave"
+    ]);
+    VB.addOptions("promotion", [
+        {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
+        {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
+    ]);
+    res.render( "pages/employee/manager/createOffer", VB.getOptions());
+}
 
-// exports.viewReportPage = async (req, res) => {
-//     const VB = new ViewBuilder({
-//         alertToLogin: req?.alertToLogin??false,
-//         userType: req?.decoded?.type??null,
-//         id:req?.decoded?.id??null,
-//     });
-//     VB.addOptions("css", "reports.css");
-//     VB.addOptions("title", "Reporting Tool");
-//     VB.addOptions("headerTitle", "Generate Report");
-//     VB.addOptions("partialsCSS", [,
-//         {name:"h1styled.css"},
-//     ]);
-//     res.render( "pages/employee/empDashboard", VB.getOptions());
-// }
-
-// exports.viewReportPage = async (req, res) => {
-//     const VB = new ViewBuilder({
-//         alertToLogin: req?.alertToLogin??false,
-//         userType: req?.decoded?.type??null,
-//         id:req?.decoded?.id??null,
-//     });
-//     VB.addOptions("css", "reports.css");
-//     VB.addOptions("title", "Reporting Tool");
-//     VB.addOptions("headerTitle", "Generate Report");
-//     VB.addOptions("partialsCSS", [,
-//         {name:"h1styled.css"},
-//     ]);
-//     res.render( "pages/employee/empDashboard", VB.getOptions());
-// }
+exports.viewOfferPage = async (req, res) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    });
+    VB.addOptions("readOnly", true);
+    VB.addOptions("css", "/employee/createOffer.css");
+    VB.addOptions("title", "View Offer");
+    VB.addOptions("headerTitle", "View Offer");
+    VB.addOptions("partialsCSS", [,
+        {name:"h1styled.css"},
+    ]);
+    VB.addOptions("amenities", [
+        "Welcome drinks",
+        "microwave"
+    ]);
+    VB.addOptions("promotion", [
+        {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
+        {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
+    ]);
+    res.render( "pages/employee/manager/createOffer", VB.getOptions());
+}
 
 exports.loadManagerDashboard = async (req, res) => {
     if(req.user){
@@ -163,6 +168,9 @@ exports.loadManagerDashboard = async (req, res) => {
             {name:"Generate Report",url:"/dashboard/manager/report"},
             {name:"Manage Promotions",url:"/dashboard/manager/promotions"},
             {name:"Manage Reservations",url:"/dashboard/staff/viewReservations"}
+        ]);
+        VB.addOptions("scripts",[
+            {src:"/js/managerDash.js"},
         ]);
         res.render( "pages/employee/empDashboard", VB.getOptions());
     } else {

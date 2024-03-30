@@ -1,0 +1,27 @@
+<div class="create-promotion-page-container">
+    <div class="create-promotion-page-wrapper">
+        {{> _h1styled headerTitle=headerTitle}}
+        {{#if readOnly}}
+            <h3>ID: AHDIHASDUIAD8AS9DSA</h3>
+            <div class="mt-3">
+                <button class="btn btn-primary">EDIT</button>
+                <button class="btn btn-danger">DELETE</button>
+            </div>
+        {{/if}}
+        <form>
+            <div class="form-wrap">
+                <div class="card form-card-create-promotion">
+                    <div class="card-body">
+
+                    </div>
+                </div>
+                <div class="card form-card-create-promotion">
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
+            {{#unless readOnly}}<button type="submit" class="btn btn-primary">Submit</button> {{/unless}}
+        </form>
+    </div>
+</div>
