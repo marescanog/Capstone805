@@ -103,7 +103,7 @@
             {{/equal}}
 
             {{#equal userType "manager"}}
-              <p>Manager</p>
+              {{#navLink (concat "/dashboard/manager/" id)}}Dashboard{{/navLink}}
             {{/equal}}
 
             {{#equal userType "admin"}}
@@ -182,7 +182,11 @@
                 {{/equal}}
 
                 {{#equal userType "manager"}}
-                  <p>Manager</p>
+                  <a class="dropdown-item" href="/dashboard/manager/report">Report</a>
+                  <a class="dropdown-item" href="/dashboard/manager/promotions">Promotions</a>
+                  <a class="dropdown-item" href="/dashboard/manager/rooms">Rooms</a>
+                  <a class="dropdown-item" href="/dashboard/manager/offers">Offers</a>
+                  <a class="dropdown-item" href="/dashboard/staff/viewReservations">Reservations</a>
                 {{/equal}}
 
                 {{#equal userType "admin"}}

@@ -1,6 +1,6 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
-const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage, viewCreatePromotionPage, viewPromotionPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
@@ -165,8 +165,20 @@ managerRouter.route('/viewoffer/:id').get(
     viewOfferPage
 ); //semi-done rushed html & css
 
-managerRouter.route('/createpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/viewpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
+managerRouter.route('/createpromotion').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreatePromotionPage
+);
+managerRouter.route('/viewpromotion').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewPromotionPage
+);
 
 managerRouter.route('/:id').get(
     authController.protect, 

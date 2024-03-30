@@ -2,141 +2,201 @@ const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder')
  
 exports.viewReportPage = async (req, res) => {
-    const chartData = {
-        labels: ['January', 'February', 'March', 'April'], // Example labels
-        values: [10, 20, 30, 40] // Example data
-      }
-    const VB = new ViewBuilder({
-        alertToLogin: req?.alertToLogin??false,
-        userType: req?.decoded?.type??null,
-        id:req?.decoded?.id??null,
-    });
-    VB.addOptions("css", "reports.css");
-    VB.addOptions("title", "Reporting Tool");
-    VB.addOptions("headerTitle", "Generate Report");
-    VB.addOptions("partialsCSS", [,
-        {name:"h1styled.css"},
-    ]);
-    VB.addOptions("addChartsJS", true);
-    VB.addOptions("chartData", chartData);
-    VB.addOptions("scripts",[
-        {src:"/js/initChart.js"},
-    ]);
-    res.render( "pages/employee/manager/generateReport", VB.getOptions());
+    if(req.user){
+        const chartData = {
+            labels: ['January', 'February', 'March', 'April'], // Example labels
+            values: [10, 20, 30, 40] // Example data
+          }
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "reports.css");
+        VB.addOptions("title", "Reporting Tool");
+        VB.addOptions("headerTitle", "Generate Report");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        VB.addOptions("addChartsJS", true);
+        VB.addOptions("chartData", chartData);
+        VB.addOptions("scripts",[
+            {src:"/js/initChart.js"},
+        ]);
+        res.render( "pages/employee/manager/generateReport", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 exports.viewCreateRoomPage = async (req, res) => {
-    const VB = new ViewBuilder({
-        alertToLogin: req?.alertToLogin??false,
-        userType: req?.decoded?.type??null,
-        id:req?.decoded?.id??null,
-    });
-    VB.addOptions("css", "/employee/createRoom.css");
-    VB.addOptions("title", "Create Room");
-    VB.addOptions("headerTitle", "Create Room");
-    VB.addOptions("partialsCSS", [,
-        {name:"h1styled.css"},
-    ]);
-    VB.addOptions("scripts",[
-        {src:"/js/createRoom.js"},
-    ]);
-    VB.addOptions("amenities", [
-        "Microwave",
-        "Balcony",
-        "Pool",
-    ]);
-    VB.addOptions("priceChangeTrend", [
-        {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
-        {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
-    ]);
-    VB.addOptions("offers", [
-        {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
-        {name: "Dinner", id:"asdasd", type:"type", value:"value"}
-    ]);
-    res.render( "pages/employee/manager/createRoom", VB.getOptions());
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "/employee/createRoom.css");
+        VB.addOptions("title", "Create Room");
+        VB.addOptions("headerTitle", "Create Room");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        VB.addOptions("scripts",[
+            {src:"/js/createRoom.js"},
+        ]);
+        VB.addOptions("amenities", [
+            "Microwave",
+            "Balcony",
+            "Pool",
+        ]);
+        VB.addOptions("priceChangeTrend", [
+            {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
+            {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
+        ]);
+        VB.addOptions("offers", [
+            {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
+            {name: "Dinner", id:"asdasd", type:"type", value:"value"}
+        ]);
+        res.render( "pages/employee/manager/createRoom", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 exports.viewRoomPage = async (req, res) => {
-    const VB = new ViewBuilder({
-        alertToLogin: req?.alertToLogin??false,
-        userType: req?.decoded?.type??null,
-        id:req?.decoded?.id??null,
-    });
-    VB.addOptions("css", "/employee/createRoom.css");
-    VB.addOptions("title", "View Room");
-    VB.addOptions("readOnly", true);
-    VB.addOptions("headerTitle", "View Room");
-    VB.addOptions("partialsCSS", [,
-        {name:"h1styled.css"},
-    ]);
-    VB.addOptions("scripts",[
-        {src:"/js/createRoom.js"},
-    ]);
-    VB.addOptions("amenities", [
-        "Microwave",
-        "Balcony",
-        "Pool",
-    ]);
-    VB.addOptions("priceChangeTrend", [
-        {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
-        {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
-    ]);
-    VB.addOptions("offers", [
-        {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
-        {name: "Dinner", id:"asdasd", type:"type", value:"value"}
-    ]);
-    res.render( "pages/employee/manager/createRoom", VB.getOptions());
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "/employee/createRoom.css");
+        VB.addOptions("title", "View Room");
+        VB.addOptions("readOnly", true);
+        VB.addOptions("headerTitle", "View Room");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        VB.addOptions("scripts",[
+            {src:"/js/createRoom.js"},
+        ]);
+        VB.addOptions("amenities", [
+            "Microwave",
+            "Balcony",
+            "Pool",
+        ]);
+        VB.addOptions("priceChangeTrend", [
+            {name: "Winter Trend", id:"asdasd", type:"type", value:"value"},
+            {name: "Summer Trend", id:"asdasd", type:"type", value:"value"}
+        ]);
+        VB.addOptions("offers", [
+            {name: "Breakfast", id:"asdasd", type:"type", value:"value"},
+            {name: "Dinner", id:"asdasd", type:"type", value:"value"}
+        ]);
+        res.render( "pages/employee/manager/createRoom", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 exports.viewCreateOfferPage = async (req, res) => {
-    const VB = new ViewBuilder({
-        alertToLogin: req?.alertToLogin??false,
-        userType: req?.decoded?.type??null,
-        id:req?.decoded?.id??null,
-    });
-    VB.addOptions("css", "/employee/createOffer.css");
-    VB.addOptions("title", "Create Offer");
-    VB.addOptions("headerTitle", "Create Offer");
-    VB.addOptions("partialsCSS", [,
-        {name:"h1styled.css"},
-    ]);
-    // VB.addOptions("scripts",[
-    //     {src:"/js/createRoom.js"},
-    // ]);
-    VB.addOptions("amenities", [
-        "Welcome drinks",
-        "microwave"
-    ]);
-    VB.addOptions("promotion", [
-        {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
-        {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
-    ]);
-    res.render( "pages/employee/manager/createOffer", VB.getOptions());
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "/employee/createOffer.css");
+        VB.addOptions("title", "Create Offer");
+        VB.addOptions("headerTitle", "Create Offer");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        // VB.addOptions("scripts",[
+        //     {src:"/js/createRoom.js"},
+        // ]);
+        VB.addOptions("amenities", [
+            "Welcome drinks",
+            "microwave"
+        ]);
+        VB.addOptions("promotion", [
+            {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
+            {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
+        ]);
+        res.render( "pages/employee/manager/createOffer", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
 
 exports.viewOfferPage = async (req, res) => {
-    const VB = new ViewBuilder({
-        alertToLogin: req?.alertToLogin??false,
-        userType: req?.decoded?.type??null,
-        id:req?.decoded?.id??null,
-    });
-    VB.addOptions("readOnly", true);
-    VB.addOptions("css", "/employee/createOffer.css");
-    VB.addOptions("title", "View Offer");
-    VB.addOptions("headerTitle", "View Offer");
-    VB.addOptions("partialsCSS", [,
-        {name:"h1styled.css"},
-    ]);
-    VB.addOptions("amenities", [
-        "Welcome drinks",
-        "microwave"
-    ]);
-    VB.addOptions("promotion", [
-        {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
-        {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
-    ]);
-    res.render( "pages/employee/manager/createOffer", VB.getOptions());
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("readOnly", true);
+        VB.addOptions("css", "/employee/createOffer.css");
+        VB.addOptions("title", "View Offer");
+        VB.addOptions("headerTitle", "View Offer");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        VB.addOptions("amenities", [
+            "Welcome drinks",
+            "microwave"
+        ]);
+        VB.addOptions("promotion", [
+            {name: "Steakhouse Coupon", id:"asdasd", type:"type", value:"value"},
+            {name: "Winter Discount", id:"asdasd", type:"type", value:"value"}
+        ]);
+        res.render( "pages/employee/manager/createOffer", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 }
+
+exports.viewCreatePromotionPage = async (req, res) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "/employee/createPromotion.css");
+        VB.addOptions("title", "Create Promotion");
+        VB.addOptions("headerTitle", "Create Promotion");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        res.render( "pages/employee/manager/createPromotion", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+}
+
+exports.viewPromotionPage = async (req, res) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("readOnly", true);
+        VB.addOptions("css", "/employee/createPromotion.css");
+        VB.addOptions("title", "Create Promotion");
+        VB.addOptions("headerTitle", "Create Promotion");
+        VB.addOptions("partialsCSS", [,
+            {name:"h1styled.css"},
+        ]);
+        res.render( "pages/employee/manager/createPromotion", VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+}
+
 
 exports.loadManagerDashboard = async (req, res) => {
     if(req.user){

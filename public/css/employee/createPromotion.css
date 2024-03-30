@@ -37,6 +37,13 @@
     background-color: rgb(227, 230, 231);
 }
 
+.section-style {
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Slight border radius */
+    padding: 20px; /* Optional: Adds some space inside the section */
+    margin: 20px 0; /* Optional: Adds some space outside the section */
+}
+
 @media screen and (max-width: 992px) {
     .form-wrap {
         flex-direction: column;
