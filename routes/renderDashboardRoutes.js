@@ -171,7 +171,8 @@ managerRouter.route('/createpromotion').get(
     authController.restrictTo('manager', 'admin'), 
     authController.cacheControl, 
     viewCreatePromotionPage
-);
+); //semi-done rushed html & css
+
 managerRouter.route('/viewpromotion/:id').get(
     authController.protect, 
     authController.verifyEmployee, 
@@ -197,7 +198,13 @@ managerRouter.route('/:id').get(
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
 adminRouter.route('/users').get(viewUsers);
-adminRouter.route('/:id').get(loadAdminDashboard);
+adminRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    loadAdminDashboard
+);
 // create user
 // manage user permissions8
 

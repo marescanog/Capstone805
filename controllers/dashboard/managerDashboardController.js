@@ -1,7 +1,8 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
-const ViewBuilder = require('./../../apiUtils/viewBuilder')
+const ViewBuilder = require('./../../apiUtils/viewBuilder');
+const AppError = require('./../../apiUtils/appError.js');
  
-exports.viewReportPage = async (req, res) => {
+exports.viewReportPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const chartData = {
             labels: ['January', 'February', 'March', 'April'], // Example labels
@@ -27,9 +28,9 @@ exports.viewReportPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewCreateRoomPage = async (req, res) => {
+exports.viewCreateRoomPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -62,9 +63,9 @@ exports.viewCreateRoomPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewRoomPage = async (req, res) => {
+exports.viewRoomPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -98,9 +99,9 @@ exports.viewRoomPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewCreateOfferPage = async (req, res) => {
+exports.viewCreateOfferPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -128,9 +129,9 @@ exports.viewCreateOfferPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewOfferPage = async (req, res) => {
+exports.viewOfferPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -156,9 +157,9 @@ exports.viewOfferPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewCreatePromotionPage = async (req, res) => {
+exports.viewCreatePromotionPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -175,9 +176,9 @@ exports.viewCreatePromotionPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewPromotionPage = async (req, res) => {
+exports.viewPromotionPage = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -186,8 +187,8 @@ exports.viewPromotionPage = async (req, res) => {
         });
         VB.addOptions("readOnly", true);
         VB.addOptions("css", "/employee/createPromotion.css");
-        VB.addOptions("title", "Create Promotion");
-        VB.addOptions("headerTitle", "Create Promotion");
+        VB.addOptions("title", "View Promotion");
+        VB.addOptions("headerTitle", "View Promotion");
         VB.addOptions("partialsCSS", [,
             {name:"h1styled.css"},
         ]);
@@ -195,10 +196,10 @@ exports.viewPromotionPage = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
 
-exports.loadManagerDashboard = async (req, res) => {
+exports.loadManagerDashboard = catchAsync(async (req, res, next) => {
     if(req.user){
         const today = new Date();
         const dateString = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`
@@ -236,9 +237,9 @@ exports.loadManagerDashboard = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewOffers = async (req, res) => {
+exports.viewOffers = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -325,9 +326,9 @@ exports.viewOffers = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewPromotions = async (req, res) => {
+exports.viewPromotions = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -394,9 +395,9 @@ exports.viewPromotions = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
 
-exports.viewRooms = async (req, res) => {
+exports.viewRooms = catchAsync(async (req, res, next) => {
     if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -467,4 +468,4 @@ exports.viewRooms = async (req, res) => {
     } else {
         return next(new AppError('You are not logged in! Please login to get access.', 401));
     }
-}
+})
