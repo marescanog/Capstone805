@@ -68,12 +68,15 @@ exports.updateStaffPhoto = async (req, res) => {
 
 exports.editStaffAccount = async (req, res) => {
     if(req.user){
+        const today = new Date();
+        const dateString = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`
         const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
             id:req?.decoded?.id??null,
         });
+        VB.addOptions("date", dateString);
         VB.addOptions("css", "dash.css");
         VB.addOptions("title", "Edit Account");
         VB.addOptions("partialsCSS", [,

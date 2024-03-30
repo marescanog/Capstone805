@@ -1,6 +1,6 @@
 const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
-const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
@@ -101,17 +101,80 @@ staffRouter.route('/:id').get(
 // Manager Router
 renderDashboardRouter.use('/manager', managerRouter);
 // Manager Routes
-managerRouter.route('/offers').get(viewOffers);
-managerRouter.route('/promotions').get(viewPromotions);
-managerRouter.route('/rooms').get(viewRooms);
-managerRouter.route('/report').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/createroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/createoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
+managerRouter.route('/offers').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOffers
+); // need link with view
+
+managerRouter.route('/promotions').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewPromotions
+); // need to link views
+
+managerRouter.route('/rooms').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRooms
+); // need to link views
+
+managerRouter.route('/report').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewReportPage
+); // done
+
+managerRouter.route('/createroom').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateRoomPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewroom/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRoomPage 
+); //semi-done rushed html & css
+
+managerRouter.route('/createoffer').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateOfferPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewoffer/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOfferPage
+); //semi-done rushed html & css
+
 managerRouter.route('/createpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/viewroom').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/vieweoffer').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
 managerRouter.route('/viewpromotion').get((req,res,next)=>{res.send({message:"This page is not defined yet"})});
-managerRouter.route('/:id').get(loadManagerDashboard);
+
+managerRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager'), 
+    authController.cacheControl, 
+    loadManagerDashboard
+); // done
 
 
 
@@ -121,16 +184,6 @@ managerRouter.route('/:id').get(loadManagerDashboard);
 
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
-// adminRouter.route('/viewReservations').get(viewStaffReservations);
-// adminRouter.route('/edit').get(editStaffAccount);
-// adminRouter.route('/changePassword').get(editStaffPassword);
-// adminRouter.route('/updatePhoto').get(updateStaffPhoto);
-// adminRouter.route('/createReservations').get(createReservations);
-// adminRouter.route('/inquiries').get(viewInquiries);
-// adminRouter.route('/checkin').get(checkin);
-// adminRouter.route('/offers').get(checkin);
-// adminRouter.route('/promotions').get(checkin);
-// adminRouter.route('/rooms').get(checkin);
 adminRouter.route('/users').get(viewUsers);
 adminRouter.route('/:id').get(loadAdminDashboard);
 // create user

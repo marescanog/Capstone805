@@ -1,0 +1,74 @@
+.create-room-page-container{
+    min-height: 80vh;
+    display: flex;
+}
+
+.create-room-page-wrapper {
+    padding: 3em 4em;
+    flex: 1;
+}
+
+.form-wrap {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 1em;
+}
+
+.form-card-create-room {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.amenity-item {
+    min-width: 6em;
+    margin-left: 1em;
+}
+
+.amenity-group {
+    height: 5em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    background-color: rgb(227, 230, 231);
+}
+
+#assignedRoomNumbersContainer {
+    margin-top: 15px;
+}
+
+.room-number-box {
+    display: inline-flex;
+    align-items: center;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    color: black;
+}
+
+.room-number-box .btn-danger {
+    margin-left: 10px;
+    cursor: pointer;
+}
+ 
+@media screen and (max-width: 992px) {
+    .form-wrap {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .create-room-page-wrapper {
+        padding: 1em;
+    }
+
+    .amenity-item {
+        margin-left: 0.5em;
+    }
+    
+}

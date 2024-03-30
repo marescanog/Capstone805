@@ -85,6 +85,9 @@ app.engine('.hbs', exphbs.engine({
         },
         concat: function() {
             return Array.prototype.slice.call(arguments, 0, -1).join('');
+        },
+        json: function (context) {
+            return JSON.stringify(context);
         }
     }
 }));
