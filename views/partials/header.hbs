@@ -107,7 +107,7 @@
             {{/equal}}
 
             {{#equal userType "admin"}}
-              <p>Admin</p>
+              {{#navLink (concat "/dashboard/USNVMQD493/" id)}}Dashboard{{/navLink}}
             {{/equal}}
 
 {{!-- Book Now button  redirects to room results for guest/public--}}
@@ -190,7 +190,9 @@
                 {{/equal}}
 
                 {{#equal userType "admin"}}
-                  <p>Admin</p>
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/managepermissions">Manage Permisssions</a>
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/users">Manage Guests</a>
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/employees">Manage Employees</a>
                 {{/equal}}
 
                 {{#if userType}}

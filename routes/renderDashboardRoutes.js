@@ -2,7 +2,7 @@ const express = require('express');
 const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage, viewCreatePromotionPage, viewPromotionPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers, viewEmployees, viewUserPage,
-    createUserPage, viewEmployeePage, createEmployeePage, managePermissionsPage } = require('./../controllers/dashboard/adminDashboardController.js');
+    createUserPage, viewEmployeePage, createEmployeePage, managePermissionsPage, managePermissionsSearchPage } = require('./../controllers/dashboard/adminDashboardController.js');
 const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
     editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
 const authController = require('./../controllers/authController.js');
@@ -206,7 +206,6 @@ adminRouter.route('/users').get(
     viewUsers
 );
 
-// /dashboard/USNVMQD493/user/:id
 adminRouter.route('/user/:id').get(
     authController.protect, 
     authController.verifyEmployee, 
@@ -231,7 +230,6 @@ adminRouter.route('/employees').get(
     viewEmployees
 );
 
-///dashboard/USNVMQD493/employee/:id
 adminRouter.route('/employee/:id').get(
     authController.protect, 
     authController.verifyEmployee, 
@@ -249,10 +247,18 @@ adminRouter.route('/createemployee').get(
 );
 
 adminRouter.route('/managepermissions').get(
-    managePermissionsPage
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    managePermissionsSearchPage
 );
 
 adminRouter.route('/managepermissions/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     managePermissionsPage
 );
 
@@ -263,8 +269,6 @@ adminRouter.route('/:id').get(
     authController.cacheControl, 
     loadAdminDashboard
 );
-// create user
-// manage user permissions8
 
 
 

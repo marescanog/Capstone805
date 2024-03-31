@@ -14,25 +14,25 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required {{#if readOnly}}disabled{{/if}}>
                         </div>
                         <div class="form-group">
                             <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required {{#if readOnly}}disabled{{/if}}>
                         </div>
                         <div class="form-group">
                             <label for="mobileNumber">Mobile Number</label>
-                            <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber">
+                            <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" {{#if readOnly}}disabled{{/if}}>
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email" required {{#if readOnly}}disabled{{/if}}>
                         </div>
 
                         {{#if readOnly}}
                             <div>
                                 <p>User Photo</p>
-                                <img src="/img/placeholder/hotel_california_logo.png" alt="userPhoto">
+                                <img src="/img/placeholder/hotel_california_logo.png" alt="userPhoto" {{#if readOnly}}disabled{{/if}}>
                             </div>
                         {{/if}}
 
@@ -49,17 +49,17 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
+                            <input type="text" class="form-control" id="address" name="address" required {{#if readOnly}}disabled{{/if}}>
                         </div>
                         <div class="form-group">
                             <label for="city">City</label>
-                            <input type="text" class="form-control" id="city" name="city" required>
+                            <input type="text" class="form-control" id="city" name="city" required {{#if readOnly}}disabled{{/if}}>
                         </div>
                         <div class="form-group">
                             <label for="postalCode">Postal Code</label>
-                            <input type="text" class="form-control" id="postalCode" name="postalCode" required>
+                            <input type="text" class="form-control" id="postalCode" name="postalCode" required {{#if readOnly}}disabled{{/if}}>
                         </div>
-                        {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true readOnly=readOnly}}
+                        {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true readOnly="true"}}
                     </div>
                 </div>
             </div>

@@ -148,7 +148,7 @@ exports.viewEmployees = catchAsync(async (req, res, next) => {
         VB.addOptions("partialsCSS", [
             {name:"h1styled.css"},
             {name:"search.css"},
-            {name:"table.css"},
+            {name:"table.css"}
         ]);
         VB.addOptions("scripts", [
             {src:"/js/searchControl.js"},
@@ -182,7 +182,6 @@ exports.viewEmployees = catchAsync(async (req, res, next) => {
                         buttonActions: [{classname:'Permission', name: "Permissions"}],
                     }
                 },
-                ,
                 {resultName:"action3", label:"Action", 
                     isButton: { 
                         classNames: [{classname:"btn-danger", name: "Delete"}],
@@ -224,7 +223,7 @@ exports.viewEmployees = catchAsync(async (req, res, next) => {
 });
 
 exports.createUserPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -234,13 +233,13 @@ exports.createUserPage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "Create Guest Account");
         VB.addOptions("headerTitle", "Create Guest Account");
         res.render( "pages/employee/admin/createUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.viewUserPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -251,13 +250,13 @@ exports.viewUserPage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "View Guest Account");
         VB.addOptions("headerTitle", "View Guest Account");
         res.render( "pages/employee/admin/createUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.createEmployeePage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -267,13 +266,13 @@ exports.createEmployeePage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "Create Employee Account");
         VB.addOptions("headerTitle", "Create Employee Account");
         res.render( "pages/employee/admin/createEmployee", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.viewEmployeePage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -284,13 +283,13 @@ exports.viewEmployeePage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "View Employee Account");
         VB.addOptions("headerTitle", "View Employee Account");
         res.render( "pages/employee/admin/createEmployee", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.managePermissionsPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -299,8 +298,155 @@ exports.managePermissionsPage = catchAsync(async (req, res, next) => {
         VB.addOptions("css", "employee/createforms.css");
         VB.addOptions("title", "Manage Permissions");
         VB.addOptions("headerTitle", "Manage Permissions");
+        VB.addOptions("userInfo", {
+            firstName: "John",
+            lastName: "Doe",
+            emailAddress: "jd@mailsac.com",
+            mobileNumber: "237583938485",
+            address: "76 Street",
+            city: "North York",
+            postalCode: "ASD7SH",
+            country: "Canada",
+            userType: "Manager",
+            createdOn: "Nov 2, 2023",
+            status: "active",
+            isVerified: true
+        });
         res.render( "pages/employee/admin/manageUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+});
+
+exports.managePermissionsSearchPage = catchAsync(async (req, res, next) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "employee/createforms.css");
+        VB.addOptions("title", "Manage Permissions");
+        VB.addOptions("headerTitle", "Manage Permissions");
+        VB.addOptions("placeholder", "Search for an Employee");
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"},
+            {name:"search.css"},
+            {name:"table.css"},
+        ]);
+        VB.addOptions("scripts", [
+            {src:"/js/searchControl.js"},
+            {src:"/js/tableButtonFunc/managePermissionsTableButtons.js"},
+        ]);
+        VB.addOptions("searchOptionsList", [
+            {id:"accountID", label:"Account ID"},
+            {id:"lastName", label:"Last Name"},
+            {id:"firstName", label: "First Name"},
+            {id:"createdOn", label: "Created On"},
+            {id:"userType", label: "User Type"}
+        ]);
+        VB.addOptions("searchControlUrl", "/dashboard/USNVMQD493/managepermissions");
+    
+        VB.addOptions("tableOptions", {
+            columns: [
+                {resultName:"accountID", label:"Accound I.D.", isRow: true},
+                {resultName:"hiredDate", label:"Hire Date"},
+                {resultName:"firstName", label:"First Name"},
+                {resultName:"lastName", label:"Last Name"},
+                {resultName:"status", label:"Status"},
+                {resultName:"userType", label:"User Type"},
+                {resultName:"action1", label:"Permissions", 
+                    isButton: { 
+                        classNames: [{classname:"btn-success", name: "Modify Permissions"}],
+                        buttonActions: [{classname:'Redirect', name: "Modify Permissions"}],
+                    }
+                },
+                {resultName:"action2", label:"Pass Reset", 
+                    isButton: { 
+                        classNames: [{classname:"btn-warning", name: "Pass Reset"}],
+                        buttonActions: [{classname:'PassReset', name: "Pass Reset"}],
+                    }
+                },
+                {resultName:"action3", label:"Code Reset", 
+                    isButton: { 
+                        classNames: [{classname:"btn-tab-lightblue", name: "Code Reset"}],
+                        buttonActions: [{classname:'CodeReset', name: "Code Reset"}],
+                    }
+                },
+                {resultName:"action4", label:"Send Link", 
+                    isButton: { 
+                        classNames: [{classname:"btn-warning", name: "Activation Link"}],
+                        buttonActions: [{classname:'ActivationLink', name: "Activation Link"}],
+                    }
+                },
+                {resultName:"action5", label:"Deactivate", 
+                    isButton: { 
+                        classNames: [{classname:"btn-danger", name: "Deactivate"}],
+                        buttonActions: [{classname:'Deactivate', name: "Deactivate"}],
+                    }
+                },
+            ]
+        });
+        VB.addOptions("results", [
+            {
+                accountID: "SDF4HN",
+                hiredDate: "March 16, 2024 Fri",
+                firstName: "Gary",
+                lastName: "Lee",
+                status: "active",
+                userType: "Staff",
+                action1: "Modify Permissions",
+                action2: "Pass Reset",
+                action3: null,
+                action4: null,
+                action5: "Deactivate",
+                variableName: "accountID"
+            },
+            {
+                accountID: "SDF4HN",
+                hiredDate: "March 16, 2024 Fri",
+                firstName: "Gary",
+                lastName: "Lee",
+                status: "active",
+                userType: "Guest",
+                action1: "Modify Permissions",
+                action2: "Pass Reset",
+                action3: null,
+                action4: null,
+                action5: "Deactivate",
+                variableName: "accountID"
+            },
+            {
+                accountID: "SDF4HN",
+                hiredDate: "March 16, 2024 Fri",
+                firstName: "Gary",
+                lastName: "Lee",
+                status: "active",
+                userType: "Manager",
+                action1: "Modify Permissions",
+                action2: "Pass Reset",
+                action3: "Code Reset",
+                action4: null,
+                action5: "Deactivate",
+                variableName: "accountID"
+            },
+            {
+                accountID: "SDF4HN",
+                hiredDate: "March 16, 2024 Fri",
+                firstName: "Gary",
+                lastName: "Lee",
+                status: "active",
+                userType: "Admin",
+                action1: "Modify Permissions",
+                action2: "Pass Reset",
+                action3: null,
+                action4: null,
+                action5: "Deactivate",
+                variableName: "accountID"
+            },
+        ]);
+        res.render( "pages/employee/admin/manageUserSearch", VB.getOptions());
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });

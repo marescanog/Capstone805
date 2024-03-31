@@ -1,8 +1,12 @@
 {{#if columnData}}
     {{#each columnData}}
-        {{#unless this.isRow}}           
+        {{#unless this.isRow}}          
+            {{#isPropertyNull ../this this.resultName}}
+               <td>n/a</td>
+            {{/isPropertyNull}}
+            {{#isPropertyThere ../this this.resultName}}
                 {{#if this.isButton}}
-                    <td><button type="submit" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
+                    <td><button type="button" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
                         {{#if this.isButton.buttonActions}}
                             {{#if ../this.variableName}}
                                 onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}('{{getProperty ../this ../this.variableName}}')"
@@ -15,6 +19,7 @@
                 {{#unless this.isButton}}
                     <td>{{getProperty ../this this.resultName}}</td>
                 {{/unless}}
+            {{/isPropertyThere }}
         {{/unless }}
         {{#if this.isRow}}
             <th scope="row">{{getProperty ../this this.resultName}}</th>
