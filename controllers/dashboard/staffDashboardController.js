@@ -200,6 +200,7 @@ exports.checkin = catchAsync(async (req, res, next) => {
         ]);
         VB.addOptions("scripts",[
             {src:"/js/searchControl.js"},
+            {src:"/js/tableButtonFunc/checkinTableButton.js"},
         ]);
         VB.addOptions("searchOptionsList", [
             {id:"reservationNumber", label:"Reservation Number"},
@@ -220,11 +221,13 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 {resultName:"action1", label:"Action", 
                     isButton: { 
                         classNames: [{classname:"btn-success", name: "Check-In"}, {classname:"btn-warning", name: "Check-out/Transfer"}, {classname:"btn-secondary", name: "View Status"}],
+                        buttonActions: [{classname:"Checkin", name: "Check-In"}, {classname:"DisplayCheckoutTransfer", name: "Check-out/Transfer"}, {classname:"DisplayStatus", name: "View Status"}],
                     }
                 },
                 {resultName:"action2", label:"Action", 
                     isButton: { 
                         classNames: [{classname:"btn-tab-lightorange", name: "View"}],
+                        buttonActions: [{classname:'Redirect', name: "View"}],
                     }
                 }
             ]
@@ -237,9 +240,15 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 checkoutDate: "Sep 17, 2024 Tuesday",
                 arrivalTime: "16:30",
                 guestName: "Alpha, Betty",
-                status: "Upcoming",
-                action1: "Check-In",
-                action2: "View"
+                status: "Check-out/Transfer",
+                action1: "Check-out/Transfer",
+                action2: "View",
+                variableValues: {
+                    reservationID: "SDF4HN",
+                    status: "Check-out/Transfer"
+                },
+                variableName: "variableValues",
+                sendvariableAsJSON: true
             },
             {
                 reservationID: "DVHG80",
@@ -249,7 +258,13 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 guestName: "Mila, Waters",
                 status: "Upcoming",
                 action1: "Check-In",
-                action2: "View"
+                action2: "View",
+                variableValues: {
+                    reservationID: "SDF4HN",
+                    status: "Upcoming"
+                },
+                variableName: "variableValues",
+                sendvariableAsJSON: true
             },
             {
                 reservationID: "DF8HTR",
@@ -259,7 +274,13 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 guestName: "Stephen, Carol",
                 status: "Checked",
                 action1: "Check-out/Transfer",
-                action2: "View"
+                action2: "View",
+                variableValues: {
+                    reservationID: "SDF4HN",
+                    status: "Upcoming"
+                },
+                variableName: "variableValues",
+                sendvariableAsJSON: true
             },
             {
                 reservationID: "B7DFIG",
@@ -269,7 +290,13 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 guestName: "Jamima, Sean",
                 status: "Upcoming",
                 action1: "Check-In",
-                action2: "View"
+                action2: "View",
+                variableValues: {
+                    reservationID: "SDF4HN",
+                    status: "Upcoming"
+                },
+                variableName: "variableValues",
+                sendvariableAsJSON: true
             },
             {
                 reservationID: "HJKS80",
@@ -279,7 +306,13 @@ exports.checkin = catchAsync(async (req, res, next) => {
                 guestName: "Waters, Jameson",
                 status: "Completed",
                 action1: "View Status",
-                action2: "View"
+                action2: "View",
+                variableValues: {
+                    reservationID: "SDF4HN",
+                    status: "Upcoming"
+                },
+                variableName: "variableValues",
+                sendvariableAsJSON: true
             },
         ]);
 
@@ -440,7 +473,111 @@ exports.viewSingleReservationStafPOV = catchAsync(async (req, res, next) => {
     }
 })
 
-
-
+exports.viewRoomOccupancy = catchAsync(async (req, res, next) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "roomOccupancy.css");
+        VB.addOptions("title", "Room Occupancy Info");
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"}
+        ] );
+        VB.addOptions("rooms", [
+            {
+                roomType: "Deluxe",
+                roomId: "D100",
+                bedType: "King",
+                bedCount: 1,
+                totalQuantity: 11,
+                occupancy: 1,
+                roomObjects: [
+                    {
+                        roomNumber: "101",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "John",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "102",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "103",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "104",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "105",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "106",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "107",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "Jane",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "108",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "109",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "110",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "111",
+                        roomName: "The Royal Suite"
+                    }
+                ]
+            },
+            {
+                roomType: "Queen",
+                roomId: "D100",
+                bedType: "King",
+                bedCount: 1,
+                totalQuantity: 2,
+                occupancy: 1,
+                roomObjects: [
+                    {
+                        roomNumber: "101",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "John",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "102",
+                        roomName: "The Royal Suite"
+                    }
+                ]
+            },
+        ]);
+        res.render( "pages/employee/roomOccupancy",VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+})
 
 

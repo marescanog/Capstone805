@@ -5,5 +5,59 @@
         {{> _search searchOptionsList=searchOptionsList searchControlUrl=searchControlUrl placeholder=placeholder }}
         
         {{> _tableDisplay tableOptions=tableOptions results=results}}
-    </div>
+
+        {{#if title}}
+            {{#equal title "Checkin Guest"}}
+                <!-- Check-in Modal -->
+                <div class="modal fade" id="checkInModal" tabindex="-1" aria-labelledby="checkInModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="checkInModalLabel">Select a Room for Check-in</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="roomList" class="list-group">
+                            <!-- Rooms will be dynamically injected here by JavaScript -->
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Checkout/Transfer Modal -->
+                <div class="modal fade" id="checkoutTransferModal" tabindex="-1" aria-labelledby="checkoutTransferModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checkoutTransferModalLabel">Manage Room</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="checkoutTransferRoomList" class="list-group">
+                        <!-- Rooms will be dynamically injected here by JavaScript -->
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+
+                <!-- Status Modal -->
+                <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statusModalLabel">Reservation Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="statusInfo">Loading...</p>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            {{/equal}}
+        {{/if}}
 </div>

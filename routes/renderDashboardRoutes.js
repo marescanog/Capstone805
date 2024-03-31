@@ -1,5 +1,5 @@
 const express = require('express');
-const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV } = require('./../controllers/dashboard/staffDashboardController.js');
+const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV, viewRoomOccupancy } = require('./../controllers/dashboard/staffDashboardController.js');
 const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage, viewCreatePromotionPage, viewPromotionPage} = require('./../controllers/dashboard/managerDashboardController.js');
 const {loadAdminDashboard, viewUsers, viewEmployees, viewUserPage,
     createUserPage, viewEmployeePage, createEmployeePage, managePermissionsPage, managePermissionsSearchPage } = require('./../controllers/dashboard/adminDashboardController.js');
@@ -83,6 +83,15 @@ staffRouter.route('/reservation/:id').get(
     viewSingleReservationStafPOV
 ); //done - modify for staff pov TODO
 
+staffRouter.route('/occupancy').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    viewRoomOccupancy
+); // done
+
+viewRoomOccupancy
 staffRouter.route('/:id').get(
     authController.protect, 
     authController.verifyEmployee, 

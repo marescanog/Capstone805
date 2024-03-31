@@ -1,0 +1,54 @@
+.occ-wrapper {
+    min-height: 80vh;
+}
+
+.occ-container {
+    padding: 3em 4em;
+
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.card-header-occupied {
+    background-color: rgb(232, 139, 139);
+    color: #333; 
+}
+
+.card-header-unoccupied {
+    background-color: rgba(255, 236, 200, 1);
+    color: #333;
+}
+
+.card {
+    border: 1px solid #e45b32;
+    height: 90%;
+}
+
+.card-title {
+    color: #e45b32;
+}
+
+.spacer {
+    height: 100%;
+}
+.card-text, h6, ul {
+    color: #333;
+}
+
+ul {
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 992px) {
+
+}
+
+@media screen and (max-width: 600px) {
+    .occ-container {
+        padding: 1em;
+    }
+
+   
+}
