@@ -8,6 +8,11 @@
     flex: 1;
 }
 
+.create-form-page-wrapper-override{
+    padding: 1em;
+    flex: 1;
+}
+
 .form-wrap {
     display: flex;
     flex-direction: row;
@@ -43,9 +48,43 @@
     padding: 20px; /* Optional: Adds some space inside the section */
     margin: 20px 0; /* Optional: Adds some space outside the section */
 }
+
+.view-reservation-page-wrapper {
+    max-width: 65em;
+    overflow-x: scroll;
+}
+
+.view-reservation-search-bar-container{
+    border: 2px solid #E3E3E3;
+    border-radius: 10px;
+    padding: 0;
+    display: flex;
+}
+
+.form-control.search-field {
+    transform: translateY(0.5em);
+}
+
+.search-submit-button {
+    transform: translateY(0.5em);
+}
+
+#search:active{
+    border: 0;
+}
+
+.reservation-results-view-container {
+    height: 30em !important;
+}
+
 @media screen and (max-width: 992px) {
     .form-wrap {
         flex-direction: column;
+    }
+
+    .view-reservation-page-wrapper {
+        max-width: 45em;
+        overflow-x: scroll;
     }
 }
 
@@ -53,5 +92,15 @@
     .create-form-page-container {
         padding: 1em;
     }
-    
+
+    .view-reservation-page-wrapper {
+        max-width: 18em;
+        padding: 0;
+    }
+
+    .create-form-page-wrapper-override{
+        padding: 0em;
+        flex: 1;
+    }
+
 }

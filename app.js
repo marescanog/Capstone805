@@ -79,6 +79,12 @@ app.engine('.hbs', exphbs.engine({
         getProperty: function(object, property){
             return object[property];
         },
+        isPropertyNull: function(object, property, options){
+            return object[property] == null ? options.fn(this) : options.inverse(this);
+        },
+        isPropertyThere: function(object, property, options){
+            return object[property] == null ?  options.inverse(this) :  options.fn(this);
+        },
         getClassName: function(arr, object, property){
             const res = arr== null ? [] :arr.filter(el=>el.name === object[property]);
             return res.length > 0 ? res[0].classname : "";
