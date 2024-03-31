@@ -1,7 +1,9 @@
 {{> header}}
-	{{#if userType}}
+
+	{{!-- {{#if userType}}
 	<p>the usertype is {{userType}}</p>
-	{{/if}}
+	{{/if}} --}}
+
 <div class="main_container">
 	{{{body}}}		
 </div>
@@ -28,7 +30,7 @@
             <input type="password" class="form-control custom-input" id="loginPassword" placeholder="Enter your password">
           </div>
           <div class="mb-3 text-center">
-            <a href="#" class="forgot-password">Forgot Password?</a>
+            <a href="/forgotpassword" class="forgot-password">Forgot Password?</a>
           </div>
 
 		  <button type="button" id="loginButton" class="btn custom-login-btn d-flex justify-content-center align-items-center">
