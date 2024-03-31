@@ -473,7 +473,111 @@ exports.viewSingleReservationStafPOV = catchAsync(async (req, res, next) => {
     }
 })
 
-
-
+exports.viewRoomOccupancy = catchAsync(async (req, res, next) => {
+    if(req.user){
+        const VB = new ViewBuilder({
+            alertToLogin: req?.alertToLogin??false,
+            userType: req?.decoded?.type??null,
+            id:req?.decoded?.id??null,
+        });
+        VB.addOptions("css", "roomOccupancy.css");
+        VB.addOptions("title", "Room Occupancy Info");
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"}
+        ] );
+        VB.addOptions("rooms", [
+            {
+                roomType: "Deluxe",
+                roomId: "D100",
+                bedType: "King",
+                bedCount: 1,
+                totalQuantity: 11,
+                occupancy: 1,
+                roomObjects: [
+                    {
+                        roomNumber: "101",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "John",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "102",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "103",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "104",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "105",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "106",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "107",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "Jane",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "108",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "109",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "110",
+                        roomName: "The Royal Suite"
+                    },
+                    {
+                        roomNumber: "111",
+                        roomName: "The Royal Suite"
+                    }
+                ]
+            },
+            {
+                roomType: "Queen",
+                roomId: "D100",
+                bedType: "King",
+                bedCount: 1,
+                totalQuantity: 2,
+                occupancy: 1,
+                roomObjects: [
+                    {
+                        roomNumber: "101",
+                        roomName: "The Presidential Suite",
+                        guestId: "G001",
+                        firstName: "John",
+                        lastName: "Doe",
+                        checkInDate: "2024-03-01",
+                        checkOutDate: "2024-03-05"
+                    },
+                    {
+                        roomNumber: "102",
+                        roomName: "The Royal Suite"
+                    }
+                ]
+            },
+        ]);
+        res.render( "pages/employee/roomOccupancy",VB.getOptions());
+    } else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
+})
 
 
