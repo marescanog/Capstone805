@@ -255,6 +255,10 @@ adminRouter.route('/managepermissions').get(
 );
 
 adminRouter.route('/managepermissions/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     managePermissionsPage
 );
 

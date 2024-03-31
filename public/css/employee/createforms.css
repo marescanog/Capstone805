@@ -77,6 +77,12 @@
     height: 30em !important;
 }
 
+.header-and-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 @media screen and (max-width: 992px) {
     .form-wrap {
         flex-direction: column;
@@ -85,6 +91,11 @@
     .view-reservation-page-wrapper {
         max-width: 45em;
         overflow-x: scroll;
+    }
+
+    .create-form-page-wrapper{
+        padding: 1em;
+        flex: 1;
     }
 }
 

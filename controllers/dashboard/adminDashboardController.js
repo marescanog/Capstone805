@@ -223,7 +223,7 @@ exports.viewEmployees = catchAsync(async (req, res, next) => {
 });
 
 exports.createUserPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -233,13 +233,13 @@ exports.createUserPage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "Create Guest Account");
         VB.addOptions("headerTitle", "Create Guest Account");
         res.render( "pages/employee/admin/createUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.viewUserPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -250,13 +250,13 @@ exports.viewUserPage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "View Guest Account");
         VB.addOptions("headerTitle", "View Guest Account");
         res.render( "pages/employee/admin/createUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.createEmployeePage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -266,13 +266,13 @@ exports.createEmployeePage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "Create Employee Account");
         VB.addOptions("headerTitle", "Create Employee Account");
         res.render( "pages/employee/admin/createEmployee", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.viewEmployeePage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -283,13 +283,13 @@ exports.viewEmployeePage = catchAsync(async (req, res, next) => {
         VB.addOptions("title", "View Employee Account");
         VB.addOptions("headerTitle", "View Employee Account");
         res.render( "pages/employee/admin/createEmployee", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.managePermissionsPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -298,14 +298,28 @@ exports.managePermissionsPage = catchAsync(async (req, res, next) => {
         VB.addOptions("css", "employee/createforms.css");
         VB.addOptions("title", "Manage Permissions");
         VB.addOptions("headerTitle", "Manage Permissions");
+        VB.addOptions("userInfo", {
+            firstName: "John",
+            lastName: "Doe",
+            emailAddress: "jd@mailsac.com",
+            mobileNumber: "237583938485",
+            address: "76 Street",
+            city: "North York",
+            postalCode: "ASD7SH",
+            country: "Canada",
+            userType: "Manager",
+            createdOn: "Nov 2, 2023",
+            status: "active",
+            isVerified: true
+        });
         res.render( "pages/employee/admin/manageUser", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
 
 exports.managePermissionsSearchPage = catchAsync(async (req, res, next) => {
-    // if(req.user){
+    if(req.user){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -432,7 +446,7 @@ exports.managePermissionsSearchPage = catchAsync(async (req, res, next) => {
             },
         ]);
         res.render( "pages/employee/admin/manageUserSearch", VB.getOptions());
-    // }else {
-    //     return next(new AppError('You are not logged in! Please login to get access.', 401));
-    // }
+    }else {
+        return next(new AppError('You are not logged in! Please login to get access.', 401));
+    }
 });
