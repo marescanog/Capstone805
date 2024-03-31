@@ -247,6 +247,10 @@ adminRouter.route('/createemployee').get(
 );
 
 adminRouter.route('/managepermissions').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
     managePermissionsSearchPage
 );
 

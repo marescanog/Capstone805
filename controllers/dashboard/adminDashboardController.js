@@ -383,8 +383,8 @@ exports.managePermissionsSearchPage = catchAsync(async (req, res, next) => {
                 userType: "Staff",
                 action1: "Modify Permissions",
                 action2: "Pass Reset",
-                action3: "Code Reset",
-                action4: "Activation Link",
+                action3: null,
+                action4: null,
                 action5: "Deactivate",
                 variableName: "accountID"
             },
