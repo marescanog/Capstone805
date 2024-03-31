@@ -223,7 +223,7 @@ exports.viewFAQPage = (req, res, next) => {
         userType: req?.decoded?.type??null,
         id:req?.decoded?.id??null,
     })
-    VB.addOptions("css", 'faqsPolicies.cs');
+    VB.addOptions("css", 'faqsPolicies.css');
     VB.addOptions("title", 'Faqs & Policies');
     VB.addOptions("partialsCSS", [
         {name:"h1styled.css"}

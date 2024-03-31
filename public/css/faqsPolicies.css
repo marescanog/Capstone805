@@ -1,0 +1,35 @@
+.faq-wrapper {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1em;
+}
+
+.faq-container {
+
+    width: 90%;
+}
+
+/* Custom Accordion Header Styles */
+.accordion-button {
+    background-color: #FFECC8; /* Light beige for accordion headers */
+    color: #333; /* Dark text color for contrast */
+  }
+  
+  /* Style for accordion item when it is collapsed */
+  .accordion-button.collapsed {
+    background-color: #FFECC8;
+    color: #333;
+  }
+  
+  /* Style for the accordion header of the currently active (expanded) item */
+  .accordion-button:not(.collapsed) {
+    background-color: #FEAC5E; /* Darker shade for highlighted item */
+    color: #fff; /* White text color for better readability */
+  }
+  
+  /* Optional: Adjusting the accordion body for consistency */
+  .accordion-body {
+    background-color: #fff; /* White background for the content */
+  }
