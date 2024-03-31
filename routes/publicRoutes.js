@@ -4,7 +4,7 @@ const authController = require('./../controllers/authController');
 const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
     viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
-    viewEmployeePortalPage, viewFAQPage
+    viewEmployeePortalPage, viewFAQPage, viewForgotPasswordPage
 } = require('./../controllers/publicViewsController');
 
 /*
@@ -40,6 +40,8 @@ router.get("/portal", authController.detect,  authController.cacheControl, viewE
 
 router.get("/faqsPolicies", authController.detect, viewFAQPage);
 
+router.get("/forgotpassword", authController.detect, viewForgotPasswordPage)
+
 // TODO combine with offer url
 // TODO add detect to these routes
 router.get("/roomdetails", (req, res) => {
@@ -61,6 +63,8 @@ router.get("/roomdetails/:id", (req, res) => {
 router.get("/devlinks", (req, res) => {
     res.render( "pages/public/devlinks");  
 })
+
+
 
 
 

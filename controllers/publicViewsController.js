@@ -1,6 +1,7 @@
 const catchAsync = require('../apiUtils/catchAsync');
 const ViewBuilder = require('./../apiUtils/viewBuilder')
 const {getAllRooms} = require('./roomController');
+const AppError = require('./../apiUtils/appError.js');
 
 exports.viewHomePage = (req, res, next) => {
     const VB = new ViewBuilder({
@@ -228,4 +229,40 @@ exports.viewFAQPage = (req, res, next) => {
         {name:"h1styled.css"}
     ]);
     res.render("pages/public/faqsPolicies", VB.getOptions());
+}
+
+
+exports.viewForgotPasswordPage = (req, res, next) => {
+    if(req?.decoded?.id){
+        switch(req?.decoded?.type){
+            case "staff":
+                res.redirect(`/dashboard/staff/${req?.decoded?.id}`);
+                break;
+            case "manager":
+                res.redirect(`/dashboard/manager/${req?.decoded?.id}`);
+                break;
+            case "admin":
+                res.redirect(`/dashboard/USNVMQD493/${req?.decoded?.id}`);
+                break;
+            default:
+                res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+        }
+    } else {
+        const VB = new ViewBuilder({
+            alertToLogin: false,
+            userType: null,
+            id:null,
+        });
+        VB.addOptions("title", 'Forgot Password');
+        VB.addOptions("css", 'forgotpassword.css');
+        VB.addOptions("partialsCSS", [
+            {name:"h1styled.css"}
+        ]);
+        // VB.addOptions("center", true);
+        VB.addOptions("scripts", [
+            {src:"/js/forgotpassword.js"},
+        ]);
+        VB.addOptions("serverSeconds", 60);
+        res.render("pages/public/forgotpassword",VB.getOptions());
+    }
 }

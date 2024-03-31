@@ -79,10 +79,19 @@ exports.loadUserDashboard = (req, res, next) => {
 }
 
 exports.uploadNewGuestPhotoPage = (req, res, next) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'The uploadNewGuestPhotoPage route is not yet defined!'
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType:"Guest",
+        id:req?.decoded?.id??null,
     });
+    VB.addOptions("editMode", true);
+    VB.addOptions("css", "dash.css");
+    VB.addOptions("title", "Update Photo");
+    VB.addOptions("partialsCSS", [
+        {name:"h1styled.css"},
+        {name:"accountInfoSideBar.css"},
+    ] );
+    res.render( "pages/hotelguest/updatePhoto",VB.getOptions());  
 }
 
 exports.updateGuestEmailPage = (req, res, next) => {
@@ -94,7 +103,7 @@ exports.updateGuestEmailPage = (req, res, next) => {
     VB.addOptions("css", "style.css");
     VB.addOptions("title", "Edit Account");
     VB.addOptions("partialsCSS", [
-        {name:"h1styled.css"}
+        {name:"h1styled.css"},
     ] );
     res.render( "pages/hotelguest/update-email",VB.getOptions());  
 }
