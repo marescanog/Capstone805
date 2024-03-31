@@ -79,6 +79,9 @@ app.engine('.hbs', exphbs.engine({
         getProperty: function(object, property){
             return object[property];
         },
+        getPropertyAsJSON: function(object, property){
+            return JSON.stringify(object[property]);
+        },
         isPropertyNull: function(object, property, options){
             return object[property] == null ? options.fn(this) : options.inverse(this);
         },
