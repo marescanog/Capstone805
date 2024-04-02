@@ -1,8 +1,8 @@
- {{> _h1styled headerTitle="Results"}}
 <div class="container">
-
+  <div class="mt-5 mb-3"></div>
+  {{> _h1styled headerTitle="Results"}}
   {{#each rooms}}
-  <div class="room-card">
+  <div class="room-card mt-5">
     {{#if this.offer}}
     <div class="room-card-offer">{{this.offer}}</div>
     {{/if}}
@@ -10,7 +10,7 @@
     <div class="room-details">
       <h2 class="room-title">{{this.name}}</h2>
       <p class="room-description">{{this.description}}</p>
-      <a href="#" class="room-more-info">Learn More...</a>
+      <a href="/roomdetails" class="room-more-info">Learn More...</a>
       <div class="room-amenities">
         <!-- Here you will dynamically create icons for amenities -->
         <img src="{{this.amenitiesImageUrl}}" alt="Amenities" class="amenities-image">
@@ -36,7 +36,8 @@
         <p>Concierge services</p>
         <!-- Add other details -->
       </div>
-      <button class="reserve-button">Reserve Now</button>
+      <a href="/checkout" style="width:100%"><button class="reserve-button">Reserve Now</button></a>
+      
     </div>
   </div>
   {{/each}}

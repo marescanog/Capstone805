@@ -85,7 +85,7 @@ const loginUser = async(req, next, Model, userType="Guest" ) => {
             }
         
             // 2.) check if user exists 
-            const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen');
+            const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen').maxTimeMS(20000);
         
             if(!user){
                 return resolve(next(new AppError('Incorrect email or password!', 400)));

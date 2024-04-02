@@ -44,7 +44,7 @@ router.get("/forgotpassword", authController.detect, viewForgotPasswordPage)
 
 // TODO combine with offer url
 // TODO add detect to these routes
-router.get("/roomdetails", (req, res) => {
+router.get("/roomdetails", authController.detect, (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
         css: 'roomdetails.css', 
@@ -52,7 +52,7 @@ router.get("/roomdetails", (req, res) => {
     });  
 });
 
-router.get("/roomdetails/:id", (req, res) => {
+router.get("/roomdetails/:id", authController.detect, (req, res) => {
     res.render( "pages/public/roomdetails", {
         layout:"main", 
         css: 'roomdetails.css', 
