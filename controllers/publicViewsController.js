@@ -132,6 +132,7 @@ exports.viewCreateAccountPage = (req, res, next) => {
             userType: null,
             id:null,
         });
+        VB.addOptions("NoHeaderSignup", true);
         VB.addOptions("title", 'Create Account');
         VB.addOptions("css", 'createaccount.css');
         VB.addOptions("partialsCSS", [
@@ -155,6 +156,7 @@ exports.viewVerifyAccountPage = (req, res, next) => {
             userType: null,
             id:null,
         });
+        VB.addOptions("NoHeaderSignup", true);
         VB.addOptions("title", 'Verify Account');
         VB.addOptions("css", 'verifyCreateAccount.css');
         VB.addOptions("partialsCSS", [

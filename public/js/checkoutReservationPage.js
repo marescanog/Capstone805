@@ -136,7 +136,7 @@ function finalStepBeforeSubmit() {
                   }).then((result) => {
                     if (result.value || result.dismiss) {
                       form.reset(); 
-                      window.location.href = '/reservations';
+                      window.location.href = '/dashboard/guest/reservations';
                     }
                   });
             } else {

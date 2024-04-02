@@ -1,4 +1,5 @@
 const express = require('express');
+const authController = require('./../controllers/authController');
 var app = express();
 const {routeCheckout, routeCreateAccountPost, renderCreateAccountPage, renderVerifyPage, 
   staffRenderCreateReservationPage, staffCreateReservation} = require('./../controllers/checkoutController.js');
@@ -7,16 +8,16 @@ const staffRouter = express.Router();
 
 checkoutRouter
   .route('/')
-  .get(routeCheckout);
+  .get(authController.detect, authController.cacheControl,  routeCheckout);
 
 checkoutRouter
 .route('/createAccount')
-.get(renderCreateAccountPage)
-.post(routeCreateAccountPost);
+.get(authController.detect, authController.cacheControl,  renderCreateAccountPage)
+.post(authController.detect, authController.cacheControl,  routeCreateAccountPost);
 
 checkoutRouter
 .route('/verifyaccount')
-.get(renderVerifyPage);
+.get(authController.detect, authController.cacheControl,  renderVerifyPage);
 
 // // move to dashboard instea of checkout router
 // checkoutRouter
@@ -25,7 +26,7 @@ checkoutRouter
 
 
 checkoutRouter.use('/staff', staffRouter);
-staffRouter.route('/create').get(staffRenderCreateReservationPage);
+staffRouter.route('/create').get(authController.detect, authController.cacheControl,  staffRenderCreateReservationPage);
 
 // staffRouter.route('/view/:id').get(renderReservationInfoPage); // // move to dashboard instea of checkout router
 
