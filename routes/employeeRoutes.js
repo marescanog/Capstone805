@@ -7,6 +7,9 @@ const employeeRouter = express.Router();
 
 employeeRouter.post('/login', authController.loginEmployee);
 employeeRouter.post('/managementLogin', authController.loginManagement);
+employeeRouter.post('/forgotPassword', authController.forgotPasswordEmployee);
+employeeRouter.patch('/resetPassword/:token', authController.resetPasswordEmployee);
+
 employeeRouter
   .route('/')
   .get(getAllEmployees);
