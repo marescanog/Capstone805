@@ -5,9 +5,10 @@ const Guest = require('../models/guestModel.js');
 const Employee = require('../models/employeeModel.js');
 const catchAsync = require('./../apiUtils/catchAsync');
 const AppError = require('../apiUtils/appError.js');
-const sendEmail = require('../apiUtils/email.js');
 const crypto = require ('crypto');
 const bcrypt = require('bcryptjs');
+const Email = require('./../apiUtils/email')
+
 const {Types} = mongoose;
 
 exports.signup = catchAsync(async(req, res, next)=>{
@@ -356,18 +357,11 @@ exports.forgotPasswordGuest = catchAsync( async (req, res, next) => {
     const resetToken = user.createPasswordResetToken();
     await user.save({validateBeforeSave: false});
 
-
-    // 3) Send it to users email
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
-
-    const message = `Forgot your password? Submit a PATCH request with your new password and password confirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email!`
-
     try {
-        await sendEmail({
-            email: user.emailAddress,
-            subject: 'Your password reset token (valid for 10 min)',
-            message 
-        });
+        // 3) Send it to users email
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
+
+        await (new Email(user, resetURL)).sendForgotPasswordLink();
 
         res.status(200).json({
             status: 'success',
