@@ -123,7 +123,7 @@ exports.viewRoomOffersPage = (req, res, next) => {
 }
 
 
-exports.viewCreateAccountPage = (req, res, next) => {
+exports.viewCreateAccountPage = (req, res, next) => { 
     if(req?.decoded?.id){
         res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
     } else {
@@ -133,10 +133,14 @@ exports.viewCreateAccountPage = (req, res, next) => {
             id:null,
         });
         VB.addOptions("NoHeaderSignup", true);
+        VB.addOptions("justAddress", true);
         VB.addOptions("title", 'Create Account');
         VB.addOptions("css", 'createaccount.css');
         VB.addOptions("partialsCSS", [
             {name:"h1styled.css"}
+        ]);
+        VB.addOptions("scripts", [
+            {src:"/js/createAccount.js"},
         ]);
         VB.addOptions("disablePaymentSidebar", true);
         VB.addOptions("center", true);
@@ -268,3 +272,4 @@ exports.viewForgotPasswordPage = (req, res, next) => {
         res.render("pages/public/forgotpassword",VB.getOptions());
     }
 }
+

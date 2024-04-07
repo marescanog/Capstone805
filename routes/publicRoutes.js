@@ -4,7 +4,7 @@ const authController = require('./../controllers/authController');
 const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
     viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
-    viewEmployeePortalPage, viewFAQPage, viewForgotPasswordPage
+    viewEmployeePortalPage, viewFAQPage, viewForgotPasswordPage, registerUserAccount
 } = require('./../controllers/publicViewsController');
 
 /*
@@ -67,22 +67,14 @@ router.get("/devlinks", (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-// move since its a post route
-router.post("/createaccount", (req, res) => {
-    res.redirect('/verifyaccount');
-}
-);
-
+// move since its a post route // registerUserAccount
+// router.post("/createaccount", (req, res) => {
+//     console.log(req)
+//     // res.redirect('/verifyaccount');
+//     res.send({message:"You are creating an account"})
+// }
+// );
+router.post("/createaccount", authController.registerUserAccount);
 
 
 // Handle the form submission

@@ -5,8 +5,111 @@ const Guest = require('../models/guestModel.js');
 const Employee = require('../models/employeeModel.js');
 const catchAsync = require('./../apiUtils/catchAsync');
 const AppError = require('../apiUtils/appError.js');
+const crypto = require ('crypto');
+const bcrypt = require('bcryptjs');
+const Email = require('./../apiUtils/email')
 
 const {Types} = mongoose;
+
+exports.registerUserAccount = catchAsync(async (req, res, next) => {
+
+    const {
+        firstName, lastName, emailAddress, password, passwordConfirm,
+        address, city, postalCode, country, mobileNumber
+    } = req.body;
+
+    let found;
+
+    // Check if email exists
+    if(emailAddress != null && emailAddress != ""){
+        found = await Guest.findOne({emailAddress: emailAddress});
+    }
+
+    if(found){
+        // Send a different email to user
+        // If not validated -> resend Validation email
+        // If Validated -> Send Login Link & Forgot Password Link
+        return res.send('User found')
+    } 
+
+    // Start a session.
+    const session = await mongoose.startSession();
+    let activationToken; 
+    let newUser;
+    try {
+
+        // Start a transaction.
+        session.startTransaction();
+
+        // Create User - IsActive yes, Verified no
+        newUser = await Guest.create({
+            emailAddress: emailAddress,
+            password: password,
+            passwordConfirm: passwordConfirm,
+            firstName: firstName,
+            lastName: lastName,
+            isVerified: false,
+            createdOn: new Date(),
+            address: {
+                address: address,
+                city: city,
+                postalCode: postalCode,
+                country: country
+            },
+            isActive: false,
+            reservations: [],
+            formSubmissions: [],
+            loyaltyHistory: []
+        });
+
+        activationToken = await newUser.createActivationToken();
+        await newUser.save({validateBeforeSave: false});
+
+        if(activationToken == null && newUser == null){
+            // Rollback 
+            await session.abortTransaction();
+            return next(new AppError("Token or User was not created",500));
+        }
+
+        await session.commitTransaction();
+        console.log('Register User Transaction Committed.');
+
+    } catch (err) {
+
+        if(err._message === "guest validation failed"){
+            return next(new AppError(JSON.stringify(err.errors),400));
+        }
+
+        // If any operation fails, abort the transaction.
+        // Rollback 
+        await session.abortTransaction();
+        console.log('Transaction aborted due to an error:', err);
+
+        return next(new AppError("Something went wrong",500));
+    } finally {
+        // End the session.
+        session.endSession();
+    }
+
+    // Email Activation Link and Acitivation Code
+    try {
+        // 3) Send it to users email
+        const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${activationToken}`;
+
+        await (new Email(newUser, activationURL, {activationCode:newUser.activationCode})).sendActivationLink();
+
+        res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Activation link sent to email'
+        })
+
+    } catch (err) {
+        console.log(err);
+        return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    }
+
+})
 
 exports.signup = catchAsync(async(req, res, next)=>{
   
@@ -339,3 +442,147 @@ exports.cacheControl = catchAsync(async(req, res, next) => {
     res.set('Expires', '0');
     next();
 });
+
+
+
+exports.forgotPasswordGuest = catchAsync( async (req, res, next) => {
+    // 1) Get user based on POSTed email
+    const user = await Guest.findOne({emailAddress: req.body.emailAddress});
+
+    if(!user){
+        return res.send({"message": "If the email address you entered is associated with an account, we'll send you a password reset link. Please check your inbox (and your spam/junk folder, just in case) for further instructions."})
+    }
+
+    // 2) Generate random reset token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({validateBeforeSave: false});
+
+    try {
+        // 3) Send it to users email
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
+
+        await (new Email(user, resetURL)).sendForgotPasswordLink();
+
+        res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Token sent to email'
+        })
+
+    } catch (err) {
+        console.log(err);
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({validateBeforeSave: false});
+
+        return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    }
+
+});
+
+exports.resetPasswordGuest = catchAsync(async (req, res, next) => {
+    const {password, passwordConfirm} = req.body;
+    
+    // 1.) if email and password exist
+    if(!password || !passwordConfirm){
+        return resolve(next(new AppError('Please provide password and confirmed password!', 400)));
+    }
+
+    // 2.) check if user exists 
+    // 2.a) Get user based on the token
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    // 2.b) Set new password only if token has not expired and user exists
+    const user = await Guest.findOne({passwordResetToken: hashedToken,
+        passwordResetExpires: {$gt: Date.now()}
+    });
+
+    if(!user){
+        return next(new AppError('Token is invalid or has expired', 400))
+    }
+
+    // 3.) Update password properties for the user
+    user.password = password;
+    user.passwordConfirm = passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    // 4.) Log user in, send JWT
+    const token = signToken(user._id, user?.employeeType);
+
+    res.status(200).json({
+        status: 'success',
+        statusCode: 200,
+        token
+    });
+});
+
+
+// TODO
+exports.forgotPasswordEmployee = catchAsync( async (req, res, next) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The resetPasswordEmployee route is not yet defined!'
+    });
+
+    // // 1) Get user based on POSTed email
+    // const user = await Employee.findOne({emailAddress: req.body.emailAddress, passwordResetExpires: {$gt: Date.now()}});
+
+    // if(!user){
+    //     return res.send({"message": "If the email address you entered is associated with an account, we'll send you a password reset link. Please check your inbox (and your spam/junk folder, just in case) for further instructions."})
+    // }
+
+    // // 2) Generate random reset token
+    // const resetToken = user.createPasswordResetToken();
+    // await user.save({validateBeforeSave: false});
+
+
+    // // 3) Send it to users email
+    // const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
+
+    // const message = `Forgot your password? Submit a PATCH request with your new password and password confirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email!`
+
+    // try {
+    //     await sendEmail({
+    //         email: user.emailAddress,
+    //         subject: 'Your password reset token (valid for 10 min)',
+    //         message 
+    //     });
+
+    //     res.status(200).json({
+    //         status: 'success',
+    //         statusCode: 200,
+    //         message: 'Token sent to email'
+    //     })
+
+    // } catch (err) {
+    //     console.log(err);
+    //     user.passwordResetToken = undefined;
+    //     user.passwordResetExpires = undefined;
+    //     await user.save({validateBeforeSave: false});
+
+    //     return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    // }
+
+});
+
+// TODO
+exports.resetPasswordEmployee = catchAsync(async (req, res, next) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The resetPasswordEmployee route is not yet defined!'
+    });
+    // const {email, password} = req.body;
+
+    // // 1) Get user based on the token
+    // const hasedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    // // 2) Set new password only if token has not expired and user exists
+    // const user = await Employee.findOne();
+
+    // // 3.) Update ChangedPasswordAt property for the user
+
+    // // 4.) Log user in, send JWT
+});
+

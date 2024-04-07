@@ -11,28 +11,6 @@ const launchSwalError = (_callback, title, text) => {
   })
 }
 
-function isEmptyObject(value) {
-  if (value == null) {
-    // null or undefined
-    return false;
-  }
-
-  if (typeof value !== 'object') {
-    // boolean, number, string, function, etc.
-    return false;
-  }
-
-  const proto = Object.getPrototypeOf(value);
-
-  // consider `Object.create(null)`, commonly used as a safe map
-  // before `Map` support, an empty object as well as `{}`
-  if (proto !== null && proto !== Object.prototype) {
-    return false;
-  }
-
-  return isEmpty(value);
-}
-
 // Function to handle login
 function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
   loginModalCloseButton.disabled = true;
@@ -57,11 +35,6 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
               body: JSON.stringify(data)
           })
           .then(response => {
-            if(isEmptyObject(response)){
-              console.log("empty")
-            } else {
-              console.log("not empty")
-            }
             return response.json();
           })
           .then(res => {

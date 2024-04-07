@@ -143,7 +143,9 @@
             </div>
 
             {{#unless userType}}
-              {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
+              {{#unless NoHeaderSignup}}
+                {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
+              {{/unless}}
               {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
             {{/unless}}
 
@@ -162,7 +164,9 @@
               </div>
               <div class="dropdown-menu" style="left: -50px;" aria-labelledby="navbarDropdown">
                 {{#unless userType}}
+                  {{#unless NoHeaderSignup}}
                   <a class="dropdown-item" href="/createaccount">Sign Up</a>
+                  {{/unless}}
                   <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="/contactUs">Help Center</a>

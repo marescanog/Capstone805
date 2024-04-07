@@ -15,6 +15,7 @@ const renderDashboardRouter = require('./routes/renderDashboardRoutes');
 const checkoutRouter = require('./routes/checkoutRoutes');
 const publicRouter = require('./routes/publicRoutes');
 const globalRouter = require('./routes/globalRouter');
+const sanitizeHtml = require('sanitize-html');
 
 var app = express();
 
@@ -112,12 +113,49 @@ app.use(express.static("public"));
 
 app.use(express.urlencoded({extended: true}));
 
+app.use(sanitizer);;
+
 // adds activeRoute property your app.locals
 app.use(function(req,res,next){
     let route = req.path.substring(1);
     app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/,"") : route.replace(/\/(.*)/,""));
     next();
 })
+
+
+function sanitizer(req, res, next) {
+    // A helper function to recursively sanitize our objects
+    const sanitizeObject = (obj) => {
+      Object.keys(obj).forEach((key) => {
+        // Trim strings
+        if (typeof obj[key] === 'string') {
+          obj[key] = obj[key].trim();
+        }
+  
+        // Convert empty strings to null
+        if (obj[key] === '') {
+          obj[key] = null;
+        }
+  
+        // Sanitize HTML content
+        if (typeof obj[key] === 'string' && obj[key] !== null) {
+          obj[key] = sanitizeHtml(obj[key]);
+        }
+  
+        // Recurse if the property is an object but not null or an array
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          sanitizeObject(obj[key]);
+        }
+      });
+    };
+  
+    // Sanitize req.body, req.query, and req.params
+    sanitizeObject(req.body);
+    sanitizeObject(req.query);
+    sanitizeObject(req.params);
+  
+    next(); // Pass control to the next middleware function
+};
 
 // 3 - ROUTES (Render Views)
 app.use('/', publicRouter);
