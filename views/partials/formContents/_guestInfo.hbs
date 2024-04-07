@@ -1,4 +1,5 @@
 <h1 class="text-justify mb-4 form-header-style">{{#if headerText}}{{headerText}}{{/if}}{{#unless headerText}}Enter your details{{/unless}}</h1>
+{{#unless justAddress}}
 <div class="{{#if readOnly}}d-none{{/if}}">
     <h6 class="form-content-h6-style">Who are you booking for?</h6> 
     {{!-- Add javascript later for Radio Buttons --}}
@@ -15,6 +16,8 @@
             </label>
         </div>
 </div>
+{{/unless}}
+{{#unless justAddress}}
 <div class="mt-2">
     <h6 class="form-content-h6-style mt-4">Main Guest Details</h6> 
     <div class="row">
@@ -41,9 +44,11 @@
         </div>
     </div>
 </div>
+{{/unless}}
 <div>
+    {{#unless justAddress}}
     <h6 class="form-content-h6-style mt-4">Main Guest Address</h6> 
-
+    {{/unless}}
     <div class="mb-2">
         <label for="inputAddress" class="form-label {{#if readOnly}}no-border{{/if}}">Address *</label>
         <input autocomplete=false ="text"  name="address" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputAddress" required>

@@ -11,6 +11,106 @@ const Email = require('./../apiUtils/email')
 
 const {Types} = mongoose;
 
+exports.registerUserAccount = catchAsync(async (req, res, next) => {
+
+    const {
+        firstName, lastName, emailAddress, password, passwordConfirm,
+        address, city, postalCode, country, mobileNumber
+    } = req.body;
+
+    let found;
+
+    // Check if email exists
+    if(emailAddress != null && emailAddress != ""){
+        found = await Guest.findOne({emailAddress: emailAddress});
+    }
+
+    if(found){
+        // Send a different email to user
+        // If not validated -> resend Validation email
+        // If Validated -> Send Login Link & Forgot Password Link
+        return res.send('User found')
+    } 
+
+    // Start a session.
+    const session = await mongoose.startSession();
+    let activationToken; 
+    let newUser;
+    try {
+
+        // Start a transaction.
+        session.startTransaction();
+
+        // Create User - IsActive yes, Verified no
+        newUser = await Guest.create({
+            emailAddress: emailAddress,
+            password: password,
+            passwordConfirm: passwordConfirm,
+            firstName: firstName,
+            lastName: lastName,
+            isVerified: false,
+            createdOn: new Date(),
+            address: {
+                address: address,
+                city: city,
+                postalCode: postalCode,
+                country: country
+            },
+            isActive: false,
+            reservations: [],
+            formSubmissions: [],
+            loyaltyHistory: []
+        });
+
+        activationToken = await newUser.createActivationToken();
+        await newUser.save({validateBeforeSave: false});
+
+        if(activationToken == null && newUser == null){
+            // Rollback 
+            await session.abortTransaction();
+            return next(new AppError("Token or User was not created",500));
+        }
+
+        await session.commitTransaction();
+        console.log('Register User Transaction Committed.');
+
+    } catch (err) {
+
+        if(err._message === "guest validation failed"){
+            return next(new AppError(JSON.stringify(err.errors),400));
+        }
+
+        // If any operation fails, abort the transaction.
+        // Rollback 
+        await session.abortTransaction();
+        console.log('Transaction aborted due to an error:', err);
+
+        return next(new AppError("Something went wrong",500));
+    } finally {
+        // End the session.
+        session.endSession();
+    }
+
+    // Email Activation Link and Acitivation Code
+    try {
+        // 3) Send it to users email
+        const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${activationToken}`;
+
+        await (new Email(newUser, activationURL, {activationCode:newUser.activationCode})).sendActivationLink();
+
+        res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Activation link sent to email'
+        })
+
+    } catch (err) {
+        console.log(err);
+        return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    }
+
+})
+
 exports.signup = catchAsync(async(req, res, next)=>{
   
     // const hashedData = await Guest.generateNewHashandSalt(req.body.password)

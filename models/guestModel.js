@@ -218,7 +218,10 @@ const guestSchema = new mongoose.Schema({
     avatarPhotoUrl: photoSubSchema,
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    activationToken: String,
+    activationCode: String,
+    activationResendExpires: Date,
 });
 
 // Upon User creation, a random salt is created for each user
@@ -300,6 +303,13 @@ guestSchema.methods.createPasswordResetToken = function() {
     return resetToken;
 }
 
+guestSchema.methods.createActivationToken = function() {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.activationToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.activationCode = randomStr.randomAlphanumeric(6, 'uppercase');
+    this.activationResendExpires = Date.now() + (5 * 60 * 1000);
+    return resetToken;
+}
 
 // refactor later
 guestSchema.methods.changedPasswordAfter = function(JWTTimestamp) {

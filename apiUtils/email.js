@@ -5,11 +5,12 @@ const Handlebars = require('handlebars');
 const { convert } = require('html-to-text');
 
 module.exports = class Email {
-    constructor(user, url) {
+    constructor(user, url, options) {
         this.to = user.emailAddress;
         this.firstName = user.firstName??(employeeType!=null?"Hotel California Staff":"Guest");
         this.url = url;
         this.from = `Hotel California <${process.env.EMAIL_FROM}>`
+        this.options = options;
     }
 
     newTransport() {
@@ -43,7 +44,8 @@ module.exports = class Email {
         const html = template({
             firstName: this.firstName,
             url: this.url,
-            subject
+            subject,
+            options: this.options
         });
 
         const htmlToTextoptions = {

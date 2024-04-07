@@ -14,34 +14,41 @@
                             <form class="mb-4 row g-3" action="/{{#unless disablePaymentSidebar}}checkout/{{/unless}}createaccount" method="post" name="crateaccount" id="createaccount">
                                 <div class="col-md-6">
                                     <label for="inputName" class="form-label">First Name*</label>
-                                    <input type="text" class="form-control" aria-label="First name" id="inputName" required>
+                                    <input type="text" name="firstName" class="form-control" aria-label="First name" id="inputName" required>
+                                    <div class="invalid-feedback">Please enter your first name</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="inputAddress" class="form-label">Last Name*</label>
-                                    <input type="text" class="form-control" aria-label="Last name" id="inputAddress" required>
+                                    <label for="inputLastName" class="form-label">Last Name*</label>
+                                    <input type="text" name="lastName" class="form-control" aria-label="Last name" id="inputLastName" required>
+                                    <div class="invalid-feedback">Please enter your last name</div>
                                 </div>
                                 <div class="mb-2">
                                     <label for="email" class="form-label">Email *</label>
-                                    <input type="email" class="form-control" id="email" required autocomplete="on">
+                                    <input type="email" name="emailAddress" class="form-control" id="email" required autocomplete="on">
+                                    <div class="invalid-feedback">Please enter a valid email</div>
                                 </div>
                                 <div class="mb-2">
                                     <label for="mobileNumber" class="form-label">Mobile Number</label>
-                                    <input type="tel" class="form-control" id="mobileNumber">
+                                    <input type="tel" name="mobileNumber" class="form-control" id="mobileNumber">
                                 </div>
                                 <div class="mb-2">
                                     <label for="password" class="form-label">Password *</label>
-                                    <input type="password" class="form-control" id="password" required>
+                                    <input type="password"  name="password" class="form-control" id="password" required>
+                                    <div class="invalid-feedback">Please enter your password</div>
                                 </div>
                                 <div class="mb-2">
                                     <label for="verifyPassword" class="form-label">Verify Password *</label>
-                                    <input type="password" class="form-control" id="verifyPassword" required>
+                                    <input type="password"  name="passwordConfirm" class="form-control" id="passwordConfirm" required>
+                                    <div class="invalid-feedback">Passwords must match</div>
                                 </div>
+                                <hr>
+                                {{> formContents/_guestInfo}}
                                 <p class="text-justify">
-                                    To complete your registration, a verification email has been sent to the provided address.
-                                    Please click the link in the email to verify and proceed with your booking.
+                                    To complete your registration, a verification email will be sent to the provided email address.
+                                    Please click the link in the email to verify {{#unless disablePaymentSidebar}}your account and proceed with your booking.{{/unless}}{{#if disablePaymentSidebar}}your account.{{/if}}
                                 </p>
                                 <div class="col-12 gap-2">
-                                    <button type="submit" class="btn btn-primary button-next">Next: Verify Email ></button>
+                                    <button id="submitBtn" type="button" class="btn btn-primary button-next">Next: Verify Email ></button>
                                 </div>
                             </form>
                         </div>
