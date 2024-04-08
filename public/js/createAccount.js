@@ -85,24 +85,25 @@ document.addEventListener('DOMContentLoaded', function() {
                           throw response;
                         }
                         return response.json();
-                      })
-                      .then(data => {
+                    })
+                    .then(data => {
+                    Swal.fire({
+                        title: "Registration Successful!",
+                        text: "Please check you email to activate your account.",
+                        icon: "success"
+                    }).then(()=>{
+                        // clear form and redirect
+                        form.reset();
+                        clearValidationFeedback();
                         Swal.fire({
-                            title: "Registration Successgul!",
-                            text: "Please check you email to activate your account.",
-                            icon: "success"
-                        }).then(()=>{
-                            // clear form and redirect
-                            form.reset();
-                            clearValidationFeedback();
-                            Swal.fire({
-                                title: "TODO",
-                                text: "Add redirection to verify account page",
-                                icon: "info"
-                            })
+                            title: "TODO",
+                            text: "Add redirection to verify account page",
+                            icon: "info"
                         })
-                      })
-                      .catch(errorResponse => {
+                    })
+                    })
+                    .catch(errorResponse => {
+                        // TODO double check catch err
                         try{
                             errorResponse.json().then(errorData => {
                                 let data =  JSON.parse(errorData.jsonData)
@@ -119,12 +120,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         }
                                     })
                                 }, "Submission unsuccessful!", errorData.message)
-                              });
+                                });
                         } catch {
                             launchSwalError(()=>{
                             }, "Submission unsuccessful!", "Please try again!")
                         }
-
                     });
                 }
             }

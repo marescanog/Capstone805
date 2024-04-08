@@ -12,6 +12,7 @@ const Email = require('./../apiUtils/email')
 const {Types} = mongoose;
 
 exports.registerUserAccount = catchAsync(async (req, res, next) => {
+    // TODO add 1 second delay just like in login
 
     const {
         firstName, lastName, emailAddress, password, passwordConfirm,
@@ -26,10 +27,55 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
     }
 
     if(found){
-        // Send a different email to user
-        // If not validated -> resend Validation email
+        let emailsent = false;
+
+        //Send email account is not active and to contact admin
+        if(!emailsent && !found.isActive){
+
+            const contactURL = `${req.protocol}://${req.get('host')}/contactUs`;
+            await (new Email(found, contactURL)).sendContactAdmin();
+            emailsent = true;
+        }
+
+        // Send validation email again
+        if(!emailsent && !found.isVerified){
+
+            // check expiry time for validation before sending new email
+            if(found.activationResendExpires && found.activationResendExpires instanceof Date && found.activationResendExpires.getTime() <  Date.now()){
+                // Generate new activation link & send to their email
+
+                let foundActivationToken = await found.createActivationToken();
+
+                await found.save({validateBeforeSave: false});
+
+                const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${foundActivationToken}`;
+
+                await (new Email(found, activationURL, {activationCode:found.activationCode, contactURL:`${req.protocol}://${req.get('host')}/contactUs`})).resendActivationLink();
+
+            } else {
+
+                if(!(found.activationResendExpires instanceof Date)){
+                    return next(new AppError("Something went wrong", 500));
+                }
+
+            }
+            emailsent = true;
+        }
+
+        if(!emailsent && found.isVerified){
+            const activationURL = `${req.protocol}://${req.get('host')}`;
+
+            await (new Email(found, activationURL)).sendEmailRegisterExistingAccount();
+
+            emailsent = true;
+        }
+
         // If Validated -> Send Login Link & Forgot Password Link
-        return res.send('User found')
+        return res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Activation link sent to email'
+        })
     } 
 
     // Start a session.
@@ -49,6 +95,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             firstName: firstName,
             lastName: lastName,
             isVerified: false,
+            isActive: true,
             createdOn: new Date(),
             address: {
                 address: address,
@@ -56,7 +103,6 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
                 postalCode: postalCode,
                 country: country
             },
-            isActive: false,
             reservations: [],
             formSubmissions: [],
             loyaltyHistory: []

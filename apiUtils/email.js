@@ -74,7 +74,20 @@ module.exports = class Email {
         await this.send('verifyEmail','Hotel California Email Activation');
     }
 
-    async sendForgotPasswordLink(){
-        await this.send('forgotPassword','Your password reset token (valid for only 10 minutes)');
+    async sendEmailRegisterExistingAccount(){
+        await this.send('registerExistingAccount','Hotel California Account Existence Alert');
     }
+
+    async resendActivationLink(){
+        await this.send('resendActivationEmail','Hotel California Email Activation');
+    }
+
+    async sendForgotPasswordLink(){
+        await this.send('forgotPassword','Hotel California password reset token (valid for only 10 minutes)');
+    }
+
+    async sendContactAdmin(){
+        await this.send('contactAdmin','Hotel California account activation');
+    }
+
 }

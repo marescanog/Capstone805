@@ -210,7 +210,7 @@ const guestSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: [true, 'must have a flag'],
-        default: false
+        default: true
     },
     reservations : [reservationSubschema],
     formSubmissions : [String],
