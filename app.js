@@ -16,6 +16,8 @@ const checkoutRouter = require('./routes/checkoutRoutes');
 const publicRouter = require('./routes/publicRoutes');
 const globalRouter = require('./routes/globalRouter');
 const sanitizeHtml = require('sanitize-html');
+const session = require('express-session');
+
 
 var app = express();
 
@@ -114,6 +116,17 @@ app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
 
 app.use(sanitizer);;
+
+// configure sessions
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+      secure: 'auto', // Ensure this is true in production if using HTTPS
+      maxAge: 30 * 60 * 1000 // 30 minutes
+    }
+}));
 
 // adds activeRoute property your app.locals
 app.use(function(req,res,next){

@@ -95,11 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // clear form and redirect
                         form.reset();
                         clearValidationFeedback();
-                        Swal.fire({
-                            title: "TODO",
-                            text: "Add redirection to verify account page",
-                            icon: "info"
-                        })
+                        window.location.href = "/verifyaccount";
                     })
                     })
                     .catch(errorResponse => {

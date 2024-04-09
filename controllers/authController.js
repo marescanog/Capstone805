@@ -13,7 +13,7 @@ const {Types} = mongoose;
 
 exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // TODO add 1 second delay just like in login
-
+   
     const {
         firstName, lastName, emailAddress, password, passwordConfirm,
         address, city, postalCode, country, mobileNumber
@@ -21,22 +21,33 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
 
     let found;
 
+    // this flag is so users cant access the verify account page, especially if they havent created an account
+    req.session.createdAccount = emailAddress;
+
     // Check if email exists
     if(emailAddress != null && emailAddress != ""){
+        // TODO add try catch
         found = await Guest.findOne({emailAddress: emailAddress});
     }
-
+    // console.log(`Expiry ${req.session.resendLinkexpiry}`)
+    // console.log(`Date now ${Date.now()}`)
+    // console.log(`is expiry less than now ${req.session.resendLinkexpiry < Date.now()}`)
     if(found){
         let emailsent = false;
 
+        // CASE A: Existing Deactivated user
         //Send email account is not active and to contact admin
         if(!emailsent && !found.isActive){
-
             const contactURL = `${req.protocol}://${req.get('host')}/contactUs`;
-            await (new Email(found, contactURL)).sendContactAdmin();
+            // Only send email if session indicates expiry link expired or has not been created
+            if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
+                req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
+                await (new Email(found, contactURL)).sendContactAdmin();
+            } 
             emailsent = true;
         }
 
+        // CASE B: Existing Not Validated User
         // Send validation email again
         if(!emailsent && !found.isVerified){
 
@@ -50,11 +61,15 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
 
                 const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${foundActivationToken}`;
 
+                req.session.resendLinkexpiry = found.activationResendExpires;
+
                 await (new Email(found, activationURL, {activationCode:found.activationCode, contactURL:`${req.protocol}://${req.get('host')}/contactUs`})).resendActivationLink();
 
             } else {
 
                 if(!(found.activationResendExpires instanceof Date)){
+                    delete req.session.createdAccount;
+                    delete req.session.resendLinkexpiry;
                     return next(new AppError("Something went wrong", 500));
                 }
 
@@ -62,11 +77,15 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             emailsent = true;
         }
 
+        // CASE C: Existing Validated user
+        //Send emai acc already registered
         if(!emailsent && found.isVerified){
             const activationURL = `${req.protocol}://${req.get('host')}`;
-
-            await (new Email(found, activationURL)).sendEmailRegisterExistingAccount();
-
+            // Only send email if session indicates expiry link expired or has not been created
+            if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
+                req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
+                await (new Email(found, activationURL)).sendEmailRegisterExistingAccount();
+            } 
             emailsent = true;
         }
 
@@ -78,6 +97,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
         })
     } 
 
+    // Default Case No acc created yet
     // Start a session.
     const session = await mongoose.startSession();
     let activationToken; 
@@ -111,6 +131,8 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
         activationToken = await newUser.createActivationToken();
         await newUser.save({validateBeforeSave: false});
 
+        req.session.resendLinkexpiry = newUser.activationResendExpires;
+
         if(activationToken == null && newUser == null){
             // Rollback 
             await session.abortTransaction();
@@ -121,6 +143,8 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
         console.log('Register User Transaction Committed.');
 
     } catch (err) {
+        delete req.session.createdAccount;
+        delete req.session.resendLinkexpiry;
 
         if(err._message === "guest validation failed"){
             return next(new AppError(JSON.stringify(err.errors),400));
@@ -462,7 +486,7 @@ exports.detect = catchAsync(async(req, res, next)=>{
         }
     }
     
-    next();
+    return next();
 });
 
 exports.logout = (req, res, next) => {
@@ -631,4 +655,65 @@ exports.resetPasswordEmployee = catchAsync(async (req, res, next) => {
 
     // // 4.) Log user in, send JWT
 });
+
+const checkActivationCode = async(req, res, next ) => {
+    return new Promise((resolve)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email, verificationCode} = req.body;
+            console.log(`activateAccount: email: ${email}, verificationCode:${verificationCode}`);
+
+            // check if email exists
+            // if not exist send success?
+            // if exists
+            // check if isValidated or isActive
+            // if not active, send email like the one above
+            // if validated send email like one above
+            // if not validated
+            // check if code matches
+            // if match update db
+            // if not match send err
+
+            resolve({
+            });
+        }, "1000");
+    });
+};
+
+// TODO
+exports.activateAccount = catchAsync(async (req, res, next) => {
+    const resultingData = await checkActivationCode(req, res, next)
+    res.status(500).json({
+        status: 'error',
+        message: 'The activateAccount route is not yet defined!'
+    });
+});
+
+const requestActivationCode = async(req, res, next ) => {
+    return new Promise((resolve)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email} = req.body;
+            console.log(`requestActivationResetCode: email: ${email}`);
+            // check if email exists
+            // if exists check if time is spend
+            // if not exist send response anyway but not email
+            resolve({
+            });
+        }, "1000");
+    });
+};
+
+// TODO
+exports.requestActivationResetCode = catchAsync(async (req, res, next) => {
+    const resultingData = await requestActivationCode(req, res, next)
+
+    res.status(500).json({
+        status: 'error',
+        message: 'The requestActivationResetCode route is not yet defined!'
+    });
+});
+
+
+
 

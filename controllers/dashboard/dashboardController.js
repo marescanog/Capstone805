@@ -128,6 +128,9 @@ exports.editGuestProfilePage = (req, res, next) => {
     VB.addOptions("partialsCSS", [
         {name:"h1styled.css"}
     ] );
+    VB.addOptions("scripts", [
+        {src:"/js/editGuestProfile.js"},
+    ]);
     res.render( "pages/hotelguest/editAccount",VB.getOptions()); 
 }
 

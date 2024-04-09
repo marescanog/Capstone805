@@ -87,6 +87,9 @@ exports.viewContactUsPage = (req, res, next) => {
         id:req?.decoded?.id??null,
     });
     VB.addOptions("title", 'Contact Us');
+    VB.addOptions("scripts", [
+        {src:"/js/contactUs.js"},
+    ]);
     res.render("pages/public/contactUs",VB.getOptions());
 }
 
@@ -125,7 +128,7 @@ exports.viewRoomOffersPage = (req, res, next) => {
 
 exports.viewCreateAccountPage = (req, res, next) => { 
     if(req?.decoded?.id){
-        res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+        return res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
     } else {
         const VB = new ViewBuilder({
             alertToLogin: false,
@@ -144,17 +147,19 @@ exports.viewCreateAccountPage = (req, res, next) => {
         ]);
         VB.addOptions("disablePaymentSidebar", true);
         VB.addOptions("center", true);
-        res.render("pages/public/createaccount",VB.getOptions());
+        return res.render("pages/public/createaccount",VB.getOptions());
     }
 }
 
 exports.viewVerifyAccountPage = (req, res, next) => {
     if(req?.decoded?.id){
-        res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
+        return res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
     } else {
-        // TODO Check if come from page createaccount
-        // User should not be able to access this link just by typing the URL
-        // Create cookie with email & expiry
+
+        // if (!req.session.createdAccount) {
+        //     return res.redirect('/createaccount'); 
+        // }
+
         const VB = new ViewBuilder({
             alertToLogin: false,
             userType: null,
@@ -172,8 +177,9 @@ exports.viewVerifyAccountPage = (req, res, next) => {
             {src:"/js/utils/countdown.js"},
             {src:"/js/verifyEmail.js"},
         ]);
-        VB.addOptions("serverSeconds", 60);
-        res.render("pages/public/verifyCreateAccount",VB.getOptions());
+        VB.addOptions("serverSeconds", serverSeconds);
+        VB.addOptions("emailSentTo","sample email");
+        return res.render("pages/public/verifyCreateAccount",VB.getOptions());
     }
 }
 

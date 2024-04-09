@@ -172,8 +172,10 @@ const guestSchema = new mongoose.Schema({
             // This only works on save
             validator: function(el){
                 return el === this.password;
-            }
-        }
+            },
+            message: 'Passwords are not the same!'
+        },
+        
     },
     keyWord: {
         type: String,

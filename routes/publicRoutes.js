@@ -31,9 +31,6 @@ router.get("/roomOffers", authController.detect, viewRoomOffersPage);
 
 router.get("/createaccount", authController.detect, viewCreateAccountPage);
 
-// TODO Check if come from page createaccount
-// User should not be able to access this link just by typing the URL
-// Create cookie with email & expiry
 router.get("/verifyaccount", authController.detect, viewVerifyAccountPage);
 
 router.get("/portal", authController.detect,  authController.cacheControl, viewEmployeePortalPage);
