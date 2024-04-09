@@ -172,8 +172,10 @@ const guestSchema = new mongoose.Schema({
             // This only works on save
             validator: function(el){
                 return el === this.password;
-            }
-        }
+            },
+            message: 'Passwords are not the same!'
+        },
+        
     },
     keyWord: {
         type: String,
@@ -210,7 +212,7 @@ const guestSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: [true, 'must have a flag'],
-        default: false
+        default: true
     },
     reservations : [reservationSubschema],
     formSubmissions : [String],

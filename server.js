@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const app = require('./app');
 const dotenv = require('dotenv');
 const HTTP_PORT = process.env.PORT || 8081;
 
@@ -10,6 +9,9 @@ process.on('uncaughtException', err =>{
 });
 
 dotenv.config({path: './config.env'});
+
+
+const app = require('./app');
 
 const DB = process.env.NODE_ENV === 'production' ? 
     (process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD)).replace('<USERNAME>', process.env.DATABASE_USERNAME)

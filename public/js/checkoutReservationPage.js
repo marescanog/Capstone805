@@ -115,9 +115,9 @@ function finalStepBeforeSubmit() {
     if(form){
         form.setAttribute('novalidate', '');
         const formData = new FormData(form);
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+        // for (const [key, value] of formData.entries()) {
+        //     console.log(`${key}: ${value}`);
+        // }
         fetch('/createReservation', {
             method: 'POST',
             body: formData

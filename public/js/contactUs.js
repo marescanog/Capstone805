@@ -1,0 +1,1 @@
+console.log('this page is connected to the contact us javascript')
