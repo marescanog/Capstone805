@@ -40,6 +40,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
         if(!emailsent && !found.isActive){
             const contactURL = `${req.protocol}://${req.get('host')}/contactUs`;
             // Only send email if session indicates expiry link expired or has not been created
+            // refator: instead of storimg in session, store in db & delete activation code?
             if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
                 req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
                 await (new Email(found, contactURL)).sendContactAdmin();
@@ -657,45 +658,97 @@ exports.resetPasswordEmployee = catchAsync(async (req, res, next) => {
 });
 
 const checkActivationCode = async(req, res, next ) => {
-    return new Promise((resolve)=>{
+    return new Promise((resolve, reject)=>{
         // Set timeout of 1 second to delay brute force attacks
         setTimeout(async () => {
             const {email, verificationCode} = req.body;
-            console.log(`activateAccount: email: ${email}, verificationCode:${verificationCode}`);
+            console.log(`activateAccount(checkActivationCode): email: ${email}, verificationCode:${verificationCode}`);
 
             // check if email exists
-            // if not exist send success?
-            // if exists
-            // check if isValidated or isActive
-            // if not active, send email like the one above
-            // if validated send email like one above
-            // if not validated
-            // check if code matches
-            // if match update db
-            // if not match send err
+            try {
+                const foundRegisteredUser = await Guest.findOne({emailAddress: email});
+                
+                // REFACTOR instead of using session variable to control when emails can be sent
+                if(!foundRegisteredUser) {
+                    // TODO if not exist send email success anywy
+                }
 
-            resolve({
-            });
+                // check if user !isValidated
+                if(!foundRegisteredUser.isActive) {
+                    // TODO Send contact admin email
+                }
+                
+                // check if user !isActive
+                if(!foundRegisteredUser.isVerified){
+                    // TODO Send Login email
+                }
+
+                // verify the activation code
+                if(foundRegisteredUser.activationCode === verificationCode){
+                    delete req.session.resendLinkexpiry;
+                    delete foundRegisteredUser.resendLinkexpiry;
+                    delete foundRegisteredUser.activationResendExpires;
+                    delete foundRegisteredUser.activationToken;
+                    foundRegisteredUser.isVerified = true;
+                    await foundRegisteredUser.save({validateBeforeSave: false});
+                    // await foundRegisteredUser.save({validateBeforeSave: false});
+                }
+
+                // Default is activation code is not valid
+            } catch(err) {
+                reject({status: "fail"})
+            }
+
+            resolve({status: "success", message:"updated"});
         }, "1000");
     });
 };
 
 // TODO
 exports.activateAccount = catchAsync(async (req, res, next) => {
-    const resultingData = await checkActivationCode(req, res, next)
-    res.status(500).json({
-        status: 'error',
-        message: 'The activateAccount route is not yet defined!'
+    console.log('Authcontroller activate account')
+    const activationResult = await checkActivationCode(req, res, next)
+    .then((result)=>{
+       delete req.session.createdAccount;
+       return {
+        status: result.status,
+        result: result.message
+       }
+    })
+    .catch((err)=>{
+        return {
+            status: "failure",
+            message: err
+        }
+    });
+
+    if(activationResult.status === "failure"){
+        return next(new AppError(err, 500));
+    }
+
+    console.log(`activation ${activationResult.status} ${activationResult.status === "success"}`)
+    console.log(JSON.stringify(activationResult));
+    const statusCode = activationResult.status === "success" ? 200 : 500;
+    res.status(statusCode).json({
+        statusCode,
+        status: activationResult.status,
+        message: activationResult.message
     });
 });
 
+// TODO
 const requestActivationCode = async(req, res, next ) => {
-    return new Promise((resolve)=>{
+    return new Promise((resolve, reject)=>{
         // Set timeout of 1 second to delay brute force attacks
         setTimeout(async () => {
             const {email} = req.body;
             console.log(`requestActivationResetCode: email: ${email}`);
             // check if email exists
+            try {
+
+            } catch (err) {
+                reject()
+            }
             // if exists check if time is spend
             // if not exist send response anyway but not email
             resolve({
@@ -706,12 +759,16 @@ const requestActivationCode = async(req, res, next ) => {
 
 // TODO
 exports.requestActivationResetCode = catchAsync(async (req, res, next) => {
-    const resultingData = await requestActivationCode(req, res, next)
-
-    res.status(500).json({
-        status: 'error',
-        message: 'The requestActivationResetCode route is not yet defined!'
-    });
+    requestActivationCode(req, res, next)
+    .then(()=>{
+        res.status(500).json({
+            status: 'error',
+            message: 'The requestActivationResetCode route is not yet defined!'
+        });
+    })
+    .catch(()=>{
+        return next(new AppError('Something went wrong with requesting the activation code', 500))
+    })
 });
 
 

@@ -31,12 +31,23 @@ document.addEventListener("DOMContentLoaded", function(e) {
                         })
                         .then(response => response.json())
                         .then(data => {
-                            console.log('success')
-                            console.log(data)
+                            if(data?.statusCode === 200){
+                                Swal.fire({
+                                    title: "Registration Successful",
+                                    text: "Acccount is now verified. You may now login.",
+                                    icon: "success"
+                                })
+                                .then(()=>{
+                                    window.location.href = '/home';
+                                })
+                            } else {
+                                launchSwalError();
+                            }
                         })
                         .catch(err=>{
-                            console.log('error')
-                            console.log(err)
+                            console.log('error');
+                            console.log(err);
+                            launchSwalError();
                         })
                     } else {
                         console.error('form not found!')

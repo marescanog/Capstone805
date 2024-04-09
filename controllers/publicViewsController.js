@@ -156,9 +156,11 @@ exports.viewVerifyAccountPage = (req, res, next) => {
         return res.redirect(`/dashboard/guest/${req?.decoded?.id}`);
     } else {
 
-        // if (!req.session.createdAccount) {
-        //     return res.redirect('/createaccount'); 
-        // }
+        if (!req.session.createdAccount) {
+            return res.redirect('/createaccount'); 
+        }
+
+        const serverSeconds = 60;
 
         const VB = new ViewBuilder({
             alertToLogin: false,
@@ -178,7 +180,7 @@ exports.viewVerifyAccountPage = (req, res, next) => {
             {src:"/js/verifyEmail.js"},
         ]);
         VB.addOptions("serverSeconds", serverSeconds);
-        VB.addOptions("emailSentTo","sample email");
+        VB.addOptions("emailSentTo", req.session.createdAccount);
         return res.render("pages/public/verifyCreateAccount",VB.getOptions());
     }
 }
