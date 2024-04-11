@@ -115,7 +115,7 @@ exports.viewRoomOffersPage = (req, res, next) => {
 
     roomResults = [
         {
-            imageUrl: `${process.env.AWS_ROOM_TYPE_IMAGE_URL}8023f0d8268ef56dbcf94435d788a228c857af906ca9e662595871dd49a31037.jpg`,
+
             roomType: "Deluxe Room",
             bedType: "Queen",
             bedCount: 1,

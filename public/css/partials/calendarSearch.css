@@ -9,14 +9,29 @@
     display: flex;
     flex-direction: row;
     /* background-color: lightpink; */
-    width: 90%;
+    width: 70%;
+    justify-content: center;
+    align-items: center;
+    padding: 1em 2em;
+    border-radius: 5em;
+    border: 2px solid #FEAC5E;
 }
 
+.form-group label {
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    color: #E45C32;
+}
+
+.form-group label:first-letter {
+    text-transform: uppercase;
+}
 .calender-group-1 {
     display: flex;
     flex-direction: row;
     /* background-color: lightgreen; */
     width: 100%;
+    height: 100%;
 }
 
 .form-group {
@@ -48,8 +63,100 @@
 .target-div.expanded {
     height: 269px;
 }
-@media screen and (max-width: 992px) {
 
+.form-control.search {
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    padding: 0;
+} 
+
+.form-control.search:active {
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+} 
+
+#submit-search {
+    background-color: #FEAC5E;
+    border: 0;
+    outline: 0;
+    padding: 1em;
+    border-radius: 2em;
+}
+
+#submit-search img {
+    height: 2em;
+    width: 2em;
+}
+
+.calendar-vl-container {
+    height: 100%;
+    display: flex;
+    padding: 0 5em 0 1em;
+}
+
+.calendar-vl {
+    height: 100%;
+    width: 2px;
+    background-color: #FEAC5E;
+}
+
+.flatpickr-container.target-div {
+    border-radius: 0.25em;
+    background-repeat: repeat;
+    background-color: rgba(228, 92, 50, 0.5);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.flatpickr-container.target-div::after {
+    content: '';
+    background-image: url("/img/placeholder/calendar_bg_pattern.jpg");
+    background-size: 30%;
+    background-repeat: repeat;
+    opacity: 1; /* Set the opacity of the image */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute; /* Position the pseudo-element */
+    z-index: -1; /* Place the pseudo-element behind the content */
+    border-radius: 0.25em; /* Match the border radius of the container */
+}
+
+.flatpickr-container.target-div.expanded {
+   height: 22em;
+}
+
+.flatpickr-wrapper {
+    margin-top: 1em;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.25em;
+}
+
+@media screen and (max-width: 992px) {
+    .calender-form-style {
+        width: 98%;
+    }
+
+    .flatpickr-container.target-div {
+        width: 98%;
+    }
+
+    .calendar-vl-container {
+        height: 100%;
+        display: flex;
+        padding: 0 1em 0 1em;
+    }
 }
 
 @media screen and (max-width: 600px) {
@@ -61,4 +168,17 @@
         width: 100%;
     }
 
+    .calender-form-style {
+        padding: 0.45em;
+        border-radius: 1em;
+    }
+
+    .submit-search-contaiter {
+        height: 100%;
+    } 
+        
+    #submit-search {
+        height: 100%;
+        border-radius: 1em;
+    }
 }

@@ -1,5 +1,5 @@
 <div class="room-results-wrapper">
-  <div class="room-page-container">
+  <div class="room-page-container mt-4 mt-md-5 " >
       {{> _calendarSearch }}
     
     <div class="results-container">
@@ -10,7 +10,15 @@
             <div class="results-item-container card-body">
               <div class="results-image-section">
                 <div class="r-image-container">
-                  <img src="{{this.imageUrl}}" alt="room thumbnail">
+                  {{#if this.imageUrl}}
+                    <img src="{{this.imageUrl}}" alt="room thumbnail">
+                  {{/if}}
+                  {{!-- TODO NODE FETCH OR AXIOS IS IMG ENDPOINT IS UNAVAILABLE --}}
+                  {{#unless this.imageUrl}}
+                    <div class="r-image-placeholder">
+                      <img src="/img/placeholder/hotel_california_logo.png" alt="room thumbnail">
+                    </div>
+                  {{/unless}}
                 </div>
                 <div class="r-desc-container">
                   <div class="r-inner-desc">
