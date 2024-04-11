@@ -40,7 +40,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
         if(!emailsent && !found.isActive){
             const contactURL = `${req.protocol}://${req.get('host')}/contactUs`;
             // Only send email if session indicates expiry link expired or has not been created
-            // refator: instead of storimg in session, store in db & delete activation code?
+            // refactor: instead of storimg in session, store in db & delete activation code?
             if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
                 req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
                 await (new Email(found, contactURL)).sendContactAdmin();

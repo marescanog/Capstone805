@@ -1,45 +1,99 @@
-<div class="container">
-  <div class="mt-5 mb-3"></div>
-  {{> _h1styled headerTitle="Results"}}
-  {{#each rooms}}
-  <div class="room-card mt-5">
-    {{#if this.offer}}
-    <div class="room-card-offer">{{this.offer}}</div>
-    {{/if}}
-    <img src="{{this.imageUrl}}" alt="{{this.name}}" class="room-image">
-    <div class="room-details">
-      <h2 class="room-title">{{this.name}}</h2>
-      <p class="room-description">{{this.description}}</p>
-      <a href="/roomdetails" class="room-more-info">Learn More...</a>
-      <div class="room-amenities">
-        <!-- Here you will dynamically create icons for amenities -->
-        <img src="{{this.amenitiesImageUrl}}" alt="Amenities" class="amenities-image">
-        <!-- Repeat for other amenities -->
-      </div>
-    </div>
-    <div class="room-pricing">
-      {{#if this.originalPrice}}
-      <div class="original-price">${{this.originalPrice}}/night</div>
+<div class="room-results-wrapper">
+  <div class="room-page-container">
+      {{> _calendarSearch }}
+    
+    <div class="results-container">
+      {{#if roomResults}}
+        {{#each roomResults}}
+        <div class="card-wrapper mb-4">
+          <div class="card shadow">
+            <div class="results-item-container card-body">
+              <div class="results-image-section">
+                <div class="r-image-container">
+                  <img src="{{this.imageUrl}}" alt="room thumbnail">
+                </div>
+                <div class="r-desc-container">
+                  <div class="r-inner-desc">
+                    <h4>{{this.roomType}}</h4>
+                    <p>{{this.description}}</p>
+                    <a href="/roomdetails/id/offers/id">Learn more...</a>
+                  </div>
+
+                  <div class="r-hr-container">
+                    <hr>
+                  </div>
+
+                  <div class="r-inner-icons">
+                    <div class="r-icons-vl-container">
+                      <div class="r-icons-vl"></div>
+                    </div>
+                    <div class="r-icons-container">
+                      <p>Amenities</p>
+                      <div class="r-icons-list-container">
+                        <div class="r-icon-item">
+                          <img src="/img/icons/amenities/bed.svg" alt="bed icon">
+                          <p>{{this.bedCount}}</p>
+                        </div>
+                        {{#if hasBath}}
+                          <div class="r-icon-item">
+                            <img src="/img/icons/amenities/bath.svg" alt="bath icon">
+                          </div>
+                        {{/if}}
+                        {{#unless hasBath}}
+                          <div class="r-icon-item">
+                            <img src="/img/icons/amenities/shower.svg" alt="shower icon">
+                          </div>
+                        {{/unless}}
+                          <div class="r-icon-item">
+                            <img src="/img/icons/amenities/wifi.svg" alt="wifi icon">
+                          </div>
+                        {{#if this.baseAmenities}}
+                          <div class="r-icon-item hide">
+                            <img src="/img/icons/amenities/{{this.baseAmenities.0.icon}}" alt="{{this.baseAmenities.0.icon}} icon">
+                          </div>
+                        {{/if}}
+                        {{#if this.baseAmenities}}
+                          <div class="r-icon-item hide">
+                            <img src="/img/icons/amenities/{{this.baseAmenities.1.icon}}" alt="{{this.baseAmenities.1.icon}} icon">
+                          </div>
+                        {{/if}}
+                          {{#if this.baseAmenities}}
+                          <div class="r-icon-item hide">
+                            <img src="/img/icons/amenities/{{this.baseAmenities.2.icon}}" alt="{{this.baseAmenities.2.icon}} icon">
+                          </div>
+                        {{/if}}
+                      </div>
+                      <p>{{this.bedCount}} {{this.bedType}}</p>
+                    </div>
+                  </div>
+                  <div class="r-hr-container">
+                    <hr>
+                  </div>
+                </div>
+              </div>
+              <div class="results-info-section">
+                <div class="r-i-price-container">
+                  <h3>$120 /night</h2>
+                </div>
+                <hr>
+                <div class="r-i-amenity-text-list">
+                  {{#each this.baseAmenities}}
+                    <p>{{this.name}}</p>
+                  {{/each}}
+                </div>
+                <button class="btn btn-primary btn-reserve-style">Reserve now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/each}}
       {{/if}}
-      <div class="discounted-price">Only ${{this.discount_price}}</div>
-      {{#if this.savings}}
-      <div class="savings">Save ${{this.savings}}!</div>
-      {{/if}}
-      <div class="price-details">
-        <!-- Price details like breakfast included, etc. -->
-        <p>Breakfast Included</p>
-        <p>Sq. meters: 30</p>
-        <p>In-room dining</p>
-        <p>Balcony Access</p>
-        <p>Wi-Fi and Connectivity</p>
-        <p>Laundry services</p>
-        <p>Concierge services</p>
-        <!-- Add other details -->
-      </div>
-      <a href="/checkout" style="width:100%"><button class="reserve-button">Reserve Now</button></a>
+      {{#unless roomResults}}
+        <p>There are no room offers to show.</p>
+      {{/unless}}
       
     </div>
+
   </div>
-  {{/each}}
 </div>
 
