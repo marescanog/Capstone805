@@ -10,11 +10,16 @@
             <div class="results-item-container card-body">
               <div class="results-image-section">
                 <div class="r-image-container">
-                  {{#if this.imageUrl}}
-                    <img src="{{this.imageUrl}}" alt="room thumbnail">
+                  {{#if this.offerName}}
+                    <div class="r-i-discount-banner">
+                      <p>{{this.offerName}} included!</p>
+                    </div>
+                  {{/if}}
+                  {{#if this.thumbNailLarge}}
+                    <img src="{{this.thumbNailLarge.photoUrl}}" alt="{{this.thumbNailLarge.alt}}">
                   {{/if}}
                   {{!-- TODO NODE FETCH OR AXIOS IS IMG ENDPOINT IS UNAVAILABLE --}}
-                  {{#unless this.imageUrl}}
+                  {{#unless this.thumbNailLarge}}
                     <div class="r-image-placeholder">
                       <img src="/img/placeholder/hotel_california_logo.png" alt="room thumbnail">
                     </div>
@@ -82,11 +87,14 @@
               <div class="results-info-section">
                 <div class="r-i-price-container">
                   <h3>$120 /night</h2>
+                  <p>{{this.offerDescription}}</p>
                 </div>
                 <hr>
                 <div class="r-i-amenity-text-list">
                   {{#each this.baseAmenities}}
-                    <p>{{this.name}}</p>
+                    {{#equalOrLT @index 7}}
+                      <p>{{this.name}}</p>
+                    {{/equalOrLT}}
                   {{/each}}
                 </div>
                 <button class="btn btn-primary btn-reserve-style">Reserve now</button>

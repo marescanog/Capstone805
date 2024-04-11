@@ -34,6 +34,25 @@
     flex-direction: column;
 }
 
+.r-i-discount-banner{
+    position: absolute;
+    background-color: #CD2323;
+    width: 15em;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top-left-radius: 0.5em;
+}
+
+.r-i-discount-banner p {
+    color: white;
+    text-align: center;
+    margin: auto;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+}
+
 .results-item-container {
     /* background-color: #007bff; */
     height: 36em;
@@ -223,7 +242,11 @@ svg {
     .r-icon-item.hide{
         display: none;
     }
-    
+    .r-inner-desc p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
 }
 
 @media screen and (max-width: 600px) {
@@ -270,5 +293,9 @@ svg {
     .r-image-placeholder{
         padding: 2em;
     }
-
+    .r-inner-desc p {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
 }

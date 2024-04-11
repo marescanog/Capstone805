@@ -77,3 +77,69 @@ exports.updateRoom = (req, res) => {
         message: 'The updateRoom route is not yet defined!'
     });
 }
+
+
+exports.getValidRoomOffers = async (req, res, next) => {
+
+    const {checkin, checkout, guests, rooms} = req.query;
+
+    console.log(`checkin: ${checkin}`);
+    console.log(`checkout: ${checkout}`);
+    console.log(`guests: ${guests}`);
+    console.log(`rooms: ${rooms}`);
+    
+    const today = process?.env?.SERVER_DATE && process?.env?.SERVER_DATE != 'null' ? new Date(process?.env?.SERVER_DATE) : new Date();
+
+    const pipeline = [
+        {
+          $unwind: '$offers'
+        },
+        {
+          $match: {
+            'offers.offerCalendarImplementation.frequencyPeriodStart': { $lt: today },
+            $or: [
+              { 'offers.offerCalendarImplementation.frequencyPeriodEnd': { $exists: false } },
+              { 'offers.offerCalendarImplementation.frequencyPeriodEnd': { $gte: today } }
+            ]
+          }
+        },
+        {
+          $addFields: {
+            holdCount: { $size: { $ifNull: ['$hold', []] } } 
+          }
+        },
+        {
+          $match: {
+            $expr: {
+              $lt: ['$holdCount', '$totalQuantity'] 
+            }
+          }
+        },
+        {
+          $project: {
+            _id: '$offers._id', 
+            roomID: '$_id', 
+            roomType: 1, 
+            offer: '$offers',
+            thumbNail: 1,
+            description: 1,
+            basePrice: 1, 
+            priceChangeTrends: 1, 
+            baseAmenities: 1,
+            totalQuantity: 1, 
+            holdCount: 1 ,
+            bedCount: 1,
+            bedType: 1
+          }
+        }
+      ];
+
+    return await Room.aggregate(pipeline).then(async (res)=>{
+        return await Promise.all(
+            res.map(async (roomOffer)=>{
+                const mappedOffer = await Room.getOffer(roomOffer);
+                return mappedOffer;
+            })
+        )
+    });
+}
