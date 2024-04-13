@@ -71,6 +71,15 @@ app.engine('.hbs', exphbs.engine({
             return options.fn(this);
             }
         },
+        equalOrLT: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue > rvalue) {
+            return options.inverse(this);
+            } else {
+            return options.fn(this);
+            }
+        },
         isDevMode: function() {
             if(process?.env?.NODE_ENV === 'development'){
                 return `<li class="nav-item">

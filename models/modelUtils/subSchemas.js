@@ -81,6 +81,13 @@ calendarImplementationSubSchema.statics.TODAYS_DATE  = () => {
     return today;
 }
 
+calendarImplementationSubSchema.statics.TOMORROWS_DATE  = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setDate(today.getDate()+1);
+    return today;
+}
+
 // Returns the whole season constants object, where each start and end date range can be accessed by season name
 // Season constants is dynamic based on current year (esp feb where there is leap year)
 calendarImplementationSubSchema.statics.SEASON_CONSTANTS  = (compareDate) => {
@@ -228,16 +235,26 @@ async function checkIfDateisWithinCalendarImplementation(
                         return compareDates(today, this_frequencyPeriodStart) >= 0 && compareDates (today, endOfWeek) <= 0;
                     } 
 
-                    if(retval && this_frequencyValue != null && Array.isArray(this_frequencyValue ) && this_frequencyValue.length != 0){
-                        if(!this_frequencyValue.includes(today.getMonth())){
+                    //today
+                    if(retval && this_dateTypeValue != null && Array.isArray(this_dateTypeValue ) && this_dateTypeValue.length != 0){
+                        if(!this_dateTypeValue.includes(today.getDay())){
                             retval = false;
+                            return false;
                         }
                     }
 
+                    // recheck controls for frequency Value TODO
+                    if(retval && this_frequencyValue != null && Array.isArray(this_frequencyValue ) && this_frequencyValue.length != 0){
+                        if(!this_frequencyValue.includes(today.getMonth())){
+                            retval = false;
+                            return false;
+                        }
+                    }
+      
                     if(retval && this_frequencyPeriodEnd != null && this_frequencyType == 'repeats for fixed date period'){
-                        retval = !(compareDates(today, this_frequencyPeriodEnd) > 0);
+                        retval = false;
+                        return !(compareDates(today, this_frequencyPeriodEnd) > 0);
                     } 
-
                 }
                 
                 break;

@@ -20,13 +20,14 @@
                             <h2 class="no-margin-header">{{emailSentTo}}</h2>
                         </div>
                         
+                        {{!-- TODO do not display verification code if user is already activated or if user is disabled. --}}
                         <div>
                             <form id="verificationCodeForm">
                                 <label for="verificationCode" class="form-label">Verification Code</label>
                                 <input type="text" class="form-control activation-code" name="verificationCode" id="verificationCode" aria-describedby="verification code" maxlength="6" required>
                                 <div class="invalid-feedback">Verification code is required</div>
 
-                                <input type="hidden" name="email" id="email" value="emailSentTo">
+                                <input type="hidden" name="email" id="email" value="{{emailSentTo}}">
                                 
                                 <button id="verificationSubmitButton" type="button" class="btn btn-primary">Activate Account</button>
                             </form>

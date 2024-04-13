@@ -1,227 +1,301 @@
-/* RoomResults css*/
-
-.container {
-
-    max-width: 1200px;
-    
-    margin: 0 auto;
-    
-    }
-    
-    .room-card {
-    
-    display: grid;
-    
-    grid-template-columns: 3fr 2fr;
-    
-    gap: 20px;
-    
-    border: 1px solid #ddd;
-    
-    border-radius: 8px;
-    
-    overflow: hidden;
-    
-    position: relative;
-    
-    margin-bottom: 20px;
-    
-    }
-    
-    .room-card-offer {
-    
-    position: absolute;
-    
-    top: 20px;
-    
-    left: -20px;
-    
-    background-color: #ff6f61;
-    
-    color: white;
-    
-    padding: 5px 10px;
-    
-    transform: rotate(-45deg);
-    
-    font-size: 14px;
-    
-    }
-    
-    .room-image {
-    
-    width: 50%;
-    
-    height: auto;
-    
-    display: block;
-    
-    }
-    
-    .room-details {
-    
-    padding: 20px;
-    
-    }
-    
-    .room-title {
-    
-    font-size: 24px;
-    
-    color: #333;
-    
-    margin-bottom: 10px;
-    
-    }
-    
-    .room-description {
-    
-    font-size: 16px;
-    
-    margin-bottom: 10px;
-    
-    }
-    
-    .room-more-info {
-    
-    color: #007bff;
-    
-    text-decoration: none;
-    
-    margin-bottom: 20px;
-    
-    display: inline-block;
-    
-    }
-    
-    .room-amenities {
-    
-    list-style: none;
-    
-    padding: 0;
-    
-    }
-    
-    .amenity {
-    
-    display: inline-block;
-    
-    margin-right: 10px;
-    
-    /* Align your icons with text properly */
-    
-    }
-    
-    .room-pricing {
-    
-    padding: 20px;
-    
-    background-color: #f7f7f7;
-    
+.room-results-wrapper {
+    /* background-color: aqua; */
+    width: 100%;
+    min-height: 80vh;
     display: flex;
-    
     flex-direction: column;
-    
-    justify-content: space-between;
-    
-    }
-    
-    .original-price {
-    
-    text-decoration: line-through;
-    
-    color: #777;
-    
-    }
-    
-    .discounted-price {
-    
-    color: #ff6f61;
-    
-    font-size: 24px;
-    
-    }
-    
-    .savings {
-    
-    color: #ff6f61;
-    
-    font-weight: bold;
-    
-    }
-    
-    .price-details {
-    
-    font-size: 14px;
-    
-    line-height: 1.6;
-    
-    }
-    
-    .reserve-button {
-    
-    background-color: #ff6f61;
-    
-    color: white;
-    
-    padding: 12px 20px;
-    
-    border: none;
-    
-    border-radius: 4px;
-    
-    font-size: 16px;
-    
-    cursor: pointer;
-    
-    text-transform: uppercase;
-    
-    }
-    
-    /* Icons styling - you may use a webfont like FontAwesome or custom SVGs */
-    
-    .icon {
-    
-    /* Style your icons here */
-    
-    }
-    
-    .wifi-icon:before {
-    
-    content: '\f1eb'; /* FontAwesome Wi-Fi icon */
-    
-    /* Other styles for icon */
-    
-    }
-    
-    /* Add responsive design */
-    
-    @media (max-width: 768px) {
-    
-    .room-card {
-    
-    grid-template-columns:
-    
-    1fr;
-    
-    }
-    
-    .room-card-offer {
-    
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.room-page-container {
+    /* background-color: yellowgreen; */
+    margin-top: 1em;
+    padding-bottom: 1em;
+    width: 90%;
+    height: 100%;
+}
+
+.results-container {
+    /* background-color: #ff6f61; */
+    min-height: 60em;
+    /* max-height: 120em; */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* overflow-x: scroll; */
+    margin-bottom: 2em;
+}
+
+.results-image-section {
+    flex: 1.75;
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+}
+
+.r-i-discount-banner{
     position: absolute;
-    
-    top: 10px;
-    
-    left: 10px;
-    
-    transform: rotate(0);
-    
+    background-color: #CD2323;
+    width: 15em;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top-left-radius: 0.5em;
+}
+
+.r-i-discount-banner p {
+    color: white;
+    text-align: center;
+    margin: auto;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+}
+
+.results-item-container {
+    /* background-color: #007bff; */
+    height: 36em;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.r-image-container {
+    /* background-color: coral; */
+    flex: 1;
+    width: 100%; 
+    height: auto; 
+    overflow: hidden; 
+}
+
+.r-image-container img  {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block; 
+    border-radius: 0.25em 0 0 0;
+}
+
+.r-image-placeholder {
+    background-color: #FFECC8;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.r-image-placeholder img{
+    height: 15em;
+    width: 15em;
+    object-fit: cover; 
+    display: block; 
+}
+
+
+.r-desc-container {
+    /* background-color: crimson; */
+    height: 10em;
+    display: flex;
+    flex-direction: row;
+}
+
+.card-body {
+    padding: 0;
+    border-radius: 5em;
+}
+
+.card-wrapper {
+    padding: 0.5em;
+}
+
+.r-inner-desc {
+    flex: 1.5;
+    padding: 1em;
+}
+
+
+
+.r-inner-desc h4 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+}
+
+.r-inner-desc p {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8em;
+    text-align: justify;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.25em;
+}
+
+.r-inner-desc a {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.r-inner-icons {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    /* background-color: aqua; */
+}
+
+.r-icons-vl-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.r-icons-vl {
+    width: 2px;
+    height: 90%;
+    background-color: #E0E2E6;
+}
+
+.r-icons-container {
+    flex: 1;
+    padding: 1em;
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Montserrat", sans-serif;
+}
+
+svg {
+    color: #9A9A9A
+}
+.r-icons-container p { 
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+}
+
+.r-icons-list-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 0.5em;
+    margin-bottom: 0.75em;
+}
+
+.r-icon-item {
+    display: block;
+}
+
+.r-icon-item p{
+    padding: 0;
+    margin: 0;
+    margin-left: 3px;
+    display: inline;
+    color: #9A9A9A;
+    font-weight: 400;
+}
+
+
+
+.r-i-price-container {
+    height: 6em;
+}
+
+.r-hr-container {
+    display: none;
+}
+
+.results-info-section {
+    flex: 1;
+    /* background-color: aquamarine; */
+    box-shadow: 0 0 15px rgba(0,0,0,0.25);
+    clip-path: inset(0 0 0 -6px);
+    padding: 1em;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.r-i-amenity-text-list {
+    flex: 1;
+}
+
+.btn-reserve-style {
+    background-color: #E45C32;
+    outline: 0;
+    border:0;
+    height: 3.5em;
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 992px) {
+    .r-icon-item.hide{
+        display: none;
+    }
+    .r-inner-desc p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .results-item-container {
+        flex-direction: column;
+    }
+    .r-desc-container {
+        flex-direction: column;
+    }
+
+    .results-item-container {
+        height: auto;
+    }
+
+    .r-desc-container {
+        height: auto;
+    }
+
+    .r-icon-item.hide{
+        display: block;
+    }
+
+    .r-icons-container {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
     }
     
-    .room-pricing {
     
-    order: -1; /* Move pricing to the top on mobile */
-    
+    .r-hr-container {
+        display: block;
+        width: 100%;
+        padding: 0 1em;
     }
-    
+
+    .r-hr-container hr{
+        margin: 0;
+        padding: 0;
     }
+
+    .r-image-placeholder img{
+        height: 10em;
+        width: 10em; 
+    }
+    .r-image-placeholder{
+        padding: 2em;
+    }
+    .r-inner-desc p {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+}

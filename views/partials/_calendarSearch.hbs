@@ -1,0 +1,66 @@
+{{!-- TODO add style --}}
+<div class="search-bar-container">
+    <form class="calender-form-style" id="search-form">
+        <div class="calender-group-1">
+            <div class="form-group">
+                <label for="checkInDisplay" class="form-label">check-in</label>
+                <input type="text" class="form-control search" id="checkInDisplay" name="checkin" placeholder="Select check-in" required readonly>
+                <div class="invalid-feedback">
+                    Select a check in date
+                </div>
+            </div>
+            <div class="calendar-vl-container">
+                <div class="calendar-vl"></div>
+            </div>
+            <div class="form-group">
+                <label for="checkOutDisplay" class="form-label">check-out</label>
+                <input type="text" class="form-control search" id="checkOutDisplay" name="checkout" placeholder="Select check-out" required readonly>
+                <div class="invalid-feedback">
+                Select a check out date
+                </div>
+            </div>
+            <div class="calendar-vl-container">
+                <div class="calendar-vl"></div>
+            </div>
+        </div>
+        <div class="calender-group-1">
+            <div class="form-group">
+                <label for="guests" class="form-label">guests</label>
+                <input type="number" class="form-control search" id="guests" name="guests" placeholder="Enter total guests" required min="1" max="10">
+                <div class="invalid-feedback">
+                    Select a number of guests
+                </div>
+            </div>
+            <div class="calendar-vl-container">
+                <div class="calendar-vl"></div>
+            </div>
+            <div class="form-group">
+                <label for="rooms" class="form-label">rooms</label>
+                <input type="number" class="form-control search" id="rooms" name="rooms" placeholder="Enter total rooms" required  min="1" max="10">
+                <div class="invalid-feedback">
+                    Select a number of rooms
+                </div>
+            </div>
+        </div>
+        <div class="submit-search-contaiter">
+            <button type="button" id="submit-search" class="btn btn-primary">
+                <img src="/img/icons/search/search_icon.svg" alt="search icon">
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Date Input Fields -->
+{{!-- TODO ADD VALIDATION FOR TOTAL NIGHTS MAXIMUM OF 2 WEEKS --}}
+<div class="flatpickr-wrapper">
+    <div class="flatpickr-container target-div" id="targetDiv">
+        <input type="date" id="flatpickrinstance">
+    </div>
+</div>
+
+
+{{!-- Filters --}}
+
+<div>
+    <p>Filters</p>
+</div>

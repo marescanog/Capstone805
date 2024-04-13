@@ -50,4 +50,18 @@ function randomDate(startDate, endDate) {
     return new Date(startTime + Math.random() * (endDate.getTime() - startTime));
 }
 
-module.exports = {getRandomInt, adjustDays, compareDates, randomDate}
+function calculateDaysBetweenDates(checkInDate, checkOutDate) {
+    // Create date objects for check-in and checkout dates
+    const startDate = new Date(checkInDate);
+    const endDate = new Date(checkOutDate);
+
+    // Calculate the difference in milliseconds
+    const diffInMs = endDate - startDate;
+
+    // Convert milliseconds to days
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    return Math.ceil(diffInDays); // Use Math.ceil to round up to the nearest whole number
+}
+
+module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates}

@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const {Decimal128} = mongoose.Types;
 const { CalendarImplementation, calendarImplementationSubSchema, photoSubSchema } = require('./modelUtils/subSchemas.js');
+const Guest = require('./guestModel.js');
 const PriceChangeTrend = require('./priceChangeTrendModel.js');
-const {isThisOfferInEffectOnThisDate} = require('./offerModel.js');
+const {isThisOfferInEffectOnThisDate, Offer} = require('./offerModel.js');
+const axios = require('axios');
 
 const roomNumberSchema = new mongoose.Schema({
     roomNumber: {
@@ -14,7 +16,8 @@ const roomNumberSchema = new mongoose.Schema({
         type: String,
         required: [true, 'must have a floor'],
     },
-    guestID: mongoose.Schema.Types.ObjectId
+    guestID: mongoose.Schema.Types.ObjectId,
+    earlyCheckOut: mongoose.Schema.Types.ObjectId // reservationID timed event
 });
 
 const amenitySubSchema = new mongoose.Schema({
@@ -187,7 +190,7 @@ const holdSubSchema = new mongoose.Schema({
     holdStartDateTime: {
         type: Date,
         required: [true, 'must have a hold time'],
-        default:new Date()
+        // default:new Date()
     },
 });
 
@@ -366,6 +369,8 @@ offersRoomSubSchema.methods.getSurcharge = async function(basePrice){
     })
 }
 
+
+
 offersRoomSubSchema.methods.getValidPromotionsList = async function(compareDate){
     const retArr = await Promise.all(
         this.promotions.map(async (el)=>{
@@ -410,6 +415,104 @@ promotionsRoomSubSchema.methods.getPromoPrice = async function(base){
     return new Promise(res=>{
         res(promoPrice);
     })
+}
+
+// re-written since aggregate only returns JSON and not mongoose object
+
+const getSurcharge = function(basePrice, offerSurcharge){
+    let surcharge = 0;
+
+    if(offerSurcharge != null){
+        const pchangeval = parseFloat(offerSurcharge.chargeValue.toString())
+        switch(offerSurcharge.chargeType){
+            case "flatRate":
+                surcharge = pchangeval;
+            break;
+            case "percent":
+                surcharge = pchangeval*basePrice;
+            break;
+        }
+    }
+
+    return surcharge;
+}
+
+// checks if url is ok, if not returns null
+const formatPhotoObj = async (photoObj) => {
+    const {url, fileType, altDescription} = photoObj;
+
+    const photoURL = `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${url}.${fileType}`;
+    // console.log('======================================')
+    // console.log(photoURL)
+    try {
+        return axios.head(photoURL)
+        .then(response => {
+          if (response.status === 200) {
+            return {
+                photoUrl:  photoURL,
+                alt: altDescription
+            }
+          } else {
+            // console.log(`roomModel 450: 404 not found${photoURL}`)
+            return null;
+          }
+        })
+        .catch(error => {
+            // console.log(`roomModel 455: ${error}`)
+            return null;
+        });
+    } catch (err) {
+        // console.log(`roomModel 459: ${err}`)
+    }
+}
+
+roomSchema.statics.getOffer = async function(roomOffer, date){
+    const thisDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
+
+
+    const {basePrice, offer, thumbNail, baseAmenities, roomType} = roomOffer;
+
+    const {offerCalendarImplementation, description, name} = offer;
+
+    const {dateType, dateTypeValue, frequencyType, frequencyValue, frequencyPeriodStart, frequencyPeriodEnd} = offerCalendarImplementation
+
+    roomOffer.isValid = await CalendarImplementation.isCurrentDateWithinCalendarImplementation(
+        dateType, 
+        dateTypeValue, 
+        frequencyType, 
+        frequencyPeriodStart, 
+        frequencyValue, 
+        frequencyPeriodEnd,
+        thisDate
+    );
+    
+
+    if(roomOffer.isValid === true || roomOffer.isValid === "true"){
+        const {large, small} = thumbNail;
+   
+        roomOffer.surcharge = await getSurcharge(basePrice, offer.offerSurcharge);
+        roomOffer.thumbNailLarge = await formatPhotoObj(large);
+        roomOffer.thumbNailSmall = await formatPhotoObj(small);
+        roomOffer.offerDescription = description;
+        if((baseAmenities.filter(el=>el.name==="Bathtub")).length > 0){
+            roomOffer.hasBath = true;
+        } 
+        if(!name.includes("Standard Offer") ){
+            roomOffer.offerName = name;
+        }
+        delete roomOffer.thumbNail;
+
+        return new Promise((res)=>{
+            res(roomOffer)
+        });
+
+    } else {
+
+        return new Promise((res)=>{
+            res(null)
+        })
+    }
+
 }
 
 const Room = mongoose.model('room', roomSchema);
