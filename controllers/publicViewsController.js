@@ -97,7 +97,12 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
 
     const validOffersWithNull = await getValidRoomOffers(req, res, next);
 
-    const validOffers = validOffersWithNull.filter(el=>el!=null)
+    const validOffers = validOffersWithNull.filter(el=>el!=null && el.isValid);
+
+
+
+
+
 
     // console.log(JSON.stringify(validOffers[0].thumbNailLarge));
 

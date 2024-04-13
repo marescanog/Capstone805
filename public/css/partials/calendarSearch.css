@@ -155,7 +155,8 @@
     .calendar-vl-container {
         height: 100%;
         display: flex;
-        padding: 0 1em 0 1em;
+        padding: 0 1em 0 1em; 
+        /*  */
     }
 }
 

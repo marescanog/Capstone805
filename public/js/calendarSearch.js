@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
     const flatpickrinstance = document.getElementById('flatpickrinstance');
     const inputA = document.getElementById('checkInDisplay');
     const inputB = document.getElementById('checkOutDisplay');
@@ -10,13 +13,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let fp;
 
+    // Function to parse query parameters
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Retrieve values from the query parameters
+    const checkin = getQueryParam('checkin');
+    const checkout = getQueryParam('checkout');
+    const guests = getQueryParam('guests');
+    const rooms = getQueryParam('rooms');
+
+    // Set the values to the form inputs
+    if (checkin) {
+        inputA.value = checkin;
+    }
+    if (checkout) {
+        inputB.value = checkout;
+    }
+    if (guests) {
+        guestsInput.value = guests;
+    }
+    if (rooms) {
+        roomsInput.value = rooms;
+    }
+    
     if(flatpickrinstance){
         const options = {
             inline: true,
             mode: "range",
             minDate: "today",
             dateFormat: "Y-m-d",
-            defaultDate: ["2024-03-16", "2024-03-20"],
+            defaultDate: [checkin??`${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`, checkout??`${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`],
         minDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
             // console.log(selectedDates); // Contains the date range array
@@ -167,10 +196,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (isFormValid) {
-                    console.log('Form is valid. Proceed with submission.');
-                    // Fetch call or other submission logic goes here
+                    let queryParams = [];
+
+                    if (inputA.value) {
+                      queryParams.push(`checkin=${encodeURIComponent(inputA.value)}`);
+                    }
+                    if (inputB.value) {
+                      queryParams.push(`checkout=${encodeURIComponent(inputB.value)}`);
+                    }
+                    if (guestsInput.value) {
+                      queryParams.push(`guests=${encodeURIComponent(guestsInput.value)}`);
+                    }
+                    if (roomsInput.value) {
+                      queryParams.push(`rooms=${encodeURIComponent(roomsInput.value)}`);
+                    }
+                  
+                    let queryString = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+                  
+                    // Redirect to the /rooms endpoint with the query string
+                    window.location.href = `/roomOffers${queryString}`;
                 } else {
-                    console.error('Form validation failed.');
+                    // console.error('Form validation failed.');
                 }
             }
 

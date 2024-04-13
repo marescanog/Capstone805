@@ -16,7 +16,8 @@ const roomNumberSchema = new mongoose.Schema({
         type: String,
         required: [true, 'must have a floor'],
     },
-    guestID: mongoose.Schema.Types.ObjectId
+    guestID: mongoose.Schema.Types.ObjectId,
+    earlyCheckOut: mongoose.Schema.Types.ObjectId // reservationID timed event
 });
 
 const amenitySubSchema = new mongoose.Schema({
@@ -189,7 +190,7 @@ const holdSubSchema = new mongoose.Schema({
     holdStartDateTime: {
         type: Date,
         required: [true, 'must have a hold time'],
-        default:new Date()
+        // default:new Date()
     },
 });
 
@@ -468,12 +469,12 @@ const formatPhotoObj = async (photoObj) => {
 roomSchema.statics.getOffer = async function(roomOffer, date){
     const thisDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
 
-    const {basePrice, offer, thumbNail, baseAmenities} = roomOffer;
+
+    const {basePrice, offer, thumbNail, baseAmenities, roomType} = roomOffer;
 
     const {offerCalendarImplementation, description, name} = offer;
 
     const {dateType, dateTypeValue, frequencyType, frequencyValue, frequencyPeriodStart, frequencyPeriodEnd} = offerCalendarImplementation
-
 
     roomOffer.isValid = await CalendarImplementation.isCurrentDateWithinCalendarImplementation(
         dateType, 
@@ -484,11 +485,11 @@ roomSchema.statics.getOffer = async function(roomOffer, date){
         frequencyPeriodEnd,
         thisDate
     );
+    
 
-    if(roomOffer.isValid){
-        Guest.getTotalReservationsByDateAndRoomType()
+    if(roomOffer.isValid === true || roomOffer.isValid === "true"){
         const {large, small} = thumbNail;
-        // console.log(JSON.stringify(roomOffer, null, '\t'))
+   
         roomOffer.surcharge = await getSurcharge(basePrice, offer.offerSurcharge);
         roomOffer.thumbNailLarge = await formatPhotoObj(large);
         roomOffer.thumbNailSmall = await formatPhotoObj(small);
@@ -496,16 +497,17 @@ roomSchema.statics.getOffer = async function(roomOffer, date){
         if((baseAmenities.filter(el=>el.name==="Bathtub")).length > 0){
             roomOffer.hasBath = true;
         } 
-        // console.log(roomOffer.bedCount)
         if(!name.includes("Standard Offer") ){
             roomOffer.offerName = name;
         }
         delete roomOffer.thumbNail;
+
         return new Promise((res)=>{
             res(roomOffer)
         });
 
     } else {
+
         return new Promise((res)=>{
             res(null)
         })
