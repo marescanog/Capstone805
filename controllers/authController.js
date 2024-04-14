@@ -1,15 +1,19 @@
 const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const {Room} = require('../models/roomModel');
 const Guest = require('../models/guestModel.js');
 const Employee = require('../models/employeeModel.js');
 const catchAsync = require('./../apiUtils/catchAsync');
+const {isValidMongoId, isValidDate, adjustDays, calculateDaysBetweenDates} = require('../models/modelUtils/utilityFunctions');
 const AppError = require('../apiUtils/appError.js');
 const crypto = require ('crypto');
 const bcrypt = require('bcryptjs');
 const Email = require('./../apiUtils/email')
+const Hold = require('../models/holdModel.js');
 
 const {Types} = mongoose;
+const CHECKOUT_SESSION_HOLD_MAX_TIME = 10;
 
 exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // TODO add 1 second delay just like in login
@@ -489,6 +493,82 @@ exports.detect = catchAsync(async(req, res, next)=>{
     
     return next();
 });
+
+
+exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
+
+    const {roomdetails, offers, checkin, checkout} = req.query;
+    const sessionID = req.sessionID;
+    let validParams = true;
+
+    // // isValidMongoId, isValidDate
+    // console.log(`roomdetails ${roomdetails}`);
+    // console.log(`offers ${offers}`);
+    // console.log(`checkin ${checkin}`);
+    // console.log(`checkout ${checkout}`);
+
+    // check if valid mongo DB IDs
+    // check if valid date string
+    if(validParams && !isValidMongoId(roomdetails)){
+        validParams = false;
+    }
+    if(validParams && !isValidMongoId(offers)){
+        validParams = false;
+    }
+    if(validParams && !isValidDate(checkin)){
+        validParams = false;
+    }
+    if(validParams && !isValidDate(checkout)){
+        validParams = false;
+    }
+
+    if(!validParams){
+        console.log('Parameters are invalid, auth controller');
+        // clear token at the very least
+        if(req.session.checkout){
+            delete req.session.checkout;
+        }
+        // move on, don't bother creating token
+        return next();
+    } 
+
+    const emptyArray = [...Array(calculateDaysBetweenDates(checkin, checkout))];
+
+    try {
+        if(sessionID){
+            // Delete existing holds with the same sessionID
+            await Hold.deleteMany({ sessionID });
+        }
+
+        // Create a new set of holds
+        const holdsPerDay = await Promise.all(
+            emptyArray.map((_, index) => ({
+                sessionID: sessionID,
+                offer_id: offers,
+                room_id: roomdetails,
+                guest_id: req?.decoded?.id,
+                created_at: new Date(),
+                expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
+                holdStartDateTime: new Date(checkin).setDate(new Date(checkin).getDate() + index)
+            }))
+        )
+
+        // Insert new holds
+        const createdHolds = await Hold.insertMany(holdsPerDay);
+
+        // Update the session with the first hold's info (if needed)
+        if (createdHolds.length > 0) {
+            req.session.checkout = createdHolds[0];
+        }
+
+        return next();
+
+    } catch (err) {
+        console.log(err);
+        return next(new AppError('Something went wrong while creating a checkout session!', 500));
+    }
+
+})
 
 exports.logout = (req, res, next) => {
     if (req.cookies.jwt){

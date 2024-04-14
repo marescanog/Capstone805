@@ -17,7 +17,7 @@ const publicRouter = require('./routes/publicRoutes');
 const globalRouter = require('./routes/globalRouter');
 const sanitizeHtml = require('sanitize-html');
 const session = require('express-session');
-
+const MongoStore = require('connect-mongo');
 
 var app = express();
 
@@ -126,11 +126,20 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(sanitizer);;
 
+const DB = process.env.NODE_ENV === 'production' ? 
+    (process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD)).replace('<USERNAME>', process.env.DATABASE_USERNAME)
+    : process.env.DATABASE_LOCAL;
+
 // configure sessions
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    // saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: DB,
+        collection: 'sessions'
+    }),
     cookie: { 
       secure: 'auto', // Ensure this is true in production if using HTTPS
       maxAge: 30 * 60 * 1000 // 30 minutes

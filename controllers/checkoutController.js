@@ -3,6 +3,8 @@ const ViewBuilder = require('./../apiUtils/viewBuilder')
 const AppError = require('./../apiUtils/appError.js');
 
 exports.routeCheckout = catchAsync(async (req, res) => {
+    // const {roomdetails, offers, checkin, checkout} = req.query;
+    // TODO validate before passing
     if(req?.decoded?.id){
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -47,11 +49,14 @@ exports.routeCheckout = catchAsync(async (req, res) => {
         res.render("pages/hotelguest/createReservation", VB.getOptions());
     } else {
         // redirect to the create account page
-        res.redirect('/checkout/createaccount')
+        res.redirect(`/checkout/createaccount`);
+        // res.redirect(`/checkout/createaccount?roomdetails=${roomdetails}&offers=${offers}&checkin=${checkin}&checkout=${checkout}&guests=1&rooms=1`)
     }
 })
 
 exports.renderCreateAccountPage = async (req, res) => {
+    const {roomdetails, offers, checkin, checkout} = req.query;
+    // TODO validate before passing
     if(req?.decoded?.id){
         // redirect to the checkout
         res.redirect('/checkout')
@@ -62,6 +67,7 @@ exports.renderCreateAccountPage = async (req, res) => {
             id:req?.decoded?.id??null,
         })
         VB.addOptions("NoHeaderSignup", true);
+        VB.addOptions("justAddress", true);
         VB.addOptions("css", "createaccount.css");
         VB.addOptions("title", "Create Account");
         VB.addOptions("partialsCSS", [
@@ -71,6 +77,7 @@ exports.renderCreateAccountPage = async (req, res) => {
         VB.addOptions("scripts", [
             {src:"/js/utils/countdown.js"},
             {src:"/js/paymentSidebar.js"},
+            {src:"/js/createAccount.js"},
         ]);
         VB.addOptions("disablePaymentSidebar", false);
         VB.addOptions("serverHeldSeconds", 900);

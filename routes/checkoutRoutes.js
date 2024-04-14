@@ -2,13 +2,13 @@ const express = require('express');
 const authController = require('./../controllers/authController');
 var app = express();
 const {routeCheckout, routeCreateAccountPost, renderCreateAccountPage, renderVerifyPage, 
-  staffRenderCreateReservationPage, staffCreateReservation} = require('./../controllers/checkoutController.js');
+  staffRenderCreateReservationPage} = require('./../controllers/checkoutController.js');
 const checkoutRouter = express.Router();
 const staffRouter = express.Router();
 
 checkoutRouter
   .route('/')
-  .get(authController.detect, authController.cacheControl,  routeCheckout);
+  .get(  authController.detect, authController.createCheckoutSession, authController.cacheControl,  routeCheckout);
 
 checkoutRouter
 .route('/createAccount')

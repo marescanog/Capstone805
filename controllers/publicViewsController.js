@@ -1,6 +1,7 @@
 const catchAsync = require('../apiUtils/catchAsync');
 const ViewBuilder = require('./../apiUtils/viewBuilder')
 const {getAllRooms, getValidRoomOffers} = require('./roomController');
+const {isValidDate} = require('../models/modelUtils/utilityFunctions');
 const AppError = require('./../apiUtils/appError.js');
 
 exports.viewHomePage = (req, res, next) => {
@@ -91,29 +92,6 @@ exports.viewContactUsPage = (req, res, next) => {
         {src:"/js/contactUs.js"},
     ]);
     res.render("pages/public/contactUs",VB.getOptions());
-}
-
-function isValidDate(dateString) {
-    // Regular expression to check the format 'YYYY-MM-DD'
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-
-    // Check if the format matches
-    if (!dateString.match(regex)) {
-        return false; // If format does not match, return false
-    }
-
-    // Destructure the string to separate year, month, and day
-    const [year, month, day] = dateString.split('-');
-
-    // Create a date instance using the parts
-    const date = new Date(year, month - 1, day); // Month is 0-indexed
-
-    // Check the validity of the date by comparing the parts with the created date instance
-    const valid = (date.getFullYear() === parseInt(year, 10)) &&
-                  (date.getMonth() === parseInt(month, 10) - 1) &&
-                  (date.getDate() === parseInt(day, 10));
-
-    return valid; // Return the validity
 }
 
 exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {

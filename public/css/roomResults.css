@@ -238,6 +238,14 @@ svg {
     font-weight: 600;
 }
 
+a.hrefbutton {
+    width: 100%;
+}
+
+a.hrefbutton button{
+    width: 100%;
+}
+
 @media screen and (max-width: 992px) {
     .r-icon-item.hide{
         display: none;

@@ -193,6 +193,10 @@ const holdSubSchema = new mongoose.Schema({
         required: [true, 'must have a hold time'],
         // default:new Date()
     },
+    room_id: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
+    offer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'offers' },
+    created_at: { type: Date, default: Date.now },
+    expires_at: { type: Date, expires: 60 } // 900 seconds -> 15 minutes
 });
 
 const miscInfo = new mongoose.Schema({
