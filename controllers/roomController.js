@@ -1,10 +1,12 @@
-const {Room, photoSubSchema, amenitySubSchema, promotionsSubSchema, offerSubSchema, holdSubSchema} = require('./../models/roomModel');
+const {Room, photoSubSchema, amenitySubSchema, promotionsSubSchema, offerSubSchema} = require('./../models/roomModel');
 const {compareDates, calculateDaysBetweenDates} = require('./../models/modelUtils/utilityFunctions');
 const Guest = require('./../models/guestModel');
+const Hold = require('./../models/holdModel');
 const catchAsync = require('./../apiUtils/catchAsync');
 const AppError = require('../apiUtils/appError');
 const mongoose = require('mongoose');
 const fs = require('node:fs');
+const { resolveObjectKey } = require('chart.js/helpers');
 
 exports.createRoom = async (req, res) => {
     res.status(500).json({
@@ -157,9 +159,9 @@ async function getReservationCountsByRoomIDByDate(startDate, endDate) {
     ]);
 }
 
-async function getRoomQuantityPerRoomID(arrListOfRoomIDs, checkIn, checkOut) {
-    const holdEndOfDay = new Date(checkOut);
-    holdEndOfDay.setHours(23,59,59,999);
+async function getRoomQuantityPerRoomID(arrListOfRoomIDs) {
+    // const holdEndOfDay = new Date(checkOut);
+    // holdEndOfDay.setHours(23,59,59,999);
     // Use 2024-06-01T00:00:00.00 for testing
     // const test = new Date('2024-06-01T00:00:00.00');
     // console.log(`getRoomQuantityPerRoomID ${test.toLocaleDateString()}`);
@@ -175,100 +177,73 @@ async function getRoomQuantityPerRoomID(arrListOfRoomIDs, checkIn, checkOut) {
         },
         {
             $project: {
+                "_id": 1,
                 "roomType": 1,
                 "miscInfo": 1,
                 "todaysRoomAssignments": 1,
-                "totalQuantity": 1,
-                hold: {
-                    $filter: {
-                        input: "$hold",
-                        as: "hold",
-                        cond: {
-                            $and: [
-                                { $gte: ["$$hold.holdStartDateTime", checkIn] },
-                                { $lt: ["$$hold.holdStartDateTime", checkOut] }
-                            ]
-                        }
-                    }
-                }
+                "totalQuantity": 1
             }
-        },
+        }
+    ]);
+}
+
+async function getHoldsPerRoomType(checkin, checkout, sessionID) {
+    return await Hold.aggregate([
         {
-            $unwind: {
-                path: "$hold",
-                preserveNullAndEmptyArrays: true
+            $match: {
+                holdStartDateTime: {
+                    $gte: new Date(checkin),
+                    $lte: new Date(checkout)
+                },
+                sessionID: { $ne: sessionID }
             }
         },
         {
             $group: {
                 _id: {
-                    roomId: "$_id",
-                    date: { $dateToString: { format: "%Y-%m-%d", date: "$hold.holdStartDateTime" } }
+                    room_id: "$room_id",
+                    date: { $dateToString: { format: "%Y-%m-%d", date: "$holdStartDateTime" } }
                 },
                 count: { $sum: 1 }
             }
         },
         {
             $group: {
-                _id: "$_id.roomId",
-                holds: {
+                _id: "$_id.room_id",
+                dates: {
                     $push: {
-                        count: "$count",
-                        holdDate: "$_id.date"
+                        k: "$_id.date",
+                        v: "$count"
                     }
                 }
             }
         },
         {
-            $lookup: {
-                from: "rooms",
-                localField: "_id",
-                foreignField: "_id",
-                as: "roomDetails"
-            }
-        },
-        {
-            $unwind: "$roomDetails"
-        },
-        {
             $project: {
-                _id: 1,
-                roomType: "$roomDetails.roomType",
-                miscInfo: "$roomDetails.miscInfo",
-                todaysRoomAssignments: "$roomDetails.todaysRoomAssignments",
-                totalQuantity: "$roomDetails.totalQuantity",
-                hold: {
-                    $cond: {
-                        if: { $eq: ["$holds", []] },
-                        then: [],
-                        else: {
-                            $filter: {
-                                input: "$holds",
-                                as: "hold",
-                                cond: { $ne: ["$$hold.holdDate", null] }
-                            }
-                        }
-                    }
+                _id: 0,  
+                room_id: "$_id",  
+                dates: {
+                    $arrayToObject: "$dates"
                 }
             }
         }
     ]);
 }
-
 
 
 async function getAllRoomTypes() {
     return await Room.aggregate([
         {
             $project: {
-                _id: 0, 
-                roomType: 1
+                _id: 1, 
+                roomType: 1,
+                totalQuantity: 1
             }
         }
     ]);
 }
 
-async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQuantityPerRoomType, checkInDate, checkoutDate){
+async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQuantityPerRoomType, holdsPerRoomType, checkInDate, checkoutDate){
     const totalNotAvailablePerDayPerType = {};
     let TODOmessage = false;
     await Promise.all(
@@ -277,8 +252,6 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
             const matchedRoomQuantity = roomQuantityPerRoomType.find(qty=>{ 
                 return (qty._id).equals(reservationsList._id) // id is the roomID not reservations ID
             });
-
-            // console.log(JSON.stringify(matchedRoomQuantity, null, '\t'));
 
             if(matchedRoomQuantity){
                 const {dates} = reservationsList;
@@ -311,6 +284,7 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
                                 totalQuantityRoom: totalQuantity
                             }
                             const dateStr = `${rDateWithValue.date.getFullYear()}-${(rDateWithValue.date.getMonth()+1).toString().padStart(2, '0')}-${rDateWithValue.date.getDate().toString().padStart(2, '0')}`
+                      
                             if(!totalNotAvailablePerDayPerType.hasOwnProperty(roomType)){
                                 totalNotAvailablePerDayPerType[roomType] = {}
                             }
@@ -322,39 +296,60 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
                     )
                 }
 
-                if(hold){
-                    await Promise.all(
-                        hold.map( hDateWithValue => {
-                            const {count, holdDate} = hDateWithValue;
-                            if(!totalNotAvailablePerDayPerType.hasOwnProperty(roomType)){
-                                totalNotAvailablePerDayPerType[roomType] = {}
-                            }
-                            if(!totalNotAvailablePerDayPerType[roomType].hasOwnProperty(holdDate)){
-                                totalNotAvailablePerDayPerType[roomType][holdDate] = {}
-                            }
-                            let totals = {
-                                reservationTotal: totalNotAvailablePerDayPerType[roomType][holdDate].reservationTotal ?? 0,
-                                holdTotal:totalNotAvailablePerDayPerType[roomType][holdDate].holdTotal ?? 0,
-                                overallTotal:totalNotAvailablePerDayPerType[roomType][holdDate].overallTotal ?? 0,
-                                totalQuantityRoom: totalQuantity
-                            }
-                            totalNotAvailablePerDayPerType[roomType][holdDate] = totals
-                            totals.holdTotal += count;
-                            totals.overallTotal += count;
-                        })
-                    )
-                }
-
             }
         })
     )
     
-    // console.log(JSON.stringify(totalNotAvailablePerDayPerType, null, '\t'));
-
-    // now that we got the mapped totals, we can finally compare and see which ones are available or not;
     const allRoomTypes = await getAllRoomTypes();
     const roomTypeArray = await Promise.all(allRoomTypes.map(type => type.roomType));
-    // console.log(JSON.stringify(roomTypeArray, null, '\t'));
+
+    await holdsPerRoomType.map( async(hold) =>{
+        const {room_id, dates} = hold;
+        const roomTypeRes = allRoomTypes.find((resultRoom)=>{return (resultRoom._id).equals(room_id)});
+        const {roomType, totalQuantity} = roomTypeRes;
+
+        if(totalNotAvailablePerDayPerType?.roomType) {
+            Object.keys(dates).map(key=>{
+                let count  = dates[key];
+                if(!totalNotAvailablePerDayPerType[roomType].hasOwnProperty(key)){
+                    totalNotAvailablePerDayPerType[roomType][key] = {}
+                }
+                totalNotAvailablePerDayPerType[roomType][key]['holdTotal'] += count;
+                totalNotAvailablePerDayPerType[roomType][key]['overallTotal'] += count;
+            });
+        }
+
+        if(!totalNotAvailablePerDayPerType?.roomType){
+            totalNotAvailablePerDayPerType[roomType] = {}
+
+            Object.keys(dates).map(key=>{
+                let count  = dates[key];
+                if(!totalNotAvailablePerDayPerType[roomType].hasOwnProperty(key)){
+                    totalNotAvailablePerDayPerType[roomType][key] = {}
+                }
+                totalNotAvailablePerDayPerType[roomType][key] = {
+                    "reservationTotal": 0,
+                    "holdTotal": count, // TO DO add room count to hold
+                    "overallTotal": count,
+                    "totalQuantityRoom": totalQuantity // this is the room limit of rooms that can be reserved per day
+                }
+            });
+        }
+
+        // const dateStr = `${rDateWithValue.date.getFullYear()}-${(rDateWithValue.date.getMonth()+1).toString().padStart(2, '0')}-${rDateWithValue.date.getDate().toString().padStart(2, '0')}`
+        // if(!totalNotAvailablePerDayPerType.hasOwnProperty(roomType)){
+        //     totalNotAvailablePerDayPerType[roomType] = {}
+        // }
+        // if(!totalNotAvailablePerDayPerType[roomType].hasOwnProperty(dateStr)){
+        //     totalNotAvailablePerDayPerType[roomType][dateStr] = {}
+        // }
+        // totalNotAvailablePerDayPerType[roomType][dateStr]  = totals
+    })
+
+    // now that we got the mapped totals, we can finally compare and see which ones are available or not;
+    // console.log(JSON.stringify(roomTypeArray, null, '\t'))
+    console.log(JSON.stringify(totalNotAvailablePerDayPerType, null, '\t'));
+    // console.log(JSON.stringify(holdsPerRoomType, null, '\t'));
 
     await Promise.all( Object.keys(totalNotAvailablePerDayPerType).map(async (roomType)=>{
             // map each room
@@ -416,12 +411,15 @@ exports.getValidRoomOffers = async (req, res, next) => {
 
     const arrayOfIDs = await reservationCountByRoomIDByDate.map(roomID => roomID._id);
 
-    const roomQuantityPerRoomType = await getRoomQuantityPerRoomID(arrayOfIDs, checkinDate, checkoutDate);
+    const roomQuantityPerRoomType = await getRoomQuantityPerRoomID(arrayOfIDs);
 
+    const holdsPerRoomType = await getHoldsPerRoomType(checkinDate, checkoutDate, req.sessionID);
+
+    // console.log('Room Quantity per room type')
     // console.log(JSON.stringify(roomQuantityPerRoomType,null,'\t'));
 
     // // maps arrays together to display total available rooms per day (calculates early checkout and holds on the day)
-    const arrayOfAvailableRoomTypes = await getArrayOfAvailableRoomTypes(reservationCountByRoomIDByDate, roomQuantityPerRoomType, checkinDate, checkoutDate);
+    const arrayOfAvailableRoomTypes = await getArrayOfAvailableRoomTypes(reservationCountByRoomIDByDate, roomQuantityPerRoomType, holdsPerRoomType, checkinDate, checkoutDate);
     // console.log(JSON.stringify(arrayOfAvailableRoomTypes,null,'\t'));
 
     // FOR TESTING & CHECK

@@ -6,6 +6,7 @@ const holdSchema = new mongoose.Schema({
     room_id: { type:  mongoose.Schema.Types.ObjectId, ref: 'Room' },
     guest_id: { type:  mongoose.Schema.Types.ObjectId, ref: 'Guest', required: false },
     created_at: { type: Date, default: Date.now },
+    numberOfRooms: { type: Number, required: true, default: 1 },
     expires_at: { type: Date, index: { expires: '10m' } },  // TTL index
     holdStartDateTime: { type: Date, required: true }
 });

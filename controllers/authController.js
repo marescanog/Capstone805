@@ -522,6 +522,26 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
         validParams = false;
     }
 
+    // parse checkin & checkout
+    let checkinArr = [];
+    let checkoutArr = [];
+    let checkinDate = new Date();
+    let checkoutDate = new Date();
+    checkoutDate.setDate(checkoutDate.getDate()+1);
+    try{
+        checkinArr = checkin ? checkin.split('-') : [];
+        checkoutArr = checkin ? checkout.split('-') : [];
+        checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
+        checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
+    } catch (err) {
+        console.log(`auth controller ${err}`)
+        checkinArr = [];
+        checkoutArr = [];
+    }
+
+    checkinDate.setHours(0,0,0,0);
+    checkoutDate.setHours(0,0,0,0);
+
     if(!validParams){
         console.log('Parameters are invalid, auth controller');
         // clear token at the very least
@@ -540,17 +560,23 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
             await Hold.deleteMany({ sessionID });
         }
 
-        // Create a new set of holds
+
+        // Create a new set of holds  checkinDate checkoutDate
         const holdsPerDay = await Promise.all(
-            emptyArray.map((_, index) => ({
-                sessionID: sessionID,
-                offer_id: offers,
-                room_id: roomdetails,
-                guest_id: req?.decoded?.id,
-                created_at: new Date(),
-                expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
-                holdStartDateTime: new Date(checkin).setDate(new Date(checkin).getDate() + index)
-            }))
+            emptyArray.map((_, index) => {
+                const holdDate = adjustDays(checkinDate , index);
+                holdDate.setHours(0,0,0,0);
+                return {
+                    sessionID: sessionID,
+                    offer_id: offers,
+                    room_id: roomdetails,
+                    guest_id: req?.decoded?.id,
+                    numberOfRooms: 1, // TODO update later
+                    created_at: new Date(),
+                    expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
+                    holdStartDateTime: holdDate
+                }
+    })
         )
 
         // Insert new holds
