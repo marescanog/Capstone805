@@ -497,9 +497,24 @@ exports.detect = catchAsync(async(req, res, next)=>{
 
 exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
 
-    const {roomdetails, offers, checkin, checkout} = req.query;
+    const {roomdetails, offers} = req.query;
     const sessionID = req.sessionID;
     let validParams = true;
+    let  checkin = req.query.checkin;
+    let  checkout = req.query.checkout;
+
+    if(checkin === "today" || !isValidDate(checkin)){
+        const today = new Date();
+        checkin = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+        // console.log(checkin)
+    }
+
+    if(checkout === "tomorrow" || !isValidDate(checkout)){
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        checkout = `${tomorrow.getFullYear()}-${(tomorrow.getMonth()+1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`
+        // console.log(checkout)
+    }
 
     // // isValidMongoId, isValidDate
     // console.log(`roomdetails ${roomdetails}`);
@@ -511,15 +526,19 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
     // check if valid date string
     if(validParams && !isValidMongoId(roomdetails)){
         validParams = false;
+        console.log(1)
     }
     if(validParams && !isValidMongoId(offers)){
         validParams = false;
+        console.log(2)
     }
     if(validParams && !isValidDate(checkin)){
         validParams = false;
+        console.log(3)
     }
     if(validParams && !isValidDate(checkout)){
         validParams = false;
+        console.log(4)
     }
 
     // parse checkin & checkout
@@ -574,9 +593,12 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
                     numberOfRooms: 1, // TODO update later
                     created_at: new Date(),
                     expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
-                    holdStartDateTime: holdDate
+                    holdStartDateTime: holdDate,
+                    checkin: checkin,
+                    checkout: checkout,
+                    numberOfGuests: 1,
                 }
-    })
+            })
         )
 
         // Insert new holds
@@ -585,6 +607,8 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
         // Update the session with the first hold's info (if needed)
         if (createdHolds.length > 0) {
             req.session.checkout = createdHolds[0];
+            console.log("sessioncreated")
+            console.log( req.session.checkout)
         }
 
         return next();

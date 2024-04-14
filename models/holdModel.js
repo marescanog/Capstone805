@@ -8,7 +8,10 @@ const holdSchema = new mongoose.Schema({
     created_at: { type: Date, default: Date.now },
     numberOfRooms: { type: Number, required: true, default: 1 },
     expires_at: { type: Date, index: { expires: '10m' } },  // TTL index
-    holdStartDateTime: { type: Date, required: true }
+    holdStartDateTime: { type: Date, required: true },
+    numberOfGuests: Number,
+    checkin: String,
+    checkout: String
 });
 
 const Hold = mongoose.model('hold', holdSchema);

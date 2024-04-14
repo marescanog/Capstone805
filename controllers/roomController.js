@@ -348,7 +348,7 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
 
     // now that we got the mapped totals, we can finally compare and see which ones are available or not;
     // console.log(JSON.stringify(roomTypeArray, null, '\t'))
-    console.log(JSON.stringify(totalNotAvailablePerDayPerType, null, '\t'));
+    // console.log(JSON.stringify(totalNotAvailablePerDayPerType, null, '\t'));
     // console.log(JSON.stringify(holdsPerRoomType, null, '\t'));
 
     await Promise.all( Object.keys(totalNotAvailablePerDayPerType).map(async (roomType)=>{
