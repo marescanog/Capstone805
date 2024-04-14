@@ -29,7 +29,10 @@
                   <div class="r-inner-desc">
                     <h4>{{this.roomType}}</h4>
                     <p>{{this.description}}</p>
-                    <a href="/roomdetails/id/offers/id">Learn more...</a>
+                    {{!-- <p>Room ID {{this.roomID}}</p> --}}
+                    {{!-- <p>Offer ID {{this.offerID}}</p> --}}
+                    {{!-- TODO add filter for guests --}}
+                    <a href="/roomdetails/{{this.roomID}}/offers/{{this.offerID}}?checkin={{../checkin}}&checkout={{../checkout}}&guests=1&rooms=1">Learn more...</a>
                   </div>
 
                   <div class="r-hr-container">
@@ -86,7 +89,7 @@
               </div>
               <div class="results-info-section">
                 <div class="r-i-price-container">
-                  <h3>$120 /night</h2>
+                  <h3>${{this.averagePricePerNight}} /night</h2>
                   <p>{{this.offerDescription}}</p>
                 </div>
                 <hr>

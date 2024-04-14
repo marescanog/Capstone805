@@ -1,3 +1,26 @@
+function isValidDate(dateString) {
+    // Regular expression to check the format 'YYYY-MM-DD'
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+    // Check if the format matches
+    if (!dateString.match(regex)) {
+        return false; // If format does not match, return false
+    }
+
+    // Destructure the string to separate year, month, and day
+    const [year, month, day] = dateString.split('-');
+
+    // Create a date instance using the parts
+    const date = new Date(year, month - 1, day); // Month is 0-indexed
+
+    // Check the validity of the date by comparing the parts with the created date instance
+    const valid = (date.getFullYear() === parseInt(year, 10)) &&
+                  (date.getMonth() === parseInt(month, 10) - 1) &&
+                  (date.getDate() === parseInt(day, 10));
+
+    return valid; // Return the validity
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
     const tomorrow = new Date();
@@ -20,8 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Retrieve values from the query parameters
-    const checkin = getQueryParam('checkin');
-    const checkout = getQueryParam('checkout');
+    let checkin = getQueryParam('checkin');
+    let checkout = getQueryParam('checkout');
+
+    if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
+        const today = new Date();
+        checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    }
+
+    if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+    }
+
     const guests = getQueryParam('guests');
     const rooms = getQueryParam('rooms');
 
