@@ -178,22 +178,26 @@ const priceChangeTrendsSubSchema = new mongoose.Schema({
     }
 });
 
-const holdSubSchema = new mongoose.Schema({
-    holdID: {
-        type: String,
-        required: [true, 'must have a hold ID'],
-    },
-    sessionID: {
-        type: String,
-        required: [true, 'must have a session ID'],
-    },
-    guestID: mongoose.Schema.Types.ObjectId,
-    holdStartDateTime: {
-        type: Date,
-        required: [true, 'must have a hold time'],
-        // default:new Date()
-    },
-});
+// const holdSubSchema = new mongoose.Schema({
+//     holdID: {
+//         type: String,
+//         required: [true, 'must have a hold ID'],
+//     },
+//     sessionID: {
+//         type: String,
+//         required: [true, 'must have a session ID'],
+//     },
+//     guestID: mongoose.Schema.Types.ObjectId,
+//     holdStartDateTime: {
+//         type: Date,
+//         required: [true, 'must have a hold time'],
+//         // default:new Date()
+//     },
+//     room_id: { type: mongoose.Schema.Types.ObjectId, ref: 'rooms' },
+//     offer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'offers' },
+//     created_at: { type: Date, default: Date.now },
+//     expires_at: { type: Date, expires: 60 } // 900 seconds -> 15 minutes
+// });
 
 const miscInfo = new mongoose.Schema({
     extraPersonFee: Decimal128,
@@ -267,10 +271,10 @@ const roomSchema = new mongoose.Schema({
         type: [priceChangeTrendsSubSchema],
         required:  [true, 'A room must have a list of priceChangeTrends']
     },
-    hold: {
-        type: [holdSubSchema],
-        required:  [true, 'A room must have a list of holds']
-    },
+    // hold: {
+    //     type: [holdSubSchema],
+    //     required:  [true, 'A room must have a list of holds']
+    // },
     miscInfo: miscInfo
 });
 
@@ -558,4 +562,4 @@ roomSchema.statics.getOffer = async function(roomOffer, date, checkoutDate){
 
 const Room = mongoose.model('room', roomSchema);
 
-module.exports = {Room, photoSubSchema, amenitySubSchema, promotionsRoomSubSchema, offersRoomSubSchema, offerSurchargeRoomSubSchema,priceChangeTrendsSubSchema, holdSubSchema};
+module.exports = {Room, photoSubSchema, amenitySubSchema, promotionsRoomSubSchema, offersRoomSubSchema, offerSurchargeRoomSubSchema,priceChangeTrendsSubSchema};

@@ -100,7 +100,8 @@
                     {{/equalOrLT}}
                   {{/each}}
                 </div>
-                <button class="btn btn-primary btn-reserve-style">Reserve now</button>
+                <a href="checkout?roomdetails={{this.roomID}}&offers={{this.offerID}}&checkin={{../checkin}}&checkout={{../checkout}}&guests=1&rooms=1" class="hrefbutton"><button class="btn btn-primary btn-reserve-style">Reserve now</button></a>
+                {{!-- <a href="checkout" class="hrefbutton"><button class="btn btn-primary btn-reserve-style">Reserve now</button></a> --}}
               </div>
             </div>
           </div>
