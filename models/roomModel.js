@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const {Decimal128} = mongoose.Types;
 const { CalendarImplementation, calendarImplementationSubSchema, photoSubSchema,  } = require('./modelUtils/subSchemas.js');
-const { calculateDaysBetweenDates, adjustDays } = require('./modelUtils/utilityFunctions');
+const { calculateDaysBetweenDates, adjustDays, formatDate_Mon_DD_YYYY} = require('./modelUtils/utilityFunctions');
 const Guest = require('./guestModel.js');
 const PriceChangeTrend = require('./priceChangeTrendModel.js');
 const {isThisOfferInEffectOnThisDate, Offer} = require('./offerModel.js');
 const axios = require('axios');
+const catchAsync = require('../apiUtils/catchAsync.js');
 
 const roomNumberSchema = new mongoose.Schema({
     roomNumber: {
@@ -485,7 +486,144 @@ const formatPhotoObj = async (photoObj) => {
     }
 }
 
-roomSchema.statics.getOffer = async function(roomOffer, date, checkoutDate){
+roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, checkin, checkout, numberOfGuests, numberOfRooms, guestID){
+
+    const thisDate = checkin ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
+    const thisCheckout = checkout ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
+    if(!checkout){
+        thisCheckout.setDate(thisCheckout.getDate()+1);
+    }
+    thisDate.setHours(0,0,0,0);
+    thisCheckout.setHours(0,0,0,0);
+    // console.log(checkin)
+    // console.log(checkout)
+    let bookingData = {
+        roomType: "Room Type",
+        offers:["Amenity 1","Amenity 2", "Amenity 3", "Amenity 4", "Amenity 5", "Amenity 6"],
+        bedType: "Queen",
+        bedCount: 1,
+        amenities: [
+            {name: "Bathroom", count: 1},
+            {name: "Balcony", count: 1}
+        ],
+        // thumbnailSmall: process.env.AWS_ROOM_TYPE_IMAGE_URL+"72196c538bc4a23a5e92938ea047bc3e00a2fbc7ac4f458e0e7f121c7f112a26",
+        thumbnailSmall: null,
+        fileType: "jpg",
+        checkOut: "Jan 28, 2024",
+        checkIn: "Jan 28, 2024",
+        guests: 3,
+        rate:250,
+        totalNights: 2,
+        extraPersonFee: 4.71,
+        discounts : []
+    }
+
+    try {
+        // Get Room
+        const room = await Room.findOne({
+            '_id': new mongoose.Types.ObjectId(room_id), 
+            'offers.offerReferenceID': new mongoose.Types.ObjectId(offer_id)
+        }).exec();
+
+        if (!room) {
+            console.log('No room found with the specified room ID and offer ID');
+            return null;
+        }
+        console.log(room)
+
+        // TODO Get Cx Loyalty Points
+        const {roomType, baseAmenities, offers, bedType, bedCount, thumbNail, miscInfo, basePrice, priceChangeTrends} = room;
+
+        const {addedAmenities, offerSurcharge} = offers[0];
+        const {small} = thumbNail;
+        const {extraPersonFee} = miscInfo;
+        const offeredAmenities = [];
+        const featuredAmenities = [];
+
+        if(addedAmenities){
+            await Promise.all(
+                addedAmenities.map(amenityObj=>{
+                    offeredAmenities.push(amenityObj.name);
+                })
+            )
+        }
+
+        const extractedOfferedAmenities = baseAmenities.filter(el=>el.category  === 'Offered Amenities');
+        const extractedRoomFeatureAmenities = baseAmenities.filter(el=>el.category  === 'Room Features');
+
+        if(extractedOfferedAmenities.length > 0){
+            await Promise.all(
+                extractedOfferedAmenities.map(amenityObj=>{
+                    offeredAmenities.push(amenityObj.name);
+                })
+            )
+        }
+
+        const showerOrBathroom = extractedRoomFeatureAmenities.filter(el=>(el.name  === 'Shower' || el.name  === 'Bathtub'));
+        const otherRoomFeaturesAmenities = extractedRoomFeatureAmenities.filter(el=>(el.name  !== 'Shower' && el.name  !== 'Bathtub'));
+
+        if(showerOrBathroom.length > 0){
+            await Promise.all(
+                showerOrBathroom.map(amenityObj=>{
+                    featuredAmenities.push({name: amenityObj.name, count: amenityObj?.quantity??1});
+                })
+            )
+        }
+
+        if(otherRoomFeaturesAmenities.length > 0){
+            await Promise.all(
+                otherRoomFeaturesAmenities.map(amenityObj=>{
+                    featuredAmenities.push({name: amenityObj.name, count: amenityObj?.quantity??1});
+                })
+            )
+        }
+        console.log(baseAmenities)
+        bookingData.roomType = roomType;
+        bookingData.offers = offeredAmenities;
+        bookingData.bedType = bedType;
+        bookingData.bedCount = bedCount;
+        bookingData.amenities = featuredAmenities;
+        bookingData.thumbnailSmall = `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${small.url}`;
+        bookingData.fileType = small.fileType;
+        bookingData.checkOut = formatDate_Mon_DD_YYYY(thisDate);
+        bookingData.checkIn = formatDate_Mon_DD_YYYY(thisCheckout);
+        bookingData.guests = numberOfGuests;
+        bookingData.rate = await getAverageRoomPrice(thisDate, thisCheckout, basePrice, offerSurcharge, priceChangeTrends);
+        bookingData.totalNights = calculateDaysBetweenDates(thisDate,thisCheckout);
+        bookingData.extraPersonFee = (extraPersonFee*numberOfGuests).toFixed(2);
+        bookingData.discounts = [];
+    } catch (error) {
+        console.error('Error finding the room:', error);
+        return null;
+    }
+
+    return bookingData;
+
+}
+
+async function getAverageRoomPrice(date, checkoutDate, basePrice, offerSurcharge, priceChangeTrends) {
+    // Get the computed average price of room per day, then average
+    const surcharge =  await getSurcharge(basePrice, offerSurcharge);
+    const totalDays = calculateDaysBetweenDates(date, checkoutDate);
+    const pricePerDay = await Promise.all(
+        [...Array(totalDays)].map(async (blank, index) =>{
+            try {
+                return await getPriceOfRoomBasedOnApplicableTrends(adjustDays(date, index), priceChangeTrends, basePrice);
+            } catch (err) {
+                console.log(err)
+                return 0
+            }
+        })
+    )
+    const averagePrice = pricePerDay.reduce(function (sum, value) {
+        return sum + value;
+    }, 0) / pricePerDay.length;
+
+    const avePricePlusSurchargeaveragePrice = averagePrice + surcharge;
+    return avePricePlusSurchargeaveragePrice.toFixed(2);
+}
+
+roomSchema.statics.getOffer =  async function(roomOffer, date, checkoutDate){
     const thisDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
 
     const thisCheckout = checkoutDate ?? calendarImplementationSubSchema.statics.TODAYS_DATE();

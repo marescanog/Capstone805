@@ -94,6 +94,19 @@ exports.viewContactUsPage = (req, res, next) => {
     res.render("pages/public/contactUs",VB.getOptions());
 }
 
+exports.viewCheckoutSessionExpiredRedirect = async (req, res, next) => {
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    })
+    VB.addOptions("headerTitle", 'Checkout Session Expired');
+    VB.addOptions("scripts", [
+        {src:"/js/checkoutExpired.js"},
+    ]);
+    res.render("pages/public/checkoutExpired", VB.getOptions());
+}
+
 exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
 
     let validOffersWithNull;

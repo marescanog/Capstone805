@@ -5,7 +5,7 @@ const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
     viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
     viewEmployeePortalPage, viewFAQPage, viewForgotPasswordPage, registerUserAccount,
-    viewRoomByIDWithOffer, viewRoomByID
+    viewRoomByIDWithOffer, viewRoomByID, viewCheckoutSessionExpiredRedirect
 } = require('./../controllers/publicViewsController');
 
 /*
@@ -40,6 +40,9 @@ router.get("/faqsPolicies", authController.detect, viewFAQPage);
 
 router.get("/forgotpassword", authController.detect, viewForgotPasswordPage)
 
+router.get("/forgotpassword", authController.detect, viewForgotPasswordPage)
+
+router.get("/checkoutSessionExpired", authController.detect, viewCheckoutSessionExpiredRedirect)
 
 router.get("/roomdetails/:roomID/offers/:offerID", authController.detect, viewRoomByIDWithOffer);
 

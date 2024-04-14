@@ -35,9 +35,20 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
               body: JSON.stringify(data)
           })
           .then(response => {
-            return response.json();
+            try {
+              const json = response.json();
+              return json;
+            } catch (err){
+              console.log(response);
+              return {
+                statusCode: 500,
+                resbody: response,
+                message: "Something went wrong!"
+              }
+            }
           })
           .then(res => {
+            // console.log(res)
               if(res.statusCode && res.statusCode.toString().startsWith("2")){
                   setDisabledLoginButton (false, loginButton, buttonText, spinner);
                   loginModalCloseButton.disabled = false;
@@ -48,7 +59,7 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
                     loginModalCloseButton.disabled = false;
                   }, "Unable to login", res.message);
               } else {
-                console.log(res)
+                // console.log(res)
                   launchSwalError(()=>{
                     setDisabledLoginButton (false, loginButton, buttonText, spinner);
                     loginModalCloseButton.disabled = false;
@@ -56,22 +67,21 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
               }
           })
           .catch(err=>{
-            console.log('main.js login')
-            console.log(err);
+            // console.log(err);
             launchSwalError(()=>{
               setDisabledLoginButton (false, loginButton, buttonText, spinner);
               loginModalCloseButton.disabled = false;
             })
           })
         }catch(err){
-          console.log(err)
+          // console.log(err)
           launchSwalError(()=>{
             setDisabledLoginButton (false, loginButton, buttonText, spinner);
             loginModalCloseButton.disabled = false;
           })
         }
     } catch (err){
-      console.log(err)
+      // console.log(err)
       launchSwalError(()=>{
         setDisabledLoginButton (false, loginButton, buttonText, spinner);
         loginModalCloseButton.disabled = false;
@@ -80,7 +90,7 @@ function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
 
 
   } else {
-    console.log(err)
+    // console.log(err)
     launchSwalError(()=>{
       setDisabledLoginButton (false, loginButton, buttonText, spinner);
       loginModalCloseButton.disabled = false;

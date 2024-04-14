@@ -1,6 +1,17 @@
 const catchAsync = require('../apiUtils/catchAsync');
 const ViewBuilder = require('./../apiUtils/viewBuilder')
 const AppError = require('./../apiUtils/appError.js');
+const {Room} = require('../models/roomModel');
+const Guest = require('../models/guestModel.js');
+const {getSecondsBetweenDates, isValidDate, formatDate_Mon_DD_YYYY} = require('./../models/modelUtils/utilityFunctions');
+
+function getServerSeconds(expires_at){
+    if(expires_at){
+        const serverSeconds =  Math.ceil(getSecondsBetweenDates(new Date(), new Date(expires_at), false));
+        return serverSeconds < 0 ? 0 : serverSeconds;
+    }
+    return 0;
+}
 
 exports.routeCheckout = catchAsync(async (req, res) => {
     // const {roomdetails, offers, checkin, checkout} = req.query;
@@ -46,21 +57,65 @@ exports.routeCheckout = catchAsync(async (req, res) => {
             discounts : []
         });
         VB.addOptions("serverHeldSeconds", 900);
-        res.render("pages/hotelguest/createReservation", VB.getOptions());
-    } else {
-        // redirect to the create account page
-        res.redirect(`/checkout/createaccount`);
-        // res.redirect(`/checkout/createaccount?roomdetails=${roomdetails}&offers=${offers}&checkin=${checkin}&checkout=${checkout}&guests=1&rooms=1`)
-    }
+        return res.render("pages/hotelguest/createReservation", VB.getOptions());
+    } 
+
+    // redirect to the create account page
+    res.redirect(`/checkout/createaccount`);
+    // res.redirect(`/checkout/createaccount?roomdetails=${roomdetails}&offers=${offers}&checkin=${checkin}&checkout=${checkout}&guests=1&rooms=1`)
+    
 })
 
-exports.renderCreateAccountPage = async (req, res) => {
-    const {roomdetails, offers, checkin, checkout} = req.query;
-    // TODO validate before passing
+exports.renderCreateAccountPage = catchAsync(async (req, res) => {
+
     if(req?.decoded?.id){
         // redirect to the checkout
-        res.redirect('/checkout')
-    } else {
+        return res.redirect('/checkout')
+    } 
+
+    if(req.session.checkout){
+        // TODO Check if session is expired
+        // const {roomdetails, offers, checkin, checkout} = req.query;
+        // GET BOOKING DATA
+        let bookingData;
+        const {sessionID, offer_id, room_id, created_at, expires_at, numberOfGuests, numberOfRooms} = req.session.checkout;
+        const guestID = req?.decoded?.id;
+
+        // Validate Checkin & Checkout Dates
+        let checkin =  req.session.checkout.checkin;
+        let checkout = req.session.checkout.checkout;
+
+        //YYYY-MM-DD
+        if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
+            const today = new Date();
+            checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        }
+        if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate()+1);
+            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+        }
+
+        // convert to dates
+        const [ci_year, ci_month,  ci_day] = checkin.split('-').map(Number);
+        const [co_year, co_month,  co_day] = checkout.split('-').map(Number);
+        // console.log(checkin)
+        // console.log(checkout)
+        // console.log(`${ci_year} ${ci_month} ${ci_day}`)
+        // console.log(`${co_year} ${co_month} ${co_day}`)
+        const checkinDate = new Date(ci_year, ci_month-1,  ci_day);
+        const checkoutDate = new Date(co_year, co_month-1,  co_day);
+        // console.log(checkinDate)
+        // console.log(checkoutDate)
+
+        try {
+            bookingData = await Room.getCheckoutBookingData(offer_id, room_id, checkinDate, checkoutDate, numberOfGuests, numberOfRooms, guestID);
+            // console.log(bookingData)
+        } catch (err) {
+            console.log(err)
+        }
+
+
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -80,76 +135,60 @@ exports.renderCreateAccountPage = async (req, res) => {
             {src:"/js/createAccount.js"},
         ]);
         VB.addOptions("disablePaymentSidebar", false);
-        VB.addOptions("serverHeldSeconds", 900);
-        VB.addOptions("bookingData", {
-                roomType: "Deluxe Room",
-                offers:["Breakfast Included","Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks"],
-                bedType: "Queen",
-                bedCount: 1,
-                amenities: [
-                    {name: "Bathroom", count: 1},
-                    {name: "Balcony", count: 1}
-                ],
-                thumbnailSmall: process.env.AWS_ROOM_TYPE_IMAGE_URL+"4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f.jpg",
-                fileType: "jpg",
-                checkOut: "Jan 28, 2024",
-                checkIn: "Jan 28, 2024",
-                guests: 3,
-                rate:250,
-                totalNights: 2,
-                extraPersonFee: 4.71,
-                discounts : []
-            });
-        res.render("pages/public/createaccount", VB.getOptions());
+        VB.addOptions("serverHeldSeconds", getServerSeconds(expires_at));
+        VB.addOptions("bookingData", bookingData);
+        return res.render("pages/public/createaccount", VB.getOptions());
     }
-}
+
+    res.redirect("/checkoutSessionExpired");    
+})
 
 exports.renderVerifyPage = async (req, res) => {
     if(req?.decoded?.id){
         // redirect to the checkout
-        res.redirect('/checkout')
-    } else {
-        const VB = new ViewBuilder({
-            alertToLogin: req?.alertToLogin??false,
-            userType: req?.decoded?.type??null,
-            id:req?.decoded?.id??null,
-        })
-        VB.addOptions("NoHeaderSignup", true);
-        VB.addOptions("css", "verifyCreateAccount.css");
-        VB.addOptions("title", "Verify Account");
-        VB.addOptions("partialsCSS", [
-            {name:"paymentSidebar.css"},
-            {name:"h1styled.css"}
-        ]);
-        VB.addOptions("disablePaymentSidebar", false);
-        VB.addOptions("scripts", [
-            {src:"/js/utils/countdown.js"},
-            {src:"/js/verifyEmail.js"},
-            {src:"/js/paymentSidebar.js"}
-        ]);
-        VB.addOptions("serverSeconds", 60);
-        VB.addOptions("serverHeldSeconds", 900);
-        VB.addOptions("bookingData", {
-            roomType: "Deluxe Room",
-            offers:["Breakfast Included","Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks"],
-            bedType: "Queen",
-            bedCount: 1,
-            amenities: [
-                {name: "Bathroom", count: 1},
-                {name: "Balcony", count: 1}
-            ],
-            thumbnailSmall: process.env.AWS_IMAGE_URL+"4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f",
-            fileType: "jpg",
-            checkOut: "Jan 28, 2024",
-            checkIn: "Jan 28, 2024",
-            guests: 3,
-            rate:250,
-            totalNights: 2,
-            extraPersonFee: 4.71,
-            discounts : []
-        });
-        res.render("pages/public/verifyCreateAccount", VB.getOptions());
-    }
+        return res.redirect('/checkout')
+    } 
+
+    const VB = new ViewBuilder({
+        alertToLogin: req?.alertToLogin??false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    })
+    VB.addOptions("NoHeaderSignup", true);
+    VB.addOptions("css", "verifyCreateAccount.css");
+    VB.addOptions("title", "Verify Account");
+    VB.addOptions("partialsCSS", [
+        {name:"paymentSidebar.css"},
+        {name:"h1styled.css"}
+    ]);
+    VB.addOptions("disablePaymentSidebar", false);
+    VB.addOptions("scripts", [
+        {src:"/js/utils/countdown.js"},
+        {src:"/js/verifyEmail.js"},
+        {src:"/js/paymentSidebar.js"}
+    ]);
+    VB.addOptions("serverSeconds", 60);
+    VB.addOptions("serverHeldSeconds", 900);
+    VB.addOptions("bookingData", {
+        roomType: "Deluxe Room",
+        offers:["Breakfast Included","Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks", "Welcome Drinks"],
+        bedType: "Queen",
+        bedCount: 1,
+        amenities: [
+            {name: "Bathroom", count: 1},
+            {name: "Balcony", count: 1}
+        ],
+        thumbnailSmall: process.env.AWS_IMAGE_URL+"4f1651f09d7dc7a4e3ce670558837b247c2671703fa1eeedf73ba4f59c17252f",
+        fileType: "jpg",
+        checkOut: "Jan 28, 2024",
+        checkIn: "Jan 28, 2024",
+        guests: 3,
+        rate:250,
+        totalNights: 2,
+        extraPersonFee: 4.71,
+        discounts : []
+    });
+    res.render("pages/public/verifyCreateAccount", VB.getOptions());
 }
 
 exports.routeCreateAccountPost = async (req, res) => {

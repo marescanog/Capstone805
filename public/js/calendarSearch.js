@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
         const today = new Date();
-        checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        checkin = `${today.getFullYear()}-${(today.getMonth()).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
     }
 
     if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate()+1);
-        checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+        checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth().toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`;
     }
 
     const guests = getQueryParam('guests');

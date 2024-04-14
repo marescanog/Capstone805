@@ -92,4 +92,26 @@ function isValidDate(dateString) {
 function isValidMongoId(id) {
     return mongoose.Types.ObjectId.isValid(id);
 }
-module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId}
+
+function getSecondsBetweenDates(date1, date2, isAbsolute = true) {
+    // Calculate the difference in milliseconds
+    const difference = date2.getTime() - date1.getTime();
+    
+    // Convert milliseconds to seconds and return the absolute value
+    return isAbsolute ? Math.abs(difference / 1000) : (difference / 1000);
+}
+
+function formatDate_Mon_DD_YYYY(date) {
+    // Array of month names
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Extract the month, date, and year from the date object
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${month} ${day}, ${year}`;
+}
+module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY}

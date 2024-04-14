@@ -24,6 +24,13 @@ checkoutRouter
 // .route('/reservationinfo/:id')
 // .get(renderReservationInfoPage); 
 
+// TODO LOGIN AT CHECKOUT
+checkoutRouter
+  .route('/api/v1/guests/login')
+  .post((req,res,next)=>{
+    return res.status(500).json({message:"/api/v1/guests/login has not been defined yet"})
+  })
+
 
 checkoutRouter.use('/staff', staffRouter);
 staffRouter.route('/create').get(authController.detect, authController.cacheControl,  staffRenderCreateReservationPage);
