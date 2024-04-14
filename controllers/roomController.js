@@ -270,7 +270,7 @@ async function getAllRoomTypes() {
 
 async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQuantityPerRoomType, checkInDate, checkoutDate){
     const totalNotAvailablePerDayPerType = {};
-
+    let TODOmessage = false;
     await Promise.all(
         reservationsListByDateByType.map( async (reservationsList) =>{
             // One to one map so no values are repeating
@@ -290,7 +290,10 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
                     compareDates(resDate.date, new Date()) === 0
                 ).length > 0){
                     // add an extra room available
-                    console.log('TODO room controller getArrayOfAvailableRoomTypes early checkout computation')
+                    if(!TODOmessage){
+                        TODOmessage=true;
+                        console.log('TODO room controller getArrayOfAvailableRoomTypes early checkout computation')
+                    }
                 }
 
                 // // now that we have the data, we can check if the room is availble given a start and end date
@@ -389,18 +392,19 @@ exports.getValidRoomOffers = async (req, res, next) => {
     checkoutDate.setDate(checkoutDate.getDate()+1);
 
     try{
-        checkinArr = checkin.split('-');
-        checkoutArr = checkout.split('-');
-        checkinDate = new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]);
-        checkoutDate = new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]);
-        checkinDate.setHours(0,0,0,0);
-        checkoutDate.setHours(0,0,0,0);
-        // checkoutDate.setHours(23,59,59,999);
+        checkinArr = checkin ? checkin.split('-') : [];
+        checkoutArr = checkin ? checkout.split('-') : [];
+        checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
+        checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
     } catch (err) {
         console.log(`room controller ${err}`)
         checkinArr = [];
         checkoutArr = [];
     }
+
+    checkinDate.setHours(0,0,0,0);
+    checkoutDate.setHours(0,0,0,0);
+    // checkoutDate.setHours(23,59,59,999);
 
 
     // before gettimg room offers we need an array of avaiable room types
@@ -471,19 +475,19 @@ exports.getValidRoomOffers = async (req, res, next) => {
                 },
                 {
                     $project: {
-                    _id: '$offers._id',
-                    roomID: '$_id',
-                    roomType: 1,
-                    offer: '$offers',
-                    thumbNail: 1,
-                    description: 1,
-                    basePrice: 1,
-                    priceChangeTrends: 1,
-                    baseAmenities: 1,
-                    totalQuantity: 1,
-                    holdCount: 1,
-                    bedCount: 1,
-                    bedType: 1
+                        _id: '$offers._id',
+                        roomID: '$_id',
+                        roomType: 1,
+                        offer: '$offers',
+                        thumbNail: 1,
+                        description: 1,
+                        basePrice: 1,
+                        priceChangeTrends: 1,
+                        baseAmenities: 1,
+                        totalQuantity: 1,
+                        holdCount: 1,
+                        bedCount: 1,
+                        bedType: 1
                     }
                 }
               ];
@@ -492,7 +496,7 @@ exports.getValidRoomOffers = async (req, res, next) => {
                 // This filters according to calendartype implementation, returning null if it is not valid
                 return await Promise.all(
                     res.map(async (roomOffer)=>{
-                        const mappedOffer = await Room.getOffer(roomOffer, checkinDate);
+                        const mappedOffer = await Room.getOffer(roomOffer, checkinDate, checkoutDate);
                         return mappedOffer;
                     })
                 )

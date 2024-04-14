@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const {Decimal128} = mongoose.Types;
-const { CalendarImplementation, calendarImplementationSubSchema, photoSubSchema } = require('./modelUtils/subSchemas.js');
+const { CalendarImplementation, calendarImplementationSubSchema, photoSubSchema,  } = require('./modelUtils/subSchemas.js');
+const { calculateDaysBetweenDates, adjustDays } = require('./modelUtils/utilityFunctions');
 const Guest = require('./guestModel.js');
 const PriceChangeTrend = require('./priceChangeTrendModel.js');
 const {isThisOfferInEffectOnThisDate, Offer} = require('./offerModel.js');
@@ -273,23 +274,55 @@ const roomSchema = new mongoose.Schema({
     miscInfo: miscInfo
 });
 
-// Rewriting function above because it doesn't make sense
-// how do you know the pricing of the trend based on the date?
-roomSchema.methods.getPriceOfRoomBasedOnApplicableTrends = async function(date){
+async function computePriceBasedOnTrend(basePrice, suppliedPriceChangeVal, suppliedPriceChangeType){
+    let returnValue = 0;
+    const pchangeval = suppliedPriceChangeVal ? parseFloat(suppliedPriceChangeVal.toString()) : parseFloat(this.priceChangeValue.toString())
+    const priceChangeType = suppliedPriceChangeType ? suppliedPriceChangeType : this.priceChangeType;
+    switch(priceChangeType){
+        case "flatRateIncrease":
+            returnValue = pchangeval;
+        break;
+        case "percentIncrease":
+            returnValue = pchangeval*basePrice;
+        break;
+        case "flatRateDecrease":
+            returnValue = -(pchangeval);
+        break;
+        case "percentDecrease":
+            returnValue = -(pchangeval*basePrice);
+        break;
+    }
+    return new Promise((res)=>{
+        res(returnValue)
+    })
+}
+
+async function getPriceOfRoomBasedOnApplicableTrends(date, suppliedTrendArr, suppliedBasePrice){
     const checkedDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
-    const basePrice = parseFloat(this.basePrice.toString());
+    const priceChangeTrends = suppliedTrendArr ?? this.priceChangeTrends;
+    const basePrice = suppliedBasePrice ? parseFloat(suppliedBasePrice.toString()) : parseFloat(this.basePrice.toString());
     const applicableRoomTrends = await Promise.all(
-        this.priceChangeTrends.map(async (trend)=>{
-            if(await trend.priceChangeCalendarImplementation.isCurrentDateWithinCalendarImplementation(
-                null, 
-                null, 
-                null, 
-                null, 
-                null, 
-                null,
+        priceChangeTrends.map(async (trend)=>{
+            const {priceChangeCalendarImplementation, priceChangeType, priceChangeValue} = trend;
+            const {dateType, dateTypeValue, frequencyType,  frequencyPeriodStart, frequencyValue, frequencyPeriodEnd } = priceChangeCalendarImplementation;
+            if(await CalendarImplementation.isCurrentDateWithinCalendarImplementation(
+            // if(await trend.priceChangeCalendarImplementation.isCurrentDateWithinCalendarImplementation(
+                dateType, 
+                dateTypeValue,  
+                frequencyType, 
+                frequencyPeriodStart,  
+                frequencyValue,  
+                frequencyPeriodEnd, 
+                // null, 
+                // null, 
+                // null, 
+                // null, 
+                // null, 
+                // null, 
                 checkedDate
             )){
-                return await trend.computePriceBasedOnTrend(basePrice);
+                // return await trend.computePriceBasedOnTrend(basePrice);
+                return await computePriceBasedOnTrend(basePrice, priceChangeValue, priceChangeType);
             } else {
                 return 0
             }
@@ -308,27 +341,9 @@ roomSchema.methods.getPriceOfRoomBasedOnApplicableTrends = async function(date){
     })
 }
 
-priceChangeTrendsSubSchema.methods.computePriceBasedOnTrend = async function(basePrice){
-    let returnValue = 0;
-    const pchangeval = parseFloat(this.priceChangeValue.toString())
-    switch(this.priceChangeType){
-        case "flatRateIncrease":
-            returnValue = pchangeval;
-        break;
-        case "percentIncrease":
-            returnValue = pchangeval*basePrice;
-        break;
-        case "flatRateDecrease":
-            returnValue = -(pchangeval);
-        break;
-        case "percentDecrease":
-            returnValue = -(pchangeval*basePrice);
-        break;
-    }
-    return new Promise((res)=>{
-        res(returnValue)
-    })
-}
+
+roomSchema.methods.getPriceOfRoomBasedOnApplicableTrends = getPriceOfRoomBasedOnApplicableTrends;
+priceChangeTrendsSubSchema.methods.computePriceBasedOnTrend = computePriceBasedOnTrend;
 
 
 //================== March 20, 2024
@@ -466,15 +481,23 @@ const formatPhotoObj = async (photoObj) => {
     }
 }
 
-roomSchema.statics.getOffer = async function(roomOffer, date){
+roomSchema.statics.getOffer = async function(roomOffer, date, checkoutDate){
     const thisDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
 
+    const thisCheckout = checkoutDate ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
+    if(!checkoutDate){
+        thisCheckout.setDate(thisCheckout.getDate()+1);
+    }
 
-    const {basePrice, offer, thumbNail, baseAmenities, roomType} = roomOffer;
+    const {basePrice, offer, thumbNail, baseAmenities, roomType, priceChangeTrends} = roomOffer;
 
-    const {offerCalendarImplementation, description, name} = offer;
+    const {offerCalendarImplementation, description, name, offerReferenceID} = offer;
 
     const {dateType, dateTypeValue, frequencyType, frequencyValue, frequencyPeriodStart, frequencyPeriodEnd} = offerCalendarImplementation
+
+
+    // console.log(JSON.stringify(roomOffer, null, '\t'))
+
 
     roomOffer.isValid = await CalendarImplementation.isCurrentDateWithinCalendarImplementation(
         dateType, 
@@ -489,7 +512,7 @@ roomSchema.statics.getOffer = async function(roomOffer, date){
 
     if(roomOffer.isValid === true || roomOffer.isValid === "true"){
         const {large, small} = thumbNail;
-   
+        roomOffer.offerID = offerReferenceID
         roomOffer.surcharge = await getSurcharge(basePrice, offer.offerSurcharge);
         roomOffer.thumbNailLarge = await formatPhotoObj(large);
         roomOffer.thumbNailSmall = await formatPhotoObj(small);
@@ -502,12 +525,30 @@ roomSchema.statics.getOffer = async function(roomOffer, date){
         }
         delete roomOffer.thumbNail;
 
+        // Get the computed average price of room per day, then average
+        const totalDays = calculateDaysBetweenDates(date, checkoutDate);
+        const pricePerDay = await Promise.all(
+            [...Array(totalDays)].map(async (blank, index) =>{
+                try {
+                    return await getPriceOfRoomBasedOnApplicableTrends(adjustDays(date, index), priceChangeTrends, basePrice);
+                } catch (err) {
+                    console.log(err)
+                    return 0
+                }
+            })
+        )
+        const averagePrice = pricePerDay.reduce(function (sum, value) {
+            return sum + value;
+        }, 0) / pricePerDay.length;
+
+        const avePricePlusSurchargeaveragePrice = averagePrice + roomOffer.surcharge;
+        roomOffer.averagePricePerNight = avePricePlusSurchargeaveragePrice.toFixed(2);
+
         return new Promise((res)=>{
             res(roomOffer)
         });
 
     } else {
-
         return new Promise((res)=>{
             res(null)
         })

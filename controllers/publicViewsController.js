@@ -93,15 +93,57 @@ exports.viewContactUsPage = (req, res, next) => {
     res.render("pages/public/contactUs",VB.getOptions());
 }
 
+function isValidDate(dateString) {
+    // Regular expression to check the format 'YYYY-MM-DD'
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+    // Check if the format matches
+    if (!dateString.match(regex)) {
+        return false; // If format does not match, return false
+    }
+
+    // Destructure the string to separate year, month, and day
+    const [year, month, day] = dateString.split('-');
+
+    // Create a date instance using the parts
+    const date = new Date(year, month - 1, day); // Month is 0-indexed
+
+    // Check the validity of the date by comparing the parts with the created date instance
+    const valid = (date.getFullYear() === parseInt(year, 10)) &&
+                  (date.getMonth() === parseInt(month, 10) - 1) &&
+                  (date.getDate() === parseInt(day, 10));
+
+    return valid; // Return the validity
+}
+
 exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
 
-    const validOffersWithNull = await getValidRoomOffers(req, res, next);
+    let validOffersWithNull;
+    const {guests, rooms} = req.query;
+    let checkin =  req.query.checkin;
+    let checkout = req.query.checkout;
+    //YYYY-MM-DD
+    if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
+        const today = new Date();
+        req.query.checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        checkin =  req.query.checkin;
+    }
+
+    if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        req.query.checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+        checkout = req.query.checkout;
+    }
+
+    try {
+        validOffersWithNull = await getValidRoomOffers(req, res, next);
+    } catch (err) {
+        console.log(err);
+        validOffersWithNull = [];
+    }
 
     const validOffers = validOffersWithNull.filter(el=>el!=null && el.isValid);
-
-
-
-
 
 
     // console.log(JSON.stringify(validOffers[0].thumbNailLarge));
@@ -150,6 +192,9 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
 
     //     }
     // ];
+
+
+
     const VB = new ViewBuilder({
         alertToLogin: req?.alertToLogin??false,
         userType: req?.decoded?.type??null,
@@ -167,6 +212,10 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
     VB.addOptions("addFlatPicker", true);
     // VB.addOptions("roomResults", roomResults); // test
     VB.addOptions("roomResults", validOffers); // prod
+    VB.addOptions("checkin", checkin); 
+    VB.addOptions("checkout", checkout); 
+    VB.addOptions("guests", guests); 
+    VB.addOptions("rooms", rooms); 
     res.render("pages/public/roomResults",VB.getOptions());
 });
 
@@ -326,3 +375,24 @@ exports.viewForgotPasswordPage = (req, res, next) => {
     }
 }
 
+exports.viewRoomByIDWithOffer = catchAsync( async(req, res, next) => {
+    const roomId = req.params.roomID;
+    const offerId = req.params.offerID;
+
+    // TODO add funtion in room controller get room by id and offer
+
+    res.render( "pages/public/roomdetails", {
+        layout:"main", 
+        css: 'roomdetails.css', 
+        title:'RoomDetails',
+    });  
+})
+
+exports.viewRoomByID = catchAsync( async(req, res, next) => {
+    const roomId = req.params.id;
+    res.render( "pages/public/roomdetails", {
+        layout:"main", 
+        css: 'roomdetails.css', 
+        title:'RoomDetails',
+    });  
+})
