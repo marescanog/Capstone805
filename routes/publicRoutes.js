@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controllers/authController');
+const {createReservation} = require('./../controllers/reservationController');
 const {
     viewHomePage, viewAboutPage, viewGuestRoomsPage, vieRestaurantPage,
     viewContactUsPage, viewRoomOffersPage, viewCreateAccountPage, viewVerifyAccountPage,
@@ -102,20 +103,7 @@ router.post('/submit-new-email', (req, res) => {
 
 // move this route since this is post and does not render any pages - no time to refactor code
 // maybe make a reservation api router - no time to make reservation api router
-router.post("/createReservation", (req, res) => {
-    console.log(JSON.stringify(req.body))
-    // delete all holds with session
-    // delete checkout session
-    // res.send(req.body)
-    try {
-        res.json({ success: true, message: "Reservation created successfully!" });
-    } catch (error){
-        console.error("Save failed:", error);
-        res.json({ success: false, message: "Failed to create reservation. Please try again." });
-    }
-})
-
-
+router.post("/createReservation",  authController.detect, createReservation);
 
 
 module.exports = router;

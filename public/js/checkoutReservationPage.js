@@ -84,6 +84,17 @@ function populateReviewSection() {
         }
 
     });
+    const check = document.getElementById('sameAddress');
+    const sameAddresslabellabellabel = document.getElementById('sameAddresslabellabellabel');
+    if(check && sameAddresslabellabellabel ){
+        if(check.checked === true || check.checked == "true"){
+            sameAddresslabellabellabel.style.display = 'block';
+        } else {
+            sameAddresslabellabellabel.style.display = 'none';
+        }
+    }else {
+        sameAddresslabellabellabel.style.display = 'none';
+    }
 }
 
 const clearInput = (input) => {
@@ -143,11 +154,19 @@ function finalStepBeforeSubmit() {
     allInputs.forEach(input => input.disabled = false);
     
     const form = document.getElementById('reservationForm');
-
+    const check = document.getElementById('sameAddress');
+    const billingCountry = document.getElementById('inputBillingCountry');
     if(form){
         form.setAttribute('novalidate', '');
         const formData = new FormData(form);
         const formDataObj = Object.fromEntries(formData.entries());
+        if(check){
+            formDataObj['sameBillingAddress'] = check?.checked;
+        }
+        if(billingCountry){
+            formDataObj['billingCountry'] = billingCountry.value;
+        }
+   
         fetch('/createReservation', {
             method: 'POST',
             headers: {
@@ -170,6 +189,7 @@ function finalStepBeforeSubmit() {
                     if (result.value || result.dismiss) {
                       form.reset(); 
                       window.location.href = '/dashboard/guest/reservations';
+                    // console.log('for testing purposes do not forget to uncomment these')
                     }
                   });
             } else {

@@ -534,19 +534,51 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
         // TODO Get Cx Loyalty Points
         const {roomType, baseAmenities, offers, bedType, bedCount, thumbNail, miscInfo, basePrice, priceChangeTrends} = room;
 
-        const {addedAmenities, offerSurcharge} = offers[0];
+        // const {addedAmenities, offerSurcharge, promotions} = offers[0];
+
         const {small} = thumbNail;
-        const {extraPersonFee} = miscInfo;
+        const {extraPersonFee, maxExtraPersonAllowed, maxAllowedGuests} = miscInfo;
         const offeredAmenities = [];
         const featuredAmenities = [];
+        const mappedAddedAmenties = [];
+        const applicablepromotions = [];
+
+        const mainOffer = offers.filter(offer=>offer.offerReferenceID == offer_id);
+        let addedAmenities = mainOffer[0] ? mainOffer[0].addedAmenities : null;
+        let offerSurcharge = mainOffer[0] ? mainOffer[0].offerSurcharge : null;
+        let promotions = mainOffer[0] ? mainOffer[0].promotions : null;
 
         if(addedAmenities){
             await Promise.all(
                 addedAmenities.map(amenityObj=>{
-                    offeredAmenities.push(amenityObj.name);
+                    mappedAddedAmenties.push(amenityObj.name);
                 })
             )
         }
+
+        if(promotions){
+            await Promise.all(
+                promotions.map(async (promotion) => {
+                    const {promoCalendarImplementation, name} = promotion;
+                    // console.log(name)
+                    // console.log(thisDate)
+                    const {dateType, dateTypeValue, frequencyType, frequencyValue, frequencyPeriodStart, frequencyPeriodEnd} = promoCalendarImplementation;
+                    if(await CalendarImplementation.isCurrentDateWithinCalendarImplementation(
+                        dateType, 
+                        dateTypeValue, 
+                        frequencyType, 
+                        frequencyPeriodStart, 
+                        frequencyValue, 
+                        frequencyPeriodEnd,
+                        thisDate
+                    )){
+                        applicablepromotions.push(promotion)
+                        return promotion;
+                    }
+                })
+            )
+        }
+        const applicableOffers = mainOffer;
 
         const extractedOfferedAmenities = baseAmenities.filter(el=>el.category  === 'Offered Amenities');
         const extractedRoomFeatureAmenities = baseAmenities.filter(el=>el.category  === 'Room Features');
@@ -577,9 +609,11 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
                 })
             )
         }
+
+        const excesspersons = (numberOfRooms * maxAllowedGuests) - numberOfGuests;
         // console.log(baseAmenities)
         bookingData.roomType = roomType;
-        bookingData.offers = offeredAmenities;
+        bookingData.offers =  [...new Set([...mappedAddedAmenties, ...offeredAmenities])];
         bookingData.bedType = bedType;
         bookingData.bedCount = bedCount;
         bookingData.amenities = featuredAmenities;
@@ -590,8 +624,10 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
         bookingData.guests = numberOfGuests;
         bookingData.rate = await getAverageRoomPrice(thisDate, thisCheckout, basePrice, offerSurcharge, priceChangeTrends);
         bookingData.totalNights = calculateDaysBetweenDates(thisDate,thisCheckout);
-        bookingData.extraPersonFee = (extraPersonFee*numberOfGuests).toFixed(2);
+        bookingData.extraPersonFee = excesspersons > 0 ? (extraPersonFee*numberOfGuests).toFixed(2) : 0;
         bookingData.discounts = [];
+        bookingData.promotions = applicablepromotions.filter(el=>el!=null);
+        bookingData.applicableOffers = applicableOffers.filter(el=>el!=null);
     } catch (error) {
         console.error('Error finding the room:', error);
         return null;
@@ -603,14 +639,14 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
 
 async function getAverageRoomPrice(date, checkoutDate, basePrice, offerSurcharge, priceChangeTrends) {
     // Get the computed average price of room per day, then average
-    const surcharge =  await getSurcharge(basePrice, offerSurcharge);
+    const surcharge =  offerSurcharge == null ? 0 : await getSurcharge(basePrice, offerSurcharge);
     const totalDays = calculateDaysBetweenDates(date, checkoutDate);
     const pricePerDay = await Promise.all(
         [...Array(totalDays)].map(async (blank, index) =>{
             try {
                 return await getPriceOfRoomBasedOnApplicableTrends(adjustDays(date, index), priceChangeTrends, basePrice);
             } catch (err) {
-                console.log(err)
+                console.log(`${err} room model getAverageRoomPrice`)
                 return 0
             }
         })
@@ -674,7 +710,7 @@ roomSchema.statics.getOffer =  async function(roomOffer, date, checkoutDate){
                 try {
                     return await getPriceOfRoomBasedOnApplicableTrends(adjustDays(date, index), priceChangeTrends, basePrice);
                 } catch (err) {
-                    console.log(err)
+                    console.log(`${err}, room model`)
                     return 0
                 }
             })
