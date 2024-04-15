@@ -57,6 +57,8 @@ function clearValidationFeedback() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const submitButton =  document.getElementById('submitBtn');
+    const endpoint = window.location.pathname;
+    const redirectCheckout = endpoint.includes('checkout');
     if(submitButton){
         submitButton.addEventListener('click', function(event) {
             // Prevent the form from submitting traditionally
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // clear form and redirect
                         form.reset();
                         clearValidationFeedback();
-                        window.location.href = "/verifyaccount";
+                        window.location.href = `/${redirectCheckout ? "checkout" : ""}/verifyaccount`;
                     })
                     })
                     .catch(errorResponse => {

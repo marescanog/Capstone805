@@ -17,17 +17,13 @@ const CHECKOUT_SESSION_HOLD_MAX_TIME = 10;
 
 exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // TODO add 1 second delay just like in login
-   
     const {
         firstName, lastName, emailAddress, password, passwordConfirm,
         address, city, postalCode, country, mobileNumber
     } = req.body;
-
     let found;
-
     // this flag is so users cant access the verify account page, especially if they havent created an account
     req.session.createdAccount = emailAddress;
-
     // Check if email exists
     if(emailAddress != null && emailAddress != ""){
         // TODO add try catch
@@ -38,7 +34,6 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // console.log(`is expiry less than now ${req.session.resendLinkexpiry < Date.now()}`)
     if(found){
         let emailsent = false;
-
         // CASE A: Existing Deactivated user
         //Send email account is not active and to contact admin
         if(!emailsent && !found.isActive){
@@ -51,37 +46,27 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             } 
             emailsent = true;
         }
-
         // CASE B: Existing Not Validated User
         // Send validation email again
         if(!emailsent && !found.isVerified){
-
             // check expiry time for validation before sending new email
             if(found.activationResendExpires && found.activationResendExpires instanceof Date && found.activationResendExpires.getTime() <  Date.now()){
                 // Generate new activation link & send to their email
-
                 let foundActivationToken = await found.createActivationToken();
-
                 await found.save({validateBeforeSave: false});
-
                 const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${foundActivationToken}`;
-
                 req.session.resendLinkexpiry = found.activationResendExpires;
-
                 await (new Email(found, activationURL, {activationCode:found.activationCode, contactURL:`${req.protocol}://${req.get('host')}/contactUs`})).resendActivationLink();
 
             } else {
-
                 if(!(found.activationResendExpires instanceof Date)){
                     delete req.session.createdAccount;
                     delete req.session.resendLinkexpiry;
                     return next(new AppError("Something went wrong", 500));
                 }
-
             }
             emailsent = true;
         }
-
         // CASE C: Existing Validated user
         //Send emai acc already registered
         if(!emailsent && found.isVerified){
@@ -93,7 +78,6 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             } 
             emailsent = true;
         }
-
         // If Validated -> Send Login Link & Forgot Password Link
         return res.status(200).json({
             status: 'success',
@@ -101,17 +85,14 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             message: 'Activation link sent to email'
         })
     } 
-
     // Default Case No acc created yet
     // Start a session.
     const session = await mongoose.startSession();
     let activationToken; 
     let newUser;
     try {
-
         // Start a transaction.
         session.startTransaction();
-
         // Create User - IsActive yes, Verified no
         newUser = await Guest.create({
             emailAddress: emailAddress,
@@ -132,34 +113,27 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             formSubmissions: [],
             loyaltyHistory: []
         });
-
         activationToken = await newUser.createActivationToken();
         await newUser.save({validateBeforeSave: false});
-
         req.session.resendLinkexpiry = newUser.activationResendExpires;
-
         if(activationToken == null && newUser == null){
             // Rollback 
             await session.abortTransaction();
             return next(new AppError("Token or User was not created",500));
         }
-
         await session.commitTransaction();
         console.log('Register User Transaction Committed.');
 
     } catch (err) {
         delete req.session.createdAccount;
         delete req.session.resendLinkexpiry;
-
         if(err._message === "guest validation failed"){
             return next(new AppError(JSON.stringify(err.errors),400));
         }
-
         // If any operation fails, abort the transaction.
         // Rollback 
         await session.abortTransaction();
         console.log('Transaction aborted due to an error:', err);
-
         return next(new AppError("Something went wrong",500));
     } finally {
         // End the session.
@@ -170,15 +144,12 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
     try {
         // 3) Send it to users email
         const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${activationToken}`;
-
         await (new Email(newUser, activationURL, {activationCode:newUser.activationCode})).sendActivationLink();
-
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
             statusCode: 200,
             message: 'Activation link sent to email'
         })
-
     } catch (err) {
         console.log(err);
         return next(new AppError('There was an error sending the email. Try again later!'), 500)
@@ -496,128 +467,131 @@ exports.detect = catchAsync(async(req, res, next)=>{
 
 
 exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
-
-    const {roomdetails, offers} = req.query;
-    const sessionID = req.sessionID;
-    let validParams = true;
-    let  checkin = req.query.checkin;
-    let  checkout = req.query.checkout;
-
-    if(checkin === "today" || !isValidDate(checkin)){
-        const today = new Date();
-        checkin = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
-        // console.log(checkin)
-    }
-
-    if(checkout === "tomorrow" || !isValidDate(checkout)){
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate()+1);
-        checkout = `${tomorrow.getFullYear()}-${(tomorrow.getMonth()+1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`
-        // console.log(checkout)
-    }
-
-    // // isValidMongoId, isValidDate
-    // console.log(`roomdetails ${roomdetails}`);
-    // console.log(`offers ${offers}`);
-    // console.log(`checkin ${checkin}`);
-    // console.log(`checkout ${checkout}`);
-
-    // check if valid mongo DB IDs
-    // check if valid date string
-    if(validParams && !isValidMongoId(roomdetails)){
-        validParams = false;
-        console.log(1)
-    }
-    if(validParams && !isValidMongoId(offers)){
-        validParams = false;
-        console.log(2)
-    }
-    if(validParams && !isValidDate(checkin)){
-        validParams = false;
-        console.log(3)
-    }
-    if(validParams && !isValidDate(checkout)){
-        validParams = false;
-        console.log(4)
-    }
-
-    // parse checkin & checkout
-    let checkinArr = [];
-    let checkoutArr = [];
-    let checkinDate = new Date();
-    let checkoutDate = new Date();
-    checkoutDate.setDate(checkoutDate.getDate()+1);
-    try{
-        checkinArr = checkin ? checkin.split('-') : [];
-        checkoutArr = checkin ? checkout.split('-') : [];
-        checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
-        checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
-    } catch (err) {
-        console.log(`auth controller ${err}`)
-        checkinArr = [];
-        checkoutArr = [];
-    }
-
-    checkinDate.setHours(0,0,0,0);
-    checkoutDate.setHours(0,0,0,0);
-
-    if(!validParams){
-        console.log('Parameters are invalid, auth controller');
-        // clear token at the very least
-        if(req.session.checkout){
-            delete req.session.checkout;
+    const referer = req.get('Referer');
+    const parsedUrl  = referer ? new URL(referer) : null;
+    let  pathname;
+    pathname = parsedUrl.pathname;
+    // console.log(`pathname ${pathname}`);
+    if(pathname.includes('roomOffers')){
+        // console.log("inside")
+        const {roomdetails, offers} = req.query;
+        const sessionID = req.sessionID;
+        let validParams = true;
+        let  checkin = req?.query?.checkin;
+        let  checkout = req?.query?.checkout;
+    
+        if(checkin === "today" || checkin == null ||  !isValidDate(checkin)){
+            const today = new Date();
+            checkin = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+            // console.log(checkin)
         }
-        // move on, don't bother creating token
-        return next();
-    } 
-
-    const emptyArray = [...Array(calculateDaysBetweenDates(checkin, checkout))];
-
-    try {
-        if(sessionID){
-            // Delete existing holds with the same sessionID
-            await Hold.deleteMany({ sessionID });
+    
+        if(checkout === "tomorrow" || checkout == null ||  !isValidDate(checkout)){
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate()+1);
+            checkout = `${tomorrow.getFullYear()}-${(tomorrow.getMonth()+1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`
+            // console.log(checkout)
+        }
+    
+        // // isValidMongoId, isValidDate
+        // console.log(`roomdetails ${roomdetails}`);
+        // console.log(`offers ${offers}`);
+        // console.log(`checkin ${checkin}`);
+        // console.log(`checkout ${checkout}`);
+    
+        // check if valid mongo DB IDs
+        // check if valid date string
+        if(validParams && !isValidMongoId(roomdetails)){
+            validParams = false;
+        }
+        if(validParams && !isValidMongoId(offers)){
+            validParams = false;
+        }
+        if(validParams && !isValidDate(checkin)){
+            validParams = false;
+        }
+        if(validParams && !isValidDate(checkout)){
+            validParams = false;
+        }
+    
+        // parse checkin & checkout
+        let checkinArr = [];
+        let checkoutArr = [];
+        let checkinDate = new Date();
+        let checkoutDate = new Date();
+        checkoutDate.setDate(checkoutDate.getDate()+1);
+        try{
+            checkinArr = checkin ? checkin.split('-') : [];
+            checkoutArr = checkin ? checkout.split('-') : [];
+            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
+            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
+        } catch (err) {
+            console.log(`auth controller ${err}`)
+            checkinArr = [];
+            checkoutArr = [];
+        }
+    
+        checkinDate.setHours(0,0,0,0);
+        checkoutDate.setHours(0,0,0,0);
+    
+        if(!validParams){
+            console.log('Parameters are invalid, auth controller');
+            // clear token at the very least
+            if(req.session.checkout){
+                delete req.session.checkout;
+            }
+            // move on, don't bother creating token
+            return next();
+        } 
+    
+        const emptyArray = [...Array(calculateDaysBetweenDates(checkin, checkout))];
+    
+        try {
+            if(sessionID){
+                // Delete existing holds with the same sessionID
+                await Hold.deleteMany({ sessionID });
+            }
+    
+    
+            // Create a new set of holds  checkinDate checkoutDate
+            const holdsPerDay = await Promise.all(
+                emptyArray.map((_, index) => {
+                    const holdDate = adjustDays(checkinDate , index);
+                    holdDate.setHours(0,0,0,0);
+                    return {
+                        sessionID: sessionID,
+                        offer_id: offers,
+                        room_id: roomdetails,
+                        guest_id: req?.decoded?.id,
+                        numberOfRooms: 1, // TODO update later
+                        created_at: new Date(),
+                        expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
+                        holdStartDateTime: holdDate,
+                        checkin: checkin,
+                        checkout: checkout,
+                        numberOfGuests: 1,
+                    }
+                })
+            )
+    
+            // Insert new holds
+            const createdHolds = await Hold.insertMany(holdsPerDay);
+    
+            // Update the session with the first hold's info (if needed)
+            if (createdHolds.length > 0) {
+                req.session.checkout = createdHolds[0];
+            }
+    
+            return next();
+    
+        } catch (err) {
+            console.log(err);
+            return next(new AppError('Something went wrong while creating a checkout session!', 500));
         }
 
-
-        // Create a new set of holds  checkinDate checkoutDate
-        const holdsPerDay = await Promise.all(
-            emptyArray.map((_, index) => {
-                const holdDate = adjustDays(checkinDate , index);
-                holdDate.setHours(0,0,0,0);
-                return {
-                    sessionID: sessionID,
-                    offer_id: offers,
-                    room_id: roomdetails,
-                    guest_id: req?.decoded?.id,
-                    numberOfRooms: 1, // TODO update later
-                    created_at: new Date(),
-                    expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
-                    holdStartDateTime: holdDate,
-                    checkin: checkin,
-                    checkout: checkout,
-                    numberOfGuests: 1,
-                }
-            })
-        )
-
-        // Insert new holds
-        const createdHolds = await Hold.insertMany(holdsPerDay);
-
-        // Update the session with the first hold's info (if needed)
-        if (createdHolds.length > 0) {
-            req.session.checkout = createdHolds[0];
-            console.log("sessioncreated")
-            console.log( req.session.checkout)
-        }
-
-        return next();
-
-    } catch (err) {
-        console.log(err);
-        return next(new AppError('Something went wrong while creating a checkout session!', 500));
     }
-
+    // console.log("outside")
+    next();
 })
 
 exports.logout = (req, res, next) => {
@@ -664,7 +638,7 @@ exports.forgotPasswordGuest = catchAsync( async (req, res, next) => {
 
         await (new Email(user, resetURL)).sendForgotPasswordLink();
 
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
             statusCode: 200,
             message: 'Token sent to email'
@@ -792,11 +766,11 @@ const checkActivationCode = async(req, res, next ) => {
         // Set timeout of 1 second to delay brute force attacks
         setTimeout(async () => {
             const {email, verificationCode} = req.body;
-            console.log(`activateAccount(checkActivationCode): email: ${email}, verificationCode:${verificationCode}`);
-
+            // console.log(`activateAccount(checkActivationCode): email: ${email}, verificationCode:${verificationCode}`);
+            let foundRegisteredUser;
             // check if email exists
             try {
-                const foundRegisteredUser = await Guest.findOne({emailAddress: email});
+                foundRegisteredUser = await Guest.findOne({emailAddress: email});
                 
                 // REFACTOR instead of using session variable to control when emails can be sent
                 if(!foundRegisteredUser) {
@@ -829,17 +803,57 @@ const checkActivationCode = async(req, res, next ) => {
                 reject({status: "fail"})
             }
 
-            resolve({status: "success", message:"updated"});
+            resolve({status: "success", message:"updated", user: foundRegisteredUser});
         }, "1000");
     });
 };
 
-// TODO
+// TODO finish other activate features 
 exports.activateAccount = catchAsync(async (req, res, next) => {
-    console.log('Authcontroller activate account')
+    // console.log('Authcontroller activate account')
+    const referer = req.get('Referer');
     const activationResult = await checkActivationCode(req, res, next)
-    .then((result)=>{
+    .then(async (result)=>{
+
        delete req.session.createdAccount;
+
+    //    console.log(`result ${JSON.stringify(result, null, '\t')}`)
+    //    console.log(`referer ${referer}`)
+
+       if(referer){
+            const parsedUrl = new URL(referer);
+            const pathname = parsedUrl.pathname;
+            // console.log(`pathname ${pathname}`)
+            if(pathname.includes('checkout')){
+                // login -> create token
+                if(result.user){
+                    // console.log(`inside user ${result.user._id}`)
+                    const loginData = await signToken(result.user._id, result.user?.employeeType)
+                    // console.log(`loginData ${loginData}`)
+                    if(loginData){
+                        // Set token in HTTP-only cookie
+                        res.cookie('jwt', loginData, {
+                            httpOnly: true,
+                            secure: process.env.NODE_ENV === 'production',
+                            expiresIn: new Date(
+                                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+                            )
+                        });
+
+                        return {
+                            status: 'success',
+                            token: loginData,
+                            statusCode: 201,
+                            id: result.user._id
+                        }
+                        // return res.redirect('/checkout');
+                    } 
+                }
+            }
+       }
+
+       delete result.user;
        return {
         status: result.status,
         result: result.message
@@ -856,11 +870,11 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
         return next(new AppError(err, 500));
     }
 
-    console.log(`activation ${activationResult.status} ${activationResult.status === "success"}`)
-    console.log(JSON.stringify(activationResult));
+    // console.log(`activation ${activationResult.status} ${activationResult.status === "success"}`)
+    // console.log(JSON.stringify(activationResult));
     const statusCode = activationResult.status === "success" ? 200 : 500;
     res.status(statusCode).json({
-        statusCode,
+        statusCode: activationResult.statusCode ?? statusCode,
         status: activationResult.status,
         message: activationResult.message
     });

@@ -529,7 +529,7 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
             console.log('No room found with the specified room ID and offer ID');
             return null;
         }
-        console.log(room)
+        // console.log(room)
 
         // TODO Get Cx Loyalty Points
         const {roomType, baseAmenities, offers, bedType, bedCount, thumbNail, miscInfo, basePrice, priceChangeTrends} = room;
@@ -577,7 +577,7 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
                 })
             )
         }
-        console.log(baseAmenities)
+        // console.log(baseAmenities)
         bookingData.roomType = roomType;
         bookingData.offers = offeredAmenities;
         bookingData.bedType = bedType;

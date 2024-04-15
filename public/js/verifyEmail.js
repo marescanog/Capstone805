@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
                         })
                         .then(response => response.json())
                         .then(data => {
+                            // console.log(`data: ${JSON.stringify(data, null, '\t')}`)
                             if(data?.statusCode === 200){
                                 Swal.fire({
                                     title: "Registration Successful",
@@ -39,6 +40,15 @@ document.addEventListener("DOMContentLoaded", function(e) {
                                 })
                                 .then(()=>{
                                     window.location.href = '/home';
+                                })
+                            } else if (data?.statusCode === 201){
+                                Swal.fire({
+                                    title: "Registration Successful!",
+                                    text: "Acccount is now verified. You may now complete your reservation.",
+                                    icon: "success"
+                                })
+                                .then(()=>{
+                                    window.location.href = '/checkout';
                                 })
                             } else {
                                 launchSwalError();
