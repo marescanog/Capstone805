@@ -114,4 +114,19 @@ function formatDate_Mon_DD_YYYY(date) {
     // Format the date string
     return `${month} ${day}, ${year}`;
 }
-module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY}
+
+
+function formatDate_DD_MON_YYYY(date) {
+    // Array of month names
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Extract the month, date, and year from the date object
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${day} ${month}, ${year}`;
+}
+module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY, formatDate_DD_MON_YYYY}

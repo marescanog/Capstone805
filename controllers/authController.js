@@ -404,6 +404,8 @@ exports.protect = catchAsync(async(req, res, next)=>{
 
     req.decoded = decoded;
 
+    // console.log(req.decoded)
+
     next();
 });
 
@@ -831,9 +833,9 @@ const checkActivationCode = async(req, res, next ) => {
                 // verify the activation code
                 if(foundRegisteredUser.activationCode === verificationCode){
                     delete req.session.resendLinkexpiry;
-                    delete foundRegisteredUser.resendLinkexpiry;
-                    delete foundRegisteredUser.activationResendExpires;
-                    delete foundRegisteredUser.activationToken;
+                    foundRegisteredUser.activationResendExpires = undefined;
+                    foundRegisteredUser.activationToken = undefined;
+                    foundRegisteredUser.resendLinkexpiry = undefined;
                     foundRegisteredUser.isVerified = true;
                     await foundRegisteredUser.save({validateBeforeSave: false});
                     // await foundRegisteredUser.save({validateBeforeSave: false});
