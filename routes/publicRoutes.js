@@ -100,10 +100,12 @@ router.post('/submit-new-email', (req, res) => {
 
 
 
-// move this route since this is post and does not render any pages
-// maybe make a reservation api router
+// move this route since this is post and does not render any pages - no time to refactor code
+// maybe make a reservation api router - no time to make reservation api router
 router.post("/createReservation", (req, res) => {
-    // console.log(JSON.stringify(req.body))
+    console.log(JSON.stringify(req.body))
+    // delete all holds with session
+    // delete checkout session
     // res.send(req.body)
     try {
         res.json({ success: true, message: "Reservation created successfully!" });
