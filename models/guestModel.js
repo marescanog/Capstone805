@@ -32,7 +32,7 @@ const  feesSubschema = new mongoose.Schema({
         type: String,
         required: [true, 'must have a type of fee'],
         enum: {
-            values: ['base','tax', 'penalty'],
+            values: ['base','tax', 'penalty','payment'],
             message: "must be part of categories"
         }
     },
@@ -64,6 +64,7 @@ const  priceBreakdownSubschema = new mongoose.Schema({
 });
 
 const paymentDetailsSubschema = new mongoose.Schema({
+    cardHolderName: String,
     cardType : {
         type: String,
         required: [true, 'must have a card type'],
@@ -71,7 +72,8 @@ const paymentDetailsSubschema = new mongoose.Schema({
     lastFour : {
         type: String,
         required: [true, 'must have a last four'],
-    }
+    },
+    billingAddress: addressSubSchema
 });
 
 const roomDetailsSubschema = new mongoose.Schema({
@@ -99,7 +101,21 @@ const roomDetailsSubschema = new mongoose.Schema({
     pricePerNight: {
         type: Decimal128,
         required: [true, 'must have a price per night'],
-    }
+    },
+    specialRequest:String
+});
+
+const mainGuestSubSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: [true, 'must have a first name']
+    },
+    lastName: String,
+    mobileNumber: String,
+    address: {
+        type: addressSubSchema,
+        required: [true, 'must have an address']
+    },
 });
 
 const reservationSubschema = new mongoose.Schema({
@@ -150,7 +166,8 @@ const reservationSubschema = new mongoose.Schema({
     priceBreakdown: {
         type: priceBreakdownSubschema,
         required: [true, 'must have price breakdown'],
-    }
+    },
+    mainGuest: mainGuestSubSchema
 });
 
 const guestSchema = new mongoose.Schema({

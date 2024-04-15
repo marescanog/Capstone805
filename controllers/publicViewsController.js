@@ -134,7 +134,7 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
     try {
         validOffersWithNull = await getValidRoomOffers(req, res, next);
     } catch (err) {
-        console.log(err);
+        console.log(`${err} , public view controller`);
         validOffersWithNull = [];
     }
 
@@ -211,7 +211,7 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
     VB.addOptions("checkout", checkout); 
     VB.addOptions("guests", guests); 
     VB.addOptions("rooms", rooms); 
-    res.render("pages/public/roomResults",VB.getOptions());
+    res.render("pages/public/roomResults", VB.getOptions());
 });
 
 
