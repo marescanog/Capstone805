@@ -55,30 +55,34 @@ const handleJWTError = err => {
 
 const sendErrorDev = (err, req, res) =>{
 
-    if(err.statusCode === 400){
-        return res.status(err.statusCode).json({
-            status: err.status,
-            statusCode: err.statusCode,
+    if(err?.statusCode === 400){
+        return res.status(err?.statusCode).json({
+            status: err?.status,
+            statusCode: err?.statusCode,
             error: err,
             message: "Please check the fields",
-            jsonData: err.message
+            jsonData: err?.message
         });
     }
 
-    if(err.statusCode === 401){
+    if(err?.statusCode === 401){
         return render401Page(err, req, res);
     }
 
-    if(err.statusCode === 403){
+    if(err?.message === "jwt expired"){
+        return render401Page(err, req, res);
+    }
+
+    if(err?.statusCode === 403){
         return render403Page(err, req, res);
     }
 
-    res.status(err.statusCode).json({
-        status: err.status,
+    res.status(err?.statusCode).json({
+        status: err?.status,
         error: err,
-        message: err.message,
-        stack: err.stack,
-        statusCode: err.statusCode
+        message: err?.message,
+        stack: err?.stack,
+        statusCode: err?.statusCode
     });
 }
 
@@ -88,34 +92,34 @@ const sendErrorProd = (err, req, res) =>{
     if(err.isOperational){
  
         if(err.sendJSON == true){
-            return res.status(err.statusCode).json({
-                status: err.status,
-                message: err.message??err.errMessage,
-                statusCode: err.statusCode
+            return res.status(err?.statusCode).json({
+                status: err?.status,
+                message: err?.message??err?.errMessage,
+                statusCode: err?.statusCode
             });
         }
 
-        if(err.statusCode === 400){
-            return res.status(err.statusCode).json({
-                status: err.status,
+        if(err?.statusCode === 400){
+            return res.status(err?.statusCode).json({
+                status: err?.status,
                 error: err,
-                message: JSON.stringify(err.message),
-                json: err.message
+                message: JSON.stringify(err?.message),
+                json: err?.message
             });
         }
 
-        if(err.statusCode === 401){
+        if(err?.statusCode === 401){
             return render401Page(err, req, res);
         }
     
-        if(err.statusCode === 403){
+        if(err?.statusCode === 403){
             return render403Page(err, req, res);
         }
 
-        res.status(err.statusCode).json({
-            status: err.status,
-            message: err.message??err.errMessage,
-            statusCode: err.statusCode
+        res.status(err?.statusCode).json({
+            status: err?.status,
+            message: err?.message??err.errMessage,
+            statusCode: err?.statusCode
         });
 
     // Programming errors and other unknown: don't leak error details
@@ -127,16 +131,16 @@ const sendErrorProd = (err, req, res) =>{
         res.status(500).json({
             status: 'error',
             message: 'Something went very wrong!',
-            statusCode: err.statusCode
+            statusCode: err?.statusCode
         });
     }
 }
 
 module.exports = (err, req, res, next)=>{
-    err.statusCode = err.statusCode || 500;
-    err.status = err.status || 'error';
+    err.statusCode = err?.statusCode || 500;
+    err.status = err?.status || 'error';
     let error = {...err};
-    error.message = err.message;
+    error.message = err?.message;
 
     if(process.env.NODE_ENV === 'development'){
         sendErrorDev(error, req, res);

@@ -404,6 +404,8 @@ exports.protect = catchAsync(async(req, res, next)=>{
 
     req.decoded = decoded;
 
+    // console.log(req.decoded)
+
     next();
 });
 

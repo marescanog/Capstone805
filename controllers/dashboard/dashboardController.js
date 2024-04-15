@@ -1,5 +1,6 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder');
+const {getUpcomingreservations, getPastreservations} = require('./../reservationController.js');
 
 exports.loadUserDashboard = (req, res, next) => {
     const {
@@ -148,19 +149,56 @@ exports.loyaltyPointsHistoryPage = (req, res, next) => {
     res.render( "pages/hotelguest/royaltyHistory",VB.getOptions()); 
 }
 
-exports.reservationHistoryPage = (req, res, next) => {
+exports.reservationHistoryPage = catchAsync(async (req, res, next) => {
+    // console.log(`reservations ${req?.decoded?.id}`)
+    if(!req?.decoded?.id){
+        return res.redirect('/home');
+    } 
+
+    let upcoming = [];
+    let past = [];
+    const upcomingResult = await getUpcomingreservations(req?.decoded?.id);
+    const pastResult = await getPastreservations(req?.decoded?.id);
+    
+    upcoming = [
+        {
+            thumbNail: "../../assets/images/room1.jpg",
+            alt: "room thumbnail image",
+            roomType: "Deluxe Room",
+            checkinDate: "28 Jan 2021",
+            checkoutDate: "31 Jan 2021",
+            numberOfGuests: 2,
+            averagePricePerNight: 239,
+            reservationID: 'ADD0888',
+            linkrefID: 'asdjashkdsajdhsakdhs'
+        }
+    ]
+
+    if(upcomingResult?.success){
+        upcoming = upcomingResult.data;
+    }
+    
+    if(pastResult?.success){
+        past = pastResult.data;
+    }
+
     const VB = new ViewBuilder({
         alertToLogin: req?.alertToLogin??false,
         userType:"Guest",
         id:req?.decoded?.id??null,
     });
+
     VB.addOptions("css", "guest/reservationList.css");
     VB.addOptions("title", "Reservations");
     VB.addOptions("partialsCSS", [
         {name:"h1styled.css"}
     ] );
-    res.render( "pages/hotelguest/reservationList",VB.getOptions());  
-}
+    VB.addOptions("upcoming", upcoming);
+    VB.addOptions("past", past);
+    res.render( "pages/hotelguest/reservationList", VB.getOptions());  
+
+
+})
 
 exports.viewInboxPage = (req, res, next) => {
     const VB = new ViewBuilder({
@@ -187,6 +225,7 @@ exports.renderGuestReservationInfoPage = async (req, res) => {
     const {
         firstName, lastName, mobileNumber, address, avatarPhotoUrl, emailAddress
     } = req.user;
+
     const VB = new ViewBuilder({
         alertToLogin: req?.alertToLogin??false,
         userType:"Guest",

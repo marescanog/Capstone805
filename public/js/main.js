@@ -153,7 +153,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
       title: "Session Expired!",
       text: "Please login again.",
       icon: "info"
-    })
+    }).then(
+      window.location.href = '/home'
+    )
   }
 });
 
