@@ -176,6 +176,7 @@ function finalStepBeforeSubmit() {
         })
         .then(response => response.json())
         .then(data => {
+            // console.log(JSON.stringify(data, null, '\t'))
             if (data.success) {
                 // alert(data.message); // Show success message
                 // form.reset(); // Reset form to clear fields

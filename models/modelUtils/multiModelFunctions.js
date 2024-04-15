@@ -84,6 +84,9 @@ async function createReservation(guestId, sessionIformation, formdata) {
             }
         }
         
+
+
+
         // if(process.env.NODE_ENV === 'production'){
         //     guest = await Guest.findById(guestId).session(session);
         // } else {
@@ -92,15 +95,23 @@ async function createReservation(guestId, sessionIformation, formdata) {
 
         if (!guest) throw new AppError('Guest not found', 404);
 ;
+
+
+
         // Fetch room details to be included in the reservation{}
         room = await Room.findById(room_id)
         if (!room) throw new AppError('Room not found', 404);
+
+
+
+
 
         const bookingData = await Room.getCheckoutBookingData(offer_id, room_id, checkinDate, checkoutDate, numberOfGuests, numberOfRooms, guestId);
 
         const {baseAmenities, bedType, bedCount, miscInfo, offers} = room;
         const {maxExtraPersonAllowed, maxAllowedGuests} = miscInfo; 
    
+    
         let mappedBasedAmenities = [];
         if(baseAmenities){
             mappedBasedAmenities = await Promise.all(
@@ -110,20 +121,21 @@ async function createReservation(guestId, sessionIformation, formdata) {
             )
         }
 
+        const mainOffer = bookingData?.applicableOffers == null ? null : bookingData.applicableOffers[0];
+
         let mappedAddedAmenities = [];
-        // if(addedAmenities){
-        //     mappedAddedAmenities = await Promise.all(
-        //         offers.map(async(offer)=>{
-        //             const {amenities} = offer;
-        //             return await Promise.all(
-        //                 amenities.map(el=>{
-        //                     return el.name;
-        //                 })
-        //             )
-        //         })
-        //     )
-        // }
-        // console.log(offers)
+        if(mainOffer){
+            const {addedAmenities} = mainOffer;
+            if(addedAmenities){
+                mappedAddedAmenities = await Promise.all(
+                    addedAmenities.map(async(am)=>{
+                        return am.name;
+                    })
+                )
+            }
+        }
+
+        // console.log(`offers, ${mappedAddedAmenities}`);
         const cardNumString = typeof cardNumber === 'number' ? cardNumber.toString() :  cardNumber;
 
         const lastfour = cardNumString.slice(-4);
@@ -172,13 +184,6 @@ async function createReservation(guestId, sessionIformation, formdata) {
             "feeType": "tax",
             "amount": taxes,
             "name": "HST",
-            "quantity": 1,
-        });
-
-        feesArr.push(  {
-            "feeType": "payment",
-            "amount": chargesDue,
-            "name": "paid",
             "quantity": 1,
         });
 
@@ -260,8 +265,33 @@ async function createReservation(guestId, sessionIformation, formdata) {
                 country: billingCountry
             }
         }
-         // TODO billingAddress, billingCity, billingPostal, loyaltyCheck, loyaltyValue
-        // after getting the resevation data, save the reservation
+
+        // TODO loyaltyCheck, loyaltyValue
+     
+        // create the reservation with the guest details
+          // Add reservation to guest's document
+        //   guest.reservations.push(newReservation);
+        //   await guest.save({validateBeforeSave: false});
+
+          await Guest.updateOne(
+            { _id: guestId }, 
+            { $push: { reservations: newReservation } }
+          );
+
+          // Remove associated holds
+          await Hold.deleteMany({ sessionID: sessionID });
+          console.log('Reservation created and hold removed successfully');
+
+          // TO DO ADD LOYALTY POINTS
+          console.log('TODO Add Loyalty');
+
+          // TODO
+          /* 
+            before saving double check db if there are still rooms available
+            if not then dont save
+
+            if using transactions, save first, then if the room quantity is over for that day do not commit the transaction
+          */
 
     } catch (err) {
         // Abort the transaction on error
@@ -274,7 +304,7 @@ async function createReservation(guestId, sessionIformation, formdata) {
         session.endSession();
     }
 
-    return {message: "test", data: newReservation}
+    return {status: "success", message: "test", data: newReservation}
 }
 
 module.exports = {createReservation};

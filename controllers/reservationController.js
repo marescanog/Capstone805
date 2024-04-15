@@ -54,6 +54,9 @@ exports.createReservation = catchAsync(async(req, res, next) => {
         const result = await createReservation(req?.decoded?.id, req.session.checkout, formdata);
         // console.log('reservation controller')
         // console.log(JSON.stringify(result, null, '\t'))
+        if(result.status === "success"){
+            delete req.session.checkout
+        }
     } catch (err){
         if(err instanceof AppError){
             return next(new AppError(err.errMessage, 500, true, false));
