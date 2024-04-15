@@ -9,6 +9,7 @@ const staffRouter = express.Router();
 checkoutRouter
   .route('/')
   .get(  authController.detect, authController.createCheckoutSession, authController.cacheControl,  routeCheckout);
+  // .get(  authController.detect, authController.createCheckoutSession, (req, res, next)=>{ res.send({message:"test"})});
 
 checkoutRouter
 .route('/createAccount')
