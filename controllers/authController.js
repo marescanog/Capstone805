@@ -17,13 +17,17 @@ const CHECKOUT_SESSION_HOLD_MAX_TIME = 10;
 
 exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // TODO add 1 second delay just like in login
+   
     const {
         firstName, lastName, emailAddress, password, passwordConfirm,
         address, city, postalCode, country, mobileNumber
     } = req.body;
+
     let found;
+
     // this flag is so users cant access the verify account page, especially if they havent created an account
     req.session.createdAccount = emailAddress;
+
     // Check if email exists
     if(emailAddress != null && emailAddress != ""){
         // TODO add try catch
@@ -34,6 +38,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
     // console.log(`is expiry less than now ${req.session.resendLinkexpiry < Date.now()}`)
     if(found){
         let emailsent = false;
+
         // CASE A: Existing Deactivated user
         //Send email account is not active and to contact admin
         if(!emailsent && !found.isActive){
@@ -46,27 +51,37 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             } 
             emailsent = true;
         }
+
         // CASE B: Existing Not Validated User
         // Send validation email again
         if(!emailsent && !found.isVerified){
+
             // check expiry time for validation before sending new email
             if(found.activationResendExpires && found.activationResendExpires instanceof Date && found.activationResendExpires.getTime() <  Date.now()){
                 // Generate new activation link & send to their email
+
                 let foundActivationToken = await found.createActivationToken();
+
                 await found.save({validateBeforeSave: false});
+
                 const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${foundActivationToken}`;
+
                 req.session.resendLinkexpiry = found.activationResendExpires;
+
                 await (new Email(found, activationURL, {activationCode:found.activationCode, contactURL:`${req.protocol}://${req.get('host')}/contactUs`})).resendActivationLink();
 
             } else {
+
                 if(!(found.activationResendExpires instanceof Date)){
                     delete req.session.createdAccount;
                     delete req.session.resendLinkexpiry;
                     return next(new AppError("Something went wrong", 500));
                 }
+
             }
             emailsent = true;
         }
+
         // CASE C: Existing Validated user
         //Send emai acc already registered
         if(!emailsent && found.isVerified){
@@ -78,6 +93,7 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             } 
             emailsent = true;
         }
+
         // If Validated -> Send Login Link & Forgot Password Link
         return res.status(200).json({
             status: 'success',
@@ -85,14 +101,17 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             message: 'Activation link sent to email'
         })
     } 
+
     // Default Case No acc created yet
     // Start a session.
     const session = await mongoose.startSession();
     let activationToken; 
     let newUser;
     try {
+
         // Start a transaction.
         session.startTransaction();
+
         // Create User - IsActive yes, Verified no
         newUser = await Guest.create({
             emailAddress: emailAddress,
@@ -121,19 +140,23 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
             await session.abortTransaction();
             return next(new AppError("Token or User was not created",500));
         }
+
         await session.commitTransaction();
         console.log('Register User Transaction Committed.');
 
     } catch (err) {
         delete req.session.createdAccount;
         delete req.session.resendLinkexpiry;
+
         if(err._message === "guest validation failed"){
             return next(new AppError(JSON.stringify(err.errors),400));
         }
+
         // If any operation fails, abort the transaction.
         // Rollback 
         await session.abortTransaction();
         console.log('Transaction aborted due to an error:', err);
+
         return next(new AppError("Something went wrong",500));
     } finally {
         // End the session.
@@ -144,12 +167,15 @@ exports.registerUserAccount = catchAsync(async (req, res, next) => {
     try {
         // 3) Send it to users email
         const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${activationToken}`;
+
         await (new Email(newUser, activationURL, {activationCode:newUser.activationCode})).sendActivationLink();
+
         return res.status(200).json({
             status: 'success',
             statusCode: 200,
             message: 'Activation link sent to email'
         })
+
     } catch (err) {
         console.log(err);
         return next(new AppError('There was an error sending the email. Try again later!'), 500)
@@ -302,7 +328,7 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
             secure: process.env.NODE_ENV === 'production',
             expiresIn: new Date(
                 // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
             )
         });
         res.status(201).json({
@@ -324,7 +350,7 @@ exports.loginManagement = catchAsync(async(req, res, next) => {
             secure: process.env.NODE_ENV === 'production',
             expiresIn: new Date(
                 // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
             )
         });
         res.status(201).json({
@@ -346,7 +372,7 @@ exports.loginGuest = catchAsync(async(req, res, next) => {
             secure: process.env.NODE_ENV === 'production',
             expiresIn: new Date(
                 // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
             )
         });
         res.status(201).json({
@@ -465,15 +491,30 @@ exports.detect = catchAsync(async(req, res, next)=>{
     return next();
 });
 
+async function cameFromRoomOffers(req) {
+    // console.log(req.session)
+    if(req.session){
+        if( req.session.cameFromRoomOffers ){
+            delete req.session.cameFromRoomOffers;
+            // console.log('setting page createCheckoutSession');
+            return true
+        }
+    }
+    return false
+}
 
 exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
     const referer = req.get('Referer');
     const parsedUrl  = referer ? new URL(referer) : null;
     let  pathname;
-    pathname = parsedUrl.pathname;
+    pathname = parsedUrl?.pathname;
+    const fromOffersPage = await cameFromRoomOffers(req);
     // console.log(`pathname ${pathname}`);
-    if(pathname.includes('roomOffers')){
-        // console.log("inside")
+
+    // console.log(`fromOffersPage ${fromOffersPage}`)
+    if(pathname && pathname.includes('roomOffers') && fromOffersPage){
+        // console.log("inside");
+
         const {roomdetails, offers} = req.query;
         const sessionID = req.sessionID;
         let validParams = true;
@@ -822,9 +863,9 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
 
        if(referer){
             const parsedUrl = new URL(referer);
-            const pathname = parsedUrl.pathname;
+            const pathname = parsedUrl?.pathname;
             // console.log(`pathname ${pathname}`)
-            if(pathname.includes('checkout')){
+            if(pathname && pathname.includes('checkout')){
                 // login -> create token
                 if(result.user){
                     // console.log(`inside user ${result.user._id}`)
@@ -837,7 +878,7 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
                             secure: process.env.NODE_ENV === 'production',
                             expiresIn: new Date(
                                 // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-                                Date.now() + process.env.COOKIE_EXPIRES_IN * 60 * 1000 //minutes
+                                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
                             )
                         });
 

@@ -18,7 +18,7 @@
     <p class="{{#if readOnly}}d-none{{/if}}" id="specialReqDesctext">Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
     <div class="form-group">
         <label for="specialRequestInput" class="{{#if readOnly}}d-none{{/if}}">Please enter your request (optional)</label>
-        <textarea class="form-control {{#if readOnly}}no-border{{/if}}" id="specialRequestInput" rows="3">{{#if readOnly}}{{#unless specialRequests}}None{{/unless}}{{/if}}</textarea>
+        <textarea name="specialRequest" class="form-control {{#if readOnly}}no-border{{/if}}" id="specialRequestInput" rows="3">{{#if readOnly}}{{#unless specialRequests}}None{{/unless}}{{/if}}</textarea>
     </div>
 </div>
 <div>

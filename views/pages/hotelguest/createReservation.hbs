@@ -17,8 +17,8 @@
                     {{!-- <form id="reservationForm" action="/createReservation" method="post"> --}}
 
                         <div class="form-section" id="section1">
-                            <div class="card">
-                                 {{> formContents/_guestInfo }}
+                            <div class="card" id="guestInfoContents">
+                                 {{> formContents/_guestInfo guestInfo=guestInfo}}
                             </div>
                             <div class="card mt-4">
                                  {{> formContents/_additionalInfo}}
@@ -52,20 +52,22 @@
                                         <p>City: <span id="reviewcity"></span></p>
                                         <p>Postal Code: <span id="reviewpostalCode"></span></p>
                                     </div>
-                                    <p>Country: <span id="reviewCountry"></span></p>
+                                    <p>Country: <span id="reviewcountry"></span></p>
                                 </div>
 
                                 <div>
                                     <h6>Additional info</h6>
                                     <p>Special Request: <span id="reviewspecialRequest"></span></p>
-                                    <p>Arrival Time: <span id="reviewarrivalTimeRequest"></span></p>
+                                    <p>Arrival Time: <span id="reviewarrivalTime"></span></p>
                                 </div>
+
                                 <div>
                                     <h6>Payment info</h6>
+                                    <p>Cardhodler Name: <span id="reviewcardHolderName"></span></p>
                                     <p>Card Number: <span id="reviewcardNumber"></span></p>
                                     {{!-- Code card type detection later --}}
-                                    <p>type: <span id="reviewarrivalcardType">Mastercard</span></p>
-                                    <p>Expiration Date: <span id="reviewarrivalTimeRequest"></span></p>
+                                    {{!-- <p>type: <span id="reviewarrivalcardType">Mastercard</span></p> --}}
+                                    <p>Expiration Date: <span id="reviewexpiryDate"></span></p>
 
                                     <h6>Billing address</h6>
                                     <p>Same as guest address</p>
@@ -73,9 +75,9 @@
                                         <p>Address: <span id="reviewbillingAddress"></span></p>
                                         <div>
                                             <p>City: <span id="reviewbillingCity"></span></p>
-                                            <p>Postal Code: <span id="reviewbillingPostalCode"></span></p>
+                                            <p>Postal Code: <span id="reviewbillingPostal"></span></p>
                                         </div>
-                                        <p>Country: <span id="reviewbillingCountry"></span></p>
+                                        <p>Country: <span id="reviewbillingcountry"></span></p>
                                     </div>
                                 </div>
                                     <input type="hidden" name="loyaltyCheck" id="loyaltyCheck_DOM_El" value="unchecked">

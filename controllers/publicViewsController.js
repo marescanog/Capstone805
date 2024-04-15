@@ -108,6 +108,10 @@ exports.viewCheckoutSessionExpiredRedirect = async (req, res, next) => {
 }
 
 exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
+    if(req.session){
+        req.session.cameFromRoomOffers = true;
+        // console.log('setting page viewRoomOffersPage')
+    }
 
     let validOffersWithNull;
     const {guests, rooms} = req.query;

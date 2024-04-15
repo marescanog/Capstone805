@@ -1,6 +1,6 @@
 <h1 class="text-justify mb-4 form-header-style">{{#if headerText}}{{headerText}}{{/if}}{{#unless headerText}}Enter your details{{/unless}}</h1>
 {{#unless justAddress}}
-<div class="{{#if readOnly}}d-none{{/if}}">
+<div class="{{#if readOnly}}d-none{{/if}}" id="main_guest_radios">
     <h6 class="form-content-h6-style">Who are you booking for?</h6> 
     {{!-- Add javascript later for Radio Buttons --}}
         <div class="form-check">
@@ -18,19 +18,19 @@
 </div>
 {{/unless}}
 {{#unless justAddress}}
-<div class="mt-2">
+<div class="mt-2" id="main_guest_details">
     <h6 class="form-content-h6-style mt-4">Main Guest Details</h6> 
     <div class="row">
         <div class="col-md-6">
             <label for="inputfirstName" class="form-label {{#if readOnly}}no-border{{/if}}">First Name*</label>
-            <input type="text" name="firstName" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="First name" id="inputfirstName" required>
+            <input type="text" name="firstName" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="First name" id="inputfirstName" {{#if guestInfo}}{{#if guestInfo.firstName}}value="{{guestInfo.firstName}}"{{/if}}{{/if}} required>
             <div class="invalid-feedback">
                 Please enter your firstname
             </div>
         </div>
         <div class="col-md-6 mt-2 mt-md-0">
             <label for="inputLastName" class="form-label {{#if readOnly}}no-border{{/if}}">Last Name*</label>
-            <input type="text" name="lastName" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Last name" id="inputLastName" required>
+            <input type="text" name="lastName" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Last name" id="inputLastName" {{#if guestInfo}}{{#if guestInfo.lastName}}value="{{guestInfo.lastName}}"{{/if}}{{/if}} required>
             <div class="invalid-feedback">
                 Please enter your lastname
             </div>
@@ -38,20 +38,20 @@
     </div>
     <div class="mb-2 mt-2 mt-md-0">
         <label for="inputMobileNumber" class="form-label {{#if readOnly}}no-border{{/if}}">Mobile Number</label>
-        <input type="tel"  name="mobileNumber" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputMobileNumber">
+        <input type="tel"  name="mobileNumber" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputMobileNumber" {{#if guestInfo}}{{#if guestInfo.mobileNumber}}value="{{guestInfo.mobileNumber}}"{{/if}}{{/if}}>
         <div class="invalid-feedback">
             Please enter your mobile Number
         </div>
     </div>
 </div>
 {{/unless}}
-<div>
+<div id="main_guest_address">
     {{#unless justAddress}}
     <h6 class="form-content-h6-style mt-4">Main Guest Address</h6> 
     {{/unless}}
     <div class="mb-2">
         <label for="inputAddress" class="form-label {{#if readOnly}}no-border{{/if}}">Address *</label>
-        <input autocomplete=false ="text"  name="address" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputAddress" required>
+        <input autocomplete=false type="text"  name="address" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputAddress" {{#if guestInfo}}{{#if guestInfo.address}}value="{{guestInfo.address}}"{{/if}}{{/if}} required>
         <div class="invalid-feedback">
             Please enter your Address
         </div>
@@ -60,21 +60,21 @@
     <div class="row mb-2 mt-2">
         <div class="col-md-6">
             <label for="inputCity" class="form-label {{#if readOnly}}no-border{{/if}}">City *</label>
-            <input type="text" name="city" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="City" id="inputCity" required>
+            <input type="text" name="city" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="City" id="inputCity" required {{#if guestInfo}}{{#if guestInfo.city}}value="{{guestInfo.city}}"{{/if}}{{/if}}>
             <div class="invalid-feedback">
                 Please enter your City
             </div>
         </div>
         <div class="col-md-6 mt-2 mt-md-0">
             <label for="inputPostalCode" class="form-label {{#if readOnly}}no-border{{/if}}">Postal Code *</label>
-            <input type="text" name="postalCode" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Postal Code" id="inputPostalCode" required>
+            <input type="text" name="postalCode" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Postal Code" id="inputPostalCode" required {{#if guestInfo}}{{#if guestInfo.postalCode}}value="{{guestInfo.postalCode}}"{{/if}}{{/if}}>
             <div class="invalid-feedback">
                 Please enter your Postal Code
             </div>
         </div>
     </div>
 
-    {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true readOnly=readOnly}}
+    {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true readOnly=readOnly selectedValue=guestInfo.country }}
     
 
 </div>

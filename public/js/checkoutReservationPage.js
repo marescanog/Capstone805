@@ -1,7 +1,7 @@
 const headerTitles = ["Guest Information","Payment Information","Review Information"];
 
-function nextSection(targetSection) {
-    if (!validateCurrentSection(targetSection-1)) {
+function nextSection(targetSection, novalidate=false) {
+    if (!novalidate && !validateCurrentSection(targetSection-1)) {
         // If the current section is not valid, stop the function from proceeding
         return false;
     }
@@ -51,6 +51,38 @@ function populateReviewSection() {
                 textDomEl.textContent = `**** **** **** ${(input.value).slice(-4)}`;
             }
         }
+    });
+    const allSelect = document.querySelectorAll('.form-section select');
+    allSelect.forEach(select => {
+        const textDomEl = document.getElementById(`review${select.name}`);
+        if(textDomEl){
+            if(select.value == "" || select.value == null){
+                textDomEl.parentElement.style.display = 'none';
+            } else {
+                textDomEl.parentElement.style.display = 'block';
+                textDomEl.textContent = select.value;
+            }
+        }
+        // console.log(select)
+        // console.log(select.value)
+        // console.log(select.name)
+    });
+    const allTextarea = document.querySelectorAll('.form-section textarea');
+    allTextarea.forEach(textArea => {
+        // console.log(textArea)
+        // console.log(textArea.value)
+        // console.log(textArea.name)
+        const textDomEl = document.getElementById(`review${textArea.name}`);
+        if(textDomEl){
+            if(textArea.value == "" || textArea.value == null){
+                // textDomEl.parentElement.style.display = 'none';
+                textDomEl.textContent = 'none';
+            } else {
+                // textDomEl.parentElement.style.display = 'block';
+                textDomEl.textContent = textArea.value;
+            }
+        }
+
     });
 }
 
@@ -115,12 +147,13 @@ function finalStepBeforeSubmit() {
     if(form){
         form.setAttribute('novalidate', '');
         const formData = new FormData(form);
-        // for (const [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
+        const formDataObj = Object.fromEntries(formData.entries());
         fetch('/createReservation', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formDataObj),
         })
         .then(response => response.json())
         .then(data => {
@@ -172,10 +205,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
     const btn_3Section_back = document.getElementById('btn_3Section_back') 
     // const headerTitleText = document.getElementById('h1_styled_partial');
     const submit_button = document.getElementById('submitButton') ;
-    updateProgress(1);
+    updateProgress(1); // change back to 1
     let page = 1;
     nextSection(page);
-
+    // nextSection(2, true)
     if(btn_1Section){
         btn_1Section.addEventListener("click",()=>{
             page++;

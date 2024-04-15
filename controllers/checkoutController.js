@@ -38,9 +38,79 @@ exports.routeCheckout = catchAsync(async (req, res) => {
             }
     */
     if(req?.decoded?.id){
-
+        let guestInfo;
+        let loyaltyDetails;
+        // get user details
+        try {
+            await Guest.findById(req.decoded.id).select('firstName lastName address mobileNumber loyaltyHistory')
+            .then(guest => {
+                if (guest) {
+                    loyaltyDetails = guest.loyaltyHistory;
+                    guestInfo = guest;
+                    delete guestInfo.loyaltyHistory;
+                } else {
+                    console.log('No guest found with that ID.');
+                    return res.redirect(`/checkout/createaccount`);
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching guest:', err);
+                return next(new AppError('Error loading guest details', 500));
+            });
+        } catch (err){
+            console.log(`${err}, checkout controller`)
+            return next(new AppError('Error loading guest details', 500))
+        }
+        // TI avoid error "Handlebars: Access has been denied to resolve the property "firstName" because it is not an "own property" of its parent."
+        const finalInfo = {
+            firstName: guestInfo?.firstName,
+            lastName: guestInfo?.lastName,
+            mobileNumber: guestInfo?.mobileNumber,
+            address: guestInfo?.address?.address,
+            city: guestInfo?.address?.city,
+            postalCode: guestInfo?.address?.postalCode,
+            country: guestInfo?.address?.country,
+        }
         if(req.session.checkout){
+
             let bookingData;
+            const {sessionID, offer_id, room_id, created_at, expires_at, numberOfGuests, numberOfRooms} = req.session.checkout;
+            const guestID = req?.decoded?.id;
+
+            // Let us get the booking data based on the session checkout
+            // Validate Checkin & Checkout Dates
+            let checkin =  req.session.checkout.checkin;
+            let checkout = req.session.checkout.checkout;
+
+            //YYYY-MM-DD
+            if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
+                const today = new Date();
+                checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+            }
+            if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate()+1);
+                checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+            }
+
+            // convert to dates
+            const [ci_year, ci_month,  ci_day] = checkin.split('-').map(Number);
+            const [co_year, co_month,  co_day] = checkout.split('-').map(Number);
+            // console.log(checkin)
+            // console.log(checkout)
+            // console.log(`${ci_year} ${ci_month} ${ci_day}`)
+            // console.log(`${co_year} ${co_month} ${co_day}`)
+            const checkinDate = new Date(ci_year, ci_month-1,  ci_day);
+            const checkoutDate = new Date(co_year, co_month-1,  co_day);
+            // console.log(checkinDate)
+            // console.log(checkoutDate)
+
+            try {
+                bookingData = await Room.getCheckoutBookingData(offer_id, room_id, checkinDate, checkoutDate, numberOfGuests, numberOfRooms, guestID);
+                // console.log(bookingData)
+            } catch (err) {
+                console.log(err)
+            }
 
             const VB = new ViewBuilder({
                 alertToLogin: req?.alertToLogin??false,
@@ -63,9 +133,11 @@ exports.routeCheckout = catchAsync(async (req, res) => {
                 {src:"/js/checkoutReservationPage.js"},
             ]);
             VB.addOptions("bookingData", bookingData);
-            VB.addOptions("serverHeldSeconds", 900);
+            VB.addOptions("serverHeldSeconds", getServerSeconds(expires_at));
+            VB.addOptions("guestInfo", finalInfo);
             return res.render("pages/hotelguest/createReservation", VB.getOptions());
         }
+        return    res.redirect("/checkoutSessionExpired");   
     } 
 
     // redirect to the create account page
@@ -75,7 +147,7 @@ exports.routeCheckout = catchAsync(async (req, res) => {
 })
 
 exports.renderCreateAccountPage = catchAsync(async (req, res) => {
-
+    console.log(req?.decoded?.id)
     if(req?.decoded?.id){
         // redirect to the checkout
         return res.redirect('/checkout')
