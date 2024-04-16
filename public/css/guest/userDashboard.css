@@ -70,8 +70,12 @@
 
   .slick-item {
     position: relative;
-
+    max-width: 28em;
   }
+
+  /* .slick-item img {
+    max-width: 30%;
+  } */
 
   .absolute-text {
     position: absolute;
@@ -188,6 +192,9 @@ h3.dash-h3-style {
     box-shadow: 0 0 0 .2rem rgba(119, 204, 204, 0.5)
 }
 
+.slider-container {
+  
+}
 
 @media screen and (max-width: 992px) {
     .dashboard-main-section-container{

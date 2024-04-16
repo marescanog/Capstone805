@@ -143,11 +143,13 @@ exports.getUpcomingreservations = async (guestID) => {
                     alt: `${roomType} thumbnail image`,
                     roomType: roomType,
                     checkinDate: formatDate_DD_MON_YYYY(checkinDate),
-                    checkoutDate: "31 Jan 2021",
+                    checkoutDate: formatDate_DD_MON_YYYY(checkoutDate),
                     numberOfGuests: numberOfGuests,
                     averagePricePerNight: price,
                     reservationID: reservationID,
-                    linkrefID: _id
+                    linkrefID: _id,
+                    checkinDateObj: checkinDate,
+                    checkoutDateObj: checkoutDate
                 }
             }) 
         )
