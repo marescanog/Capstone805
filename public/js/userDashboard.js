@@ -12,12 +12,13 @@
 
   // Carousel settings
   var settings = {
+    autoplay: true,
     dots: true,
-    speed: 300,
-    slidesToShow: 1,
+    speed: 1000,
+    slidesToShow: itemCount >= 3 ? 3 : (itemCount == 2 ? 2 : 1),
     slidesToScroll: 1,
-    centerMode: itemCount > 1, // Enable centerMode only if more than one item
-    infinite: false, // Disable infinite looping for a single item
+    centerMode: false, 
+    infinite: itemCount >= 3, 
     variableWidth: false
   };
 

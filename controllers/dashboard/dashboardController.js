@@ -25,15 +25,16 @@ exports.loadUserDashboard = catchAsync( async (req, res, next) => {
         upcoming = upcomingResult.data;
     }
 
-
+    const today = new Date();
     const mappedForDashboard = await Promise.all(
+   
         upcoming.map(el=>{
             // checkinDateObj, checkoutDateObj
-            const daysBetween = calculateDaysBetweenDates(el.checkinDateObj, el.checkoutDateObj);
+            const daysBetween = calculateDaysBetweenDates(today, el.checkinDateObj);
             const months = Math.floor(daysBetween / 31);
-            // console.log(months)
+            // console.log(daysBetween)
             const dateType = months > 0 ? "month" : "day";
-            const interValText = `In ${months > 0 ? months : daysBetween} ${dateType}${daysBetween > 1 ? 's' : ''}`
+            const interValText = `In ${months > 0 ? months : daysBetween} ${dateType}${(dateType == "month" ? months :  daysBetween) > 1 ? 's' : ''}`
             return {
                 roomtType: el.roomType,
                 checkIn: el.checkinDate,
@@ -73,7 +74,7 @@ exports.loadUserDashboard = catchAsync( async (req, res, next) => {
         emailAddress: emailAddress,
         mobileNumber: mobileNumber,
     });
-    VB.addOptions("reservations", mappedForDashboard);
+    VB.addOptions("reservations", mappedForDashboard.filter(el=>el!=null));
     res.render( "pages/hotelguest/userdashboard",VB.getOptions());
 })
 
