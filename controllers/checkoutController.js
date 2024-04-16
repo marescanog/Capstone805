@@ -3,6 +3,8 @@ const ViewBuilder = require('./../apiUtils/viewBuilder')
 const AppError = require('./../apiUtils/appError.js');
 const {Room} = require('../models/roomModel');
 const Guest = require('../models/guestModel.js');
+const mongoose  = require('mongoose');
+const {getAllRooms, getValidRoomOffers, getRoomByIDAndOffer} = require('./roomController');
 const {getSecondsBetweenDates, isValidDate, formatDate_Mon_DD_YYYY} = require('./../models/modelUtils/utilityFunctions');
 
 function getServerSeconds(expires_at){
@@ -13,7 +15,7 @@ function getServerSeconds(expires_at){
     return 0;
 }
 
-exports.routeCheckout = catchAsync(async (req, res) => {
+exports.routeCheckout = catchAsync(async (req, res, next) => {
     // const {roomdetails, offers, checkin, checkout} = req.query;
     // TODO validate before passing
     /*
@@ -85,12 +87,12 @@ exports.routeCheckout = catchAsync(async (req, res) => {
             //YYYY-MM-DD
             if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
                 const today = new Date();
-                checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+                checkin = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
             }
             if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
                 const tomorrow = new Date();
                 tomorrow.setDate(tomorrow.getDate()+1);
-                checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+                checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`;
             }
 
             // convert to dates
@@ -111,6 +113,45 @@ exports.routeCheckout = catchAsync(async (req, res) => {
             } catch (err) {
                 console.log(err)
             }
+
+
+            //     // ========================================
+            //     req.query.checkin = checkin
+            //     req.query.checkout = checkout
+            //     req.query.guests = 1
+            //     req.query.rooms = 1
+            //    // ==================================================
+            //    // this is the formila to get the average price per night
+            //    let validOffersWithNull;
+            //    try {
+            //        validOffersWithNull = await getValidRoomOffers(req, res, next);
+            //    } catch (err) {
+            //        console.log(`${err} , public view controller`);
+            //        validOffersWithNull = [];
+            //    }
+            //    const filtered = validOffersWithNull.filter(el=>el!=null);
+            //    // console.log(filtered)
+            //    const thethingwithprice = await Promise.all(
+            //        filtered.map(el=>{
+            //             console.log(`room_id${room_id} el.offerID${el.roomID}`)
+            //             console.log(`room_id${offer_id} el.offerID${el.offerID}`)
+            //             console.log('==============================================')
+            //            if((el.roomID).equals(new mongoose.Types.ObjectId(room_id)) && (el.offerID).equals(new mongoose.Types.ObjectId(offer_id))){
+            //                console.log('good run')
+            //                return el;
+            //            }
+            //        })
+               
+            //    ) //offer_id, room_id
+            //    // ======================================================== ===========
+            //    console.log(`thethingwithprice offer ${thethingwithprice}`)
+            //    if(thethingwithprice && thethingwithprice.length > 0 && thethingwithprice[0] != undefined){
+            //         bookingData.rate = thethingwithprice[0].averagePricePerNight
+            //         // console.log("inside")
+            //    }
+        
+
+
 
             const VB = new ViewBuilder({
                 alertToLogin: req?.alertToLogin??false,
@@ -146,7 +187,14 @@ exports.routeCheckout = catchAsync(async (req, res) => {
     
 })
 
-exports.renderCreateAccountPage = catchAsync(async (req, res) => {
+
+
+
+
+
+
+
+exports.renderCreateAccountPage = catchAsync(async (req, res, next) => {
     console.log(req?.decoded?.id)
     if(req?.decoded?.id){
         // redirect to the checkout
@@ -168,12 +216,12 @@ exports.renderCreateAccountPage = catchAsync(async (req, res) => {
         //YYYY-MM-DD
         if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
             const today = new Date();
-            checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+            checkin = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
         }
         if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate()+1);
-            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`;
         }
 
         // convert to dates
@@ -195,6 +243,37 @@ exports.renderCreateAccountPage = catchAsync(async (req, res) => {
             console.log(err)
         }
 
+            //     // ========================================
+            //      req.query.checkin = checkin
+            //      req.query.checkout = checkout
+            //      req.query.guests = 1
+            //      req.query.rooms = 1
+            //     // ==================================================
+            //     // this is the formila to get the average price per night
+            //     let validOffersWithNull;
+            //     try {
+            //         validOffersWithNull = await getValidRoomOffers(req, res, next);
+            //     } catch (err) {
+            //         console.log(`${err} , public view controller`);
+            //         validOffersWithNull = [];
+            //     }
+            //     const filtered = validOffersWithNull.filter(el=>el!=null);
+            //     // console.log(filtered)
+            //     const thethingwithprice = await Promise.all(
+            //         filtered.map(el=>{
+            //             if((el.roomID).equals(new mongoose.Types.ObjectId(room_id)) && (el.offerID).equals(new mongoose.Types.ObjectId(offer_id))){
+            //                 // console.log('good run')
+            //                 return el;
+            //             }
+            //         })
+                
+            //     ) //offer_id, room_id
+            //     // ======================================================== ===========
+            //     // console.log(validOffersWithNull)
+            //     if(thethingwithprice && thethingwithprice.length > 0 && thethingwithprice[0] != undefined){
+            //         bookingData.rate = thethingwithprice[0].averagePricePerNight
+            //         // console.log("inside")
+            //    }
 
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
@@ -249,12 +328,12 @@ exports.renderVerifyPage = async (req, res) => {
         //YYYY-MM-DD
         if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
             const today = new Date();
-            checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+            checkin = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
         }
         if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate()+1);
-            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`;
         }
 
         // convert to dates

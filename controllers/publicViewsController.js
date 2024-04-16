@@ -1,8 +1,11 @@
 const catchAsync = require('../apiUtils/catchAsync');
 const ViewBuilder = require('./../apiUtils/viewBuilder')
-const {getAllRooms, getValidRoomOffers} = require('./roomController');
+const {Room} = require('./../models/roomModel')
+const {getAllRooms, getValidRoomOffers, getRoomByIDAndOffer} = require('./roomController');
 const {isValidDate} = require('../models/modelUtils/utilityFunctions');
 const AppError = require('./../apiUtils/appError.js');
+const mongoose  = require('mongoose');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 exports.viewHomePage = (req, res, next) => {
     const VB = new ViewBuilder({
@@ -120,14 +123,14 @@ exports.viewRoomOffersPage = catchAsync(async (req, res, next) => {
     //YYYY-MM-DD
     if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
         const today = new Date();
-        req.query.checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+        req.query.checkin = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
         checkin =  req.query.checkin;
     }
 
     if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate()+1);
-        req.query.checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+        req.query.checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`;
         checkout = req.query.checkout;
     }
 
@@ -370,17 +373,140 @@ exports.viewForgotPasswordPage = (req, res, next) => {
     }
 }
 
+
+
+
+
+
+
 exports.viewRoomByIDWithOffer = catchAsync( async(req, res, next) => {
+
+    if(req.session){
+        req.session.cameFromRoomOffers = true;
+        // console.log('setting page viewRoomOffersPage')
+    }
+
     const roomId = req.params.roomID;
     const offerId = req.params.offerID;
+    const checkin = req.query.checkin;
+    const checkout = req.query.checkout; 
 
-    // TODO add funtion in room controller get room by id and offer
+    if(!ObjectId.isValid(roomId) || !ObjectId.isValid(offerId)){
+        throw new AppError('Room with offer not found!',404);
+    }
 
-    res.render( "pages/public/roomdetails", {
-        layout:"main", 
-        css: 'roomdetails.css', 
-        title:'RoomDetails',
-    });  
+    const roommOfferResults = await getRoomByIDAndOffer(roomId, offerId, checkin);
+
+    if(roommOfferResults.success && !roommOfferResults.data){
+        throw new AppError('Room with offer not found!',404);
+    }
+
+    let roomOffer;
+    if(roommOfferResults.success){
+        roomOffer = roommOfferResults.data && roommOfferResults.data.length > 0 ? roommOfferResults.data[0] : null;
+    }
+
+    if(!roomOffer){
+        throw new AppError('Room with offer not found!',404);
+    }
+
+    // console.log(`public views controller 389`)
+    // console.log(JSON.stringify(roomOffer, null, '\t'));
+    const checkinArr = checkin.split('-');
+    const checkoutArr = checkout.split('-');
+    const checkinDate = new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]);
+    const checkoutDate = new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]);
+
+
+    const roomres = await Room.getCheckoutBookingData(offerId, roomId, checkinDate, checkoutDate, 1, 1, null)
+
+
+
+    const {basePhotos, thumbNail, roomType, description, offers, baseAmenities, bedCount, bedType, priceChangeTrends, basePrice} = roomOffer;
+    const {small} = thumbNail;
+    const {offerSurcharge, promotions, offerPhotos, addedAmenities} = offers
+    const offerDescription = offers.description;
+    const offerName = offers.name;
+    
+    let mappedPhotos = await Promise.all(
+        basePhotos.map((photo, index)=>{
+            return {
+                url: `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${photo.url}.${photo.fileType}`,
+                alt: photo.altDescription,
+                index: index+2
+            }
+        })
+    )
+
+    if(mappedPhotos.length > 4){
+        mappedPhotos = mappedPhotos.slice(0, 4);
+    }
+    mappedPhotos.unshift({
+        url: `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${small.url}.${small.fileType}`,
+        alt: small.altDescription,
+        index: 1
+    });
+
+    const lines = description.split('. ');
+    const maxlines = lines.length;
+    let paragraph1 = []
+    let paragraph2 = []
+    const paragraph1_totalsentences = Math.ceil(maxlines/2);
+    for(let x = 0 ; x < maxlines; x++){
+        if(paragraph1.length < paragraph1_totalsentences){
+            paragraph1.push(lines[x]);
+        } else {
+            paragraph2.push(lines[x])
+        }
+    }
+
+    const offerFilter = addedAmenities.filter(el=>el.name === offerName);
+    const roomFeatures = baseAmenities.filter(el=>el.category === "Room Features");
+    const shower = baseAmenities.filter(el=>el.name === "Shower"); 
+    const bath = baseAmenities.filter(el=>el.name === "Bathtub"); 
+    const offeredAmenities = baseAmenities.filter(el=>el.category === "Offered Amenities");
+    const safetyandHygeine = baseAmenities.filter(el=>el.category === "Safety and Hygeine");
+    const amenity1 = {name:"Bed", icon:"bed.svg"};
+    const amenity2 = bath.length > 0 ?  bath[0] : shower[0];
+    const amenity3 = addedAmenities.length == 1 ?  addedAmenities[0] : (offerFilter.length > 0 ? offerFilter[0] : addedAmenities[1]);
+    const amenity4 = offeredAmenities.shift();
+
+    const offersSidePanel = [...addedAmenities, ...offeredAmenities];
+
+    // const ck = await Room.getCheckoutBookingData(offerId, roomId, checkinDate, checkoutDate, 1, 1, null);
+
+    // console.log(ck);
+
+    // Room.getOffer
+
+    const VB = new ViewBuilder({
+        alertToLogin: false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    }); 
+    VB.addOptions("css", 'roomdetails.css');
+    VB.addOptions("title", 'RoomDetails');
+    VB.addOptions("photos", mappedPhotos);
+    VB.addOptions("roomType", roomType);
+    VB.addOptions("paragraph1", paragraph1.join('. '));
+    VB.addOptions("paragraph2", paragraph2.join('. '));
+    VB.addOptions("offerName", offerName);
+    VB.addOptions("amenity1", amenity1);
+    VB.addOptions("amenity2", amenity2);
+    VB.addOptions("amenity3", amenity3);
+    VB.addOptions("amenity4", amenity4);
+    VB.addOptions("bedType", bedType);
+    VB.addOptions("bedCount", bedCount);
+    VB.addOptions("roomFeatures", roomFeatures);
+    VB.addOptions("offeredAmenities", offeredAmenities);
+    VB.addOptions("safetyandHygeine", safetyandHygeine);
+    VB.addOptions("offersSidePanel", offersSidePanel);
+    VB.addOptions("roomdetails", roomId);
+    VB.addOptions("offerdetails", offers.offerReferenceID);
+    VB.addOptions("checkin", checkin);
+    VB.addOptions("checkout", checkout);
+    VB.addOptions("price", roomres?.rate);
+    res.render("pages/public/roomdetails",VB.getOptions());
 })
 
 exports.viewRoomByID = catchAsync( async(req, res, next) => {

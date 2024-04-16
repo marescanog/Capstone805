@@ -370,7 +370,7 @@ async function getArrayOfAvailableRoomTypes(reservationsListByDateByType, roomQu
 }
 
 function convertDateObjToDateStr(dateObj) {
-    return `${dateObj.getFullYear()}-${dateObj.getMonth()}-${dateObj.getDate()}`
+    return `${dateObj.getFullYear()}-${dateObj.getMonth()+1}-${dateObj.getDate()}`
 }
 
 
@@ -380,6 +380,7 @@ exports.getValidRoomOffers = async (req, res, next) => {
     // TODO ADD VALIDATION FOR TOTAL NIGHTS MAXIMUM OF 2 WEEKS
 
     const {checkin, checkout, guests, rooms} = req.query;
+    console.log(`checkin ${checkin} checkout ${checkout} guests ${guests}`)
     let checkinArr = [];
     let checkoutArr = [];
     let checkinDate = new Date();
@@ -507,4 +508,25 @@ exports.getValidRoomOffers = async (req, res, next) => {
     }
 
     return [];
+}
+
+
+exports.getRoomByIDAndOffer = async (roomID, offerID) => {
+    let room;
+    try {
+
+        room = await Room.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(roomID) } },
+            { $unwind: '$offers' }, 
+            { $match: { 'offers.offerReferenceID': new mongoose.Types.ObjectId(offerID) } } 
+        ]);
+
+    } catch(err){
+        console.log(err)
+        throw new AppError("Something went wrong in trying to retreive the room details!", 500)
+    }
+    return {
+        success: true,
+        data: room
+    }
 }

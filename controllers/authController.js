@@ -514,7 +514,7 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
     // console.log(`pathname ${pathname}`);
 
     // console.log(`fromOffersPage ${fromOffersPage}`)
-    if(pathname && pathname.includes('roomOffers') && fromOffersPage){
+    if(pathname && (pathname.includes('roomOffers') || pathname.includes('roomdetails')) && fromOffersPage){
         // console.log("inside");
 
         const {roomdetails, offers} = req.query;
@@ -566,8 +566,8 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
         try{
             checkinArr = checkin ? checkin.split('-') : [];
             checkoutArr = checkin ? checkout.split('-') : [];
-            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
-            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
+            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]+1, checkinArr[2]) : checkinDate;
+            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]+1, checkoutArr[2]) : checkoutDate;
         } catch (err) {
             console.log(`auth controller ${err}`)
             checkinArr = [];
