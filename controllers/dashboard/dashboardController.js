@@ -1,7 +1,7 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder');
 const AppError = require('./../../apiUtils/viewBuilder');
-const {calculateDaysBetweenDates, formatDate_Mon_DD_YYYY, formatDate_YYY_d_MM_d_dd} = require('./../../models/modelUtils/utilityFunctions.js');
+const {calculateDaysBetweenDates, formatDate_Mon_DD_YYYY, formatDate_YYY_d_MM_d_dd, compareDates} = require('./../../models/modelUtils/utilityFunctions.js');
 const {getUpcomingreservations, getPastreservations, getReservationByID} = require('./../reservationController.js');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -240,8 +240,8 @@ exports.renderGuestReservationInfoPage = async (req, res, next) => {
     // pull up the reservation and if it does not belong to the user then 401 it
     const reservationResult = await getReservationByID(req?.decoded?.id, id);
 
-    console.log('dashboard Controller line 243')
-    console.log(JSON.stringify(reservationResult.data[0], null, '\t'));
+    // console.log('dashboard Controller line 243')
+    // console.log(JSON.stringify(reservationResult.data[0], null, '\t'));
 
     let reservData;
     if(reservationResult.success){
@@ -259,7 +259,8 @@ exports.renderGuestReservationInfoPage = async (req, res, next) => {
         return next(new AppError('The reservation was not found!', 404));
     }
 
-    const {reservationID, roomDetails, status, estimatedArrivalTime, priceBreakdown, paymentDetails, checkinDate, checkoutDate, mainGuest, specialRequest} = reservation;
+    const {reservationID, roomDetails, estimatedArrivalTime, priceBreakdown, paymentDetails, checkinDate, checkoutDate, mainGuest, specialRequest} = reservation;
+    let status = reservation?.status;
     const {roomType, amenities, bedType, numberOfBeds, pricePerNight} = roomDetails;
     const {lastFour, billingAddress}= paymentDetails;
 
@@ -340,6 +341,11 @@ exports.renderGuestReservationInfoPage = async (req, res, next) => {
         country: billingAddress == null ? address.country : billingAddress.country
     }
 
+    const reservationReadOnly = (status !== "pending" || compareDates(compareDates(new Date(), checkinDate) > 0))
+
+    if (status === "pending" && compareDates(compareDates(new Date(), checkinDate) > 0)){
+        status = "no-show"
+    }
     const VB = new ViewBuilder({
         alertToLogin: req?.alertToLogin??false,
         userType:"Guest",
@@ -364,5 +370,7 @@ exports.renderGuestReservationInfoPage = async (req, res, next) => {
     VB.addOptions("bookingData", bookingdata);
     VB.addOptions("guestInfo", guestInfo);
     VB.addOptions("paymentInfo", paymentInfo);
+    VB.addOptions("reservationReadOnly", reservationReadOnly);
+    VB.addOptions("status", status);
     res.render( "pages/hotelguest/reservation", VB.getOptions());
 }
