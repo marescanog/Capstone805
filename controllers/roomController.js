@@ -530,3 +530,22 @@ exports.getRoomByIDAndOffer = async (roomID, offerID) => {
         data: room
     }
 }
+
+
+
+
+exports.getRoomByID = async (roomID) => {
+    let room;
+    try {
+        room = await Room.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(roomID) } },
+        ]);
+    } catch(err){
+        console.log(err)
+        throw new AppError("Something went wrong in trying to retreive the room details!", 500)
+    }
+    return {
+        success: true,
+        data: room
+    }
+}

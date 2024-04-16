@@ -14,7 +14,9 @@
                 <div class="card mb-3" style="">
                     <div class="container ps-5 pt-4">
                         <h1>{{roomType}}</h1>
-                        <p><strong>{{offerName}} Included</strong></p>
+                         {{#unless NoOffer}}
+                            <p><strong>{{offerName}} Included</strong></p>
+                        {{/unless}}
                         <div class="container text-center">
                             <div class="row">
                                 <div class="col align-self-start">
@@ -107,7 +109,12 @@
 
             <div class="col-md-3">
                 <div class="card1">
-                    <h5 class="card-title pt-5"><b>$ {{price}} / night</b></h5>
+                    {{#unless NoOffer}}
+                        <h5 class="card-title pt-5"><b>$ {{price}} / night</b></h5>
+                    {{/unless}}
+                    {{#if NoOffer}}
+                        <p> *Prices may vary upon avilability & offers</p>
+                    {{/if}}
                     <hr>
 
                     {{#each offersSidePanel}}
@@ -120,8 +127,17 @@
                     <p class="card-text">Wifi Connectivity </p>
                     <p class="card-text">Laundry Services </p>
                     <p class="card-text">Concierge Services </p> --}}
-
-                    <a href="/checkout?roomdetails={{roomdetails}}&offers={{offerdetails}}&checkin={{checkin}}6&checkout={{checkout}}7&guests=1&rooms=1"><button>Reserve Now</button></a>
+                    {{#if NoOffer}}
+                        <a href="/roomOffers?checkin=today&checkout=tomorrow&guests=1&rooms=1">
+                        <button>
+                            <strong>
+                                Select a check in & check out date
+                            </strong>
+                        </button></a>
+                    {{/if}}
+                    {{#unless NoOffer}}
+                        <a href="/checkout?roomdetails={{roomdetails}}&offers={{offerdetails}}&checkin={{checkin}}6&checkout={{checkout}}7&guests=1&rooms=1"><button>Reserve Now</button></a>
+                    {{/unless}}
                 </div>
             </div>
         </div>

@@ -7,7 +7,12 @@ exports.loadAdminDashboard = catchAsync(async (req, res, next) => {
     if(req.user){
         const today = new Date();
         const dateString = `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`
-        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress} = req.user;
+        const {firstName, lastName, mobileNumber, address, employeeType, emailAddress, avatarPhotoUrl} = req.user;
+        let imgStr;
+        if(avatarPhotoUrl){
+            imgStr = `${process.env.AWS_EMPLOYEE_TYPE_IMAGE_URL}${avatarPhotoUrl.url}.${avatarPhotoUrl.fileType}`
+        }
+        // console.log(`imgStr ${imgStr}`)
         const VB = new ViewBuilder({
             alertToLogin: req?.alertToLogin??false,
             userType: req?.decoded?.type??null,
@@ -21,7 +26,7 @@ exports.loadAdminDashboard = catchAsync(async (req, res, next) => {
             {name:"accountButtonList.css"}
         ]);
         VB.addOptions("sidebarData", {
-            img: "/img/placeholder/hotelstaff.png",
+            img: imgStr,
             firstName: firstName,
             lastName: `${lastName.charAt(0)}.`,
             employeeType: req?.decoded?.type,

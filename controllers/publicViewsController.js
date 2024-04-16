@@ -1,7 +1,7 @@
 const catchAsync = require('../apiUtils/catchAsync');
 const ViewBuilder = require('./../apiUtils/viewBuilder')
 const {Room} = require('./../models/roomModel')
-const {getAllRooms, getValidRoomOffers, getRoomByIDAndOffer} = require('./roomController');
+const {getAllRooms, getValidRoomOffers, getRoomByIDAndOffer, getRoomByID} = require('./roomController');
 const {isValidDate} = require('../models/modelUtils/utilityFunctions');
 const AppError = require('./../apiUtils/appError.js');
 const mongoose  = require('mongoose');
@@ -509,11 +509,107 @@ exports.viewRoomByIDWithOffer = catchAsync( async(req, res, next) => {
     res.render("pages/public/roomdetails",VB.getOptions());
 })
 
+
+
+
 exports.viewRoomByID = catchAsync( async(req, res, next) => {
+
+    // if(req.session){
+    //     req.session.cameFromRoomOffers = true;
+    // }
+
     const roomId = req.params.id;
-    res.render( "pages/public/roomdetails", {
-        layout:"main", 
-        css: 'roomdetails.css', 
-        title:'RoomDetails',
-    });  
+
+    if(!ObjectId.isValid(roomId)){
+        throw new AppError('Room with offer not found!',404);
+    }
+
+    const roommOfferResults = await getRoomByID(roomId);
+
+    console.log(roommOfferResults)
+    if(roommOfferResults.success && !roommOfferResults.data){
+        throw new AppError('Room with offer not found!',404);
+    }
+
+    let roomOffer;
+    if(roommOfferResults.success){
+        roomOffer = roommOfferResults.data && roommOfferResults.data.length > 0 ? roommOfferResults.data[0] : null;
+    }
+
+    if(!roomOffer){
+        throw new AppError('Room with offer not found!',404);
+    }
+
+
+    const {basePhotos, thumbNail, roomType, description, baseAmenities, bedCount, bedType, priceChangeTrends, basePrice} = roomOffer;
+    const {small} = thumbNail;
+    
+    let mappedPhotos = await Promise.all(
+        basePhotos.map((photo, index)=>{
+            return {
+                url: `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${photo.url}.${photo.fileType}`,
+                alt: photo.altDescription,
+                index: index+2
+            }
+        })
+    )
+    if(mappedPhotos.length > 4){
+        mappedPhotos = mappedPhotos.slice(0, 4);
+    }
+    mappedPhotos.unshift({
+        url: `${process.env.AWS_ROOM_TYPE_IMAGE_URL}${small.url}.${small.fileType}`,
+        alt: small.altDescription,
+        index: 1
+    });
+
+    const lines = description.split('. ');
+    const maxlines = lines.length;
+    let paragraph1 = []
+    let paragraph2 = []
+    const paragraph1_totalsentences = Math.ceil(maxlines/2);
+    for(let x = 0 ; x < maxlines; x++){
+        if(paragraph1.length < paragraph1_totalsentences){
+            paragraph1.push(lines[x]);
+        } else {
+            paragraph2.push(lines[x])
+        }
+    }
+
+
+    const roomFeatures = baseAmenities.filter(el=>el.category === "Room Features");
+    const shower = baseAmenities.filter(el=>el.name === "Shower"); 
+    const bath = baseAmenities.filter(el=>el.name === "Bathtub"); 
+    const offeredAmenities = baseAmenities.filter(el=>el.category === "Offered Amenities");
+    const safetyandHygeine = baseAmenities.filter(el=>el.category === "Safety and Hygeine");
+    const amenity1 = {name:"Bed", icon:"bed.svg"};
+    const amenity2 = bath.length > 0 ?  bath[0] : shower[0];
+    const amenity3 = offeredAmenities.shift();
+    const amenity4 = offeredAmenities.shift();
+
+    const offersSidePanel = offeredAmenities;
+
+    const VB = new ViewBuilder({
+        alertToLogin: false,
+        userType: req?.decoded?.type??null,
+        id:req?.decoded?.id??null,
+    }); 
+    VB.addOptions("css", 'roomdetails.css');
+    VB.addOptions("title", 'RoomDetails');
+    VB.addOptions("photos", mappedPhotos);
+    VB.addOptions("roomType", roomType);
+    VB.addOptions("paragraph1", paragraph1.join('. '));
+    VB.addOptions("paragraph2", paragraph2.join('. '));
+    VB.addOptions("NoOffer", true);
+    VB.addOptions("amenity1", amenity1);
+    VB.addOptions("amenity2", amenity2);
+    VB.addOptions("amenity3", amenity3);
+    VB.addOptions("amenity4", amenity4);
+    VB.addOptions("bedType", bedType);
+    VB.addOptions("bedCount", bedCount);
+    VB.addOptions("roomFeatures", roomFeatures);
+    VB.addOptions("offeredAmenities", offeredAmenities);
+    VB.addOptions("safetyandHygeine", safetyandHygeine);
+    VB.addOptions("offersSidePanel", offersSidePanel);
+    VB.addOptions("roomdetails", roomId);
+    res.render("pages/public/roomdetails",VB.getOptions());
 })
