@@ -125,7 +125,7 @@
                 <div>
                     <div class="row">
                         <p id="subTotalTextHeader" class="col pa-left">Subtotal</p>
-                        <p id="subTotalText" class="col pa-right"></p>
+                        <p id="subTotalText" class="col pa-right">{{#if readOnly}}${{bookingData.subtotal}}{{/if}}</p>
                     </div>
                 </div>
                 {{!-- Figure out functionality later, but if discounts.length are greater > 0 or put hidden input here --}}
@@ -144,7 +144,7 @@
                 <div>
                     <div class="row">
                         <p class="col pa-left">Taxes & Fees</p>
-                        <p id="totalTaxText" class="col pa-right"></p>
+                        <p id="totalTaxText" class="col pa-right">{{#if readOnly}}${{bookingData.taxes}}{{/if}}</p>
                     </div>
                 </div>
             </div>
@@ -154,7 +154,7 @@
             <div class="pa-left-right-container">
                 <div class="row">
                     <p class="col pa-left">Total Charges</p>
-                    <p id="totalChargesText" class="col pa-right"></p>
+                    <p id="totalChargesText" class="col pa-right">{{#if readOnly}}${{bookingData.totalCharge}}{{/if}}</p>
                 </div>
             </div>
 
@@ -164,20 +164,20 @@
             <div class="pa-left-right-container">
                 <div>
                     <div class="row">
-                        <p class="col pa-left">Charges Due Now</p>
-                        <p id="paidCharges" class="col pa-right"></p>
+                        <p class="col pa-left">Charges Paid </p>
+                        <p id="paidCharges" class="col pa-right">{{#if readOnly}}${{bookingData.totalPaid}}{{/if}}</p>
                     </div>
                 </div>
                 <div>
                     <div class="row">
-                        <p class="col pa-left">Paid with mastercard-XXXX4567</p>
-                        <p class="col pa-right"></p>
+                        <p class="col pa-left">Paid with {{bookingData.cardType}}-XXXX{{bookingData.lastFour}}</p>
+                        {{!-- <p class="col pa-right">{{#if readOnly}}{{bookingData.totalPaid}}{{/if}}</p> --}}
                     </div>
                 </div>
                 <div>
                     <div class="row">
                         <p class="col pa-left">Due at check-in</p>
-                        <p id="dueCharges" class="col pa-right"></p>
+                        <p id="dueCharges" class="col pa-right">{{#if readOnly}}${{bookingData.totalDue}}{{/if}}</p>
                     </div>
                 </div>
             </div>

@@ -624,7 +624,7 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
         bookingData.guests = numberOfGuests;
         bookingData.rate = await getAverageRoomPrice(thisDate, thisCheckout, basePrice, offerSurcharge, priceChangeTrends);
         bookingData.totalNights = calculateDaysBetweenDates(thisDate,thisCheckout);
-        bookingData.extraPersonFee = excesspersons > 0 ? (extraPersonFee*numberOfGuests).toFixed(2) : 0;
+        bookingData.extraPersonFee = excesspersons > 0 ? (parseInt(extraPersonFee)).toFixed(2) : 0;
         bookingData.discounts = [];
         bookingData.promotions = applicablepromotions.filter(el=>el!=null);
         bookingData.applicableOffers = applicableOffers.filter(el=>el!=null);

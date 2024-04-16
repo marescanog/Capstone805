@@ -350,9 +350,9 @@ userRouter.route("/view-inbox").get(
 userRouter.route("/reservationinfo/:id").get(
     authController.protect, 
     authController.verifyGuest,
-     authController.restrictTo('guest'), 
-     authController.cacheControl, 
-     renderGuestReservationInfoPage
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    renderGuestReservationInfoPage
 ); // Done
 
 userRouter.route('/:id').get(

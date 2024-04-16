@@ -18,7 +18,7 @@
     <p class="{{#if readOnly}}d-none{{/if}}" id="specialReqDesctext">Special requests cannot be guaranteed – but the hotel will do its best to meet your needs. You can always make a special request after your booking is complete!</p>
     <div class="form-group">
         <label for="specialRequestInput" class="{{#if readOnly}}d-none{{/if}}">Please enter your request (optional)</label>
-        <textarea name="specialRequest" class="form-control {{#if readOnly}}no-border{{/if}}" id="specialRequestInput" rows="3">{{#if readOnly}}{{#unless specialRequests}}None{{/unless}}{{/if}}</textarea>
+        <textarea name="specialRequest" class="form-control {{#if readOnly}}no-border{{/if}}" id="specialRequestInput" rows="3">{{#if readOnly}} {{#unless specialRequests}}None{{/unless}} {{#if specialRequests}}{{specialRequests}}{{/if}} {{/if}}</textarea>
     </div>
 </div>
 <div>
@@ -32,25 +32,25 @@
     <div class="mt-b">
         <label for="selectArrivalTime" class="form-label">Estimated Arrival Time *</label>
         <select class="form-select {{#if readOnly}}no-border{{/if}}" name="arrivalTime" aria-label="Arrival Time" id="selectArrivalTime" required>
-            <option selected>Please Select</option>
-            <option value="15:00">15:00</option>
-            <option value="15:30">15:30</option>
-            <option value="16:00">16:00</option>
-            <option value="16:30">16:30</option>
-            <option value="17:00">17:00</option>
-            <option value="17:30">17:30</option>
-            <option value="18:00">18:00</option>
-            <option value="18:30">18:30</option>
-            <option value="19:00">19:00</option>
-            <option value="19:30">19:30</option>
-            <option value="20:00">20:00</option>
-            <option value="20:30">20:30</option>
-            <option value="21:00">21:00</option>
-            <option value="21:30">21:30</option>
-            <option value="22:00">22:00</option>
-            <option value="22:30">22:30</option>
-            <option value="23:00">23:00</option>
-            <option value="23:30">23:30</option>
+            <option {{#unless estimatedArrivalTime}}selected{{/unless}}>Please Select</option>
+            <option value="15:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "15:00"}}selected{{/equal}}{{/if}}>15:00</option>
+            <option value="15:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "15:30"}}selected{{/equal}}{{/if}}>15:30</option>
+            <option value="16:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "16:00"}}selected{{/equal}}{{/if}}>16:00</option>
+            <option value="16:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "16:30"}}selected{{/equal}}{{/if}}>16:30</option>
+            <option value="17:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "17:00"}}selected{{/equal}}{{/if}}>17:00</option>
+            <option value="17:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "17:30"}}selected{{/equal}}{{/if}}>17:30</option>
+            <option value="18:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "18:00"}}selected{{/equal}}{{/if}}>18:00</option>
+            <option value="18:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "18:30"}}selected{{/equal}}{{/if}}>18:30</option>
+            <option value="19:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "19:00"}}selected{{/equal}}{{/if}}>19:00</option>
+            <option value="19:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "19:30"}}selected{{/equal}}{{/if}}>19:30</option>
+            <option value="20:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "20:00"}}selected{{/equal}}{{/if}}>20:00</option>
+            <option value="20:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "20:30"}}selected{{/equal}}{{/if}}>20:30</option>
+            <option value="21:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "21:00"}}selected{{/equal}}{{/if}}>21:00</option>
+            <option value="21:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "21:30"}}selected{{/equal}}{{/if}}>21:30</option>
+            <option value="22:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "22:00"}}selected{{/equal}}{{/if}}>22:00</option>
+            <option value="22:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "22:30"}}selected{{/equal}}{{/if}}>22:30</option>
+            <option value="23:00" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "23:00"}}selected{{/equal}}{{/if}}>23:00</option>
+            <option value="23:30" {{#if estimatedArrivalTime}}{{#equal estimatedArrivalTime "23:30"}}selected{{/equal}}{{/if}}>23:30</option>
         </select>
         <div class="invalid-feedback">
             Please select your arrival time

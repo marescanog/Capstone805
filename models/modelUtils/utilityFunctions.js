@@ -129,4 +129,14 @@ function formatDate_DD_MON_YYYY(date) {
     // Format the date string
     return `${day} ${month}, ${year}`;
 }
-module.exports = {getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY, formatDate_DD_MON_YYYY}
+
+function formatDate_YYY_d_MM_d_dd(date) {    
+    // Extract the month, date, and year from the date object
+    const month = date.getMonth()+1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+}
+module.exports = {formatDate_YYY_d_MM_d_dd, getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY, formatDate_DD_MON_YYYY}

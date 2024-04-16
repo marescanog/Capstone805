@@ -236,3 +236,59 @@ exports.getPastreservations = async (guestID) => {
         data: mappedReservationData 
     }
 }
+
+exports.getReservationByID = async (guestID, reservationID) => {
+    // console.log(reservationID)
+    let reservation;
+    try {
+        reservation = await Guest.aggregate([
+            {
+                $match: { _id: new mongoose.Types.ObjectId(guestID) }
+            },
+            {
+                $project: {
+                    emailAddress: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    address: 1,
+                    reservations: {
+                        $filter: {
+                            input: "$reservations",
+                            as: "reservation",
+                            cond: { $eq: ["$$reservation._id", new mongoose.Types.ObjectId(reservationID)] }
+                        }
+                    }
+                }
+            },
+            { $unwind: { path: "$reservations", preserveNullAndEmptyArrays: true } },  // Change here to avoid dropping documents if reservations is empty
+            {
+                $lookup: {
+                    from: "rooms",
+                    localField: "reservations.roomDetails.roomID",
+                    foreignField: "_id",
+                    as: "roomInfo"
+                }
+            },
+            { $unwind: { path: "$roomInfo", preserveNullAndEmptyArrays: true } },
+            {
+                $project: {
+                    emailAddress: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    address: 1,
+                    reservation: "$reservations",
+                    thumbnailSmallUrl: "$roomInfo.thumbNail.small.url",
+                    thumbnailSmallFileType: "$roomInfo.thumbNail.small.fileType"
+                }
+            }
+        ]);
+
+    } catch (err){
+        console.log(err);
+        throw new AppError('There was something wrong while pulling up the reservation!',500)
+    }
+    return {
+        success: true,
+        data: reservation 
+    }
+}

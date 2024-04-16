@@ -4,10 +4,12 @@
         <div class={{#if disablePaymentSidebar}}"create-acc-center-container"{{/if}}{{#unless disablePaymentSidebar}}"pa-right-container"{{/unless}}>
             <div {{#if disablePaymentSidebar}}class="createAccCenter"{{/if}}>
                 {{> _h1styled headerTitle="Reservation"}}
-
                 {{#if bookingData}}
                 <div class="subheader-container">
                     <h2>Reservation#{{bookingData.reservationID}}</h2>
+                </div>
+                <div>
+                    <button class="btn btn-danger btn-sm" id="cancelReservation" type="button">Cancel</button>
                 </div>
                 <div class="row justify-content-left">
                     <form id="reservationDateChange" name="reservationDateChange">
@@ -22,14 +24,14 @@
                             <div class="row section-date-range">
                                 <div class="col-md-6">
                                     <label id="checkinLabel" for="inputcheckin" class="form-label no-border">Check-in*</label>
-                                    <input readonly value={{bookingData.checkinDate}} type="date" name="checkin" class="form-control no-border" aria-label="Check in" id="inputcheckin" required>
+                                    <input readonly value={{bookingData.calendarCheckinDate}} type="date" name="checkin" class="form-control no-border" aria-label="Check in" id="inputcheckin" required>
                                     <div class="invalid-feedback">
                                         Please enter check-in Date
                                     </div>
                                 </div>
                                 <div class="col-md-6 mt-2 mt-md-0">
                                     <label for="inputcheckout" class="form-label no-border">Check-out*</label>
-                                    <input readonly value={{bookingData.checkoutDate}} type="date" name="checkout" class="form-control no-border" aria-label="Check out" id="inputcheckout" required>
+                                    <input readonly value={{bookingData.calendarCheckoutDate}} type="date" name="checkout" class="form-control no-border" aria-label="Check out" id="inputcheckout" required>
                                     <div class="invalid-feedback">
                                         Please enter check-out Date
                                     </div>
@@ -42,7 +44,7 @@
 
                     <form id="additionalInfoChange" name="additionalInfoChange">
                         <div class="card mt-4 ">
-                            {{> formContents/_additionalInfo readOnly="true"}}
+                            {{> formContents/_additionalInfo readOnly="true" specialRequests=bookingData.specialRequests estimatedArrivalTime=bookingData.estimatedArrivalTime}}
                             <button type="button" class="button btn-primary next-button mt-4" id="edit_addinfo">EDIT</button>
                                 <button type="button" class="button btn-primary next-button mt-4 d-none" id="submit_addinfo">SUMBIT</button>
                         </div>
@@ -50,15 +52,15 @@
 
                     <form id="guestInfoChange" name="guestInfoChange">
                         <div class="card mt-4">
-                            {{> formContents/_guestInfo readOnly="true" headerText="Guest Information"}}
-                                <button type="button" class="button btn-primary next-button mt-4" id="submit_guestInfo">EDIT</button>
+                            {{> formContents/_guestInfo readOnly="true" headerText="Guest Information" guestInfo=guestInfo}}
+                            <button type="button" class="button btn-primary next-button mt-4" id="submit_guestInfo">EDIT</button>
                         </div>
                     </form>
 
        
                     <div>
                         <div class="card mt-4">
-                            {{> formContents/_paymentInfo readOnly="true" headerText="Payment Information"}}
+                            {{> formContents/_paymentInfo readOnly="true" headerText="Payment Information" guestInfo=paymentInfo}}
                         </div>
                     </div>
 
