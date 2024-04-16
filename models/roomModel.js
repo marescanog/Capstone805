@@ -638,6 +638,7 @@ roomSchema.statics.getCheckoutBookingData =  async function(offer_id, room_id, c
 }
 
 async function getAverageRoomPrice(date, checkoutDate, basePrice, offerSurcharge, priceChangeTrends) {
+
     // Get the computed average price of room per day, then average
     const surcharge =  offerSurcharge == null ? 0 : await getSurcharge(basePrice, offerSurcharge);
     const totalDays = calculateDaysBetweenDates(date, checkoutDate);
@@ -659,7 +660,10 @@ async function getAverageRoomPrice(date, checkoutDate, basePrice, offerSurcharge
     return avePricePlusSurchargeaveragePrice.toFixed(2);
 }
 
+
+
 roomSchema.statics.getOffer =  async function(roomOffer, date, checkoutDate){
+
     const thisDate = date ?? calendarImplementationSubSchema.statics.TODAYS_DATE();
 
     const thisCheckout = checkoutDate ?? calendarImplementationSubSchema.statics.TODAYS_DATE();

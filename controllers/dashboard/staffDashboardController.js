@@ -173,8 +173,8 @@ exports.createReservations = catchAsync(async (req, res, next) => {
         ]);
         VB.addOptions("addFlatPicker", true);
         VB.addOptions("bookingData", {
-            checkinDate: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
-            checkoutDate:  `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`,
+            checkinDate: `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`,
+            checkoutDate:  `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`,
         });
         res.render( "pages/employee/createReservation", VB.getOptions());
     } else {

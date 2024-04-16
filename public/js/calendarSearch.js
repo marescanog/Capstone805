@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
         const today = new Date();
-        checkin = `${today.getFullYear()}-${(today.getMonth()).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+        checkin = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
     }
 
     if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate()+1);
-        checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth().toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`;
+        checkout = `${tomorrow.getFullYear()}-${(tomorrow.getMonth()+1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`;
     }
 
     const guests = getQueryParam('guests');
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mode: "range",
             minDate: "today",
             dateFormat: "Y-m-d",
-            defaultDate: [checkin??`${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`, checkout??`${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`],
+            defaultDate: [checkin??`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`, checkout??`${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`],
         minDate: "today",
         onChange: function(selectedDates, dateStr, instance) {
             // console.log(selectedDates); // Contains the date range array

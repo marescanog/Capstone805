@@ -20,6 +20,11 @@ exports.loadUserDashboard = catchAsync( async (req, res, next) => {
         firstName, lastName, mobileNumber, address, avatarPhotoUrl, emailAddress
     } = req.user;
 
+    let imgStr;
+    if(avatarPhotoUrl){
+        imgStr = `${process.env.AWS_GUEST_TYPE_IMAGE_URL}${avatarPhotoUrl.url}.${avatarPhotoUrl.fileType}`
+    }
+    // console.log(`imgStr ${imgStr}`)
 
     const upcomingResult = await getUpcomingreservations(req?.decoded?.id);
 
@@ -54,7 +59,9 @@ exports.loadUserDashboard = catchAsync( async (req, res, next) => {
         id:req?.decoded?.id??null,
     });
     VB.addOptions("css", "guest/userDashboard.css");
+    imgStr
     VB.addOptions("title", "My Profile");
+    VB.addOptions('img', imgStr);
     VB.addOptions("addSlick", true);
     VB.addOptions("partialsCSS", [
         {name:"accountInfoSideBar.css"},
@@ -69,7 +76,7 @@ exports.loadUserDashboard = catchAsync( async (req, res, next) => {
         {name:"View Inbox",url:"/dashboard/guest/view-inbox"}
     ]);
     VB.addOptions("sidebarData", {
-        img: null,
+        img: imgStr,
         firstName:firstName,
         lastName: lastName,
         address: `${address.address}, ${address.city}, ${address.postalCode} ${address.country}`,

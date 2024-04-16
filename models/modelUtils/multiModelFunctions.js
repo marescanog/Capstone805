@@ -47,12 +47,12 @@ async function createReservation(guestId, sessionIformation, formdata) {
         //YYYY-MM-DD
         if(checkin === 'today' || checkin == null || !(isValidDate(checkin))){
             const today = new Date();
-            checkin = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+            checkin = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
         }
         if(checkout === 'tomorrow' || checkout == null || !(isValidDate(checkout))){
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate()+1);
-            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`;
+            checkout = `${tomorrow.getFullYear()}-${tomorrow.getMonth()+1}-${tomorrow.getDate()}`;
         }
 
         // convert to dates
