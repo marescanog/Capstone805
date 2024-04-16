@@ -1,11 +1,51 @@
 const catchAsync = require('./../../apiUtils/catchAsync');
 const ViewBuilder = require('./../../apiUtils/viewBuilder');
+const {calculateDaysBetweenDates} = require('./../../models/modelUtils/utilityFunctions.js');
 const {getUpcomingreservations, getPastreservations} = require('./../reservationController.js');
 
-exports.loadUserDashboard = (req, res, next) => {
+exports.loadUserDashboard = catchAsync( async (req, res, next) => {
+
+    if(!req?.decoded?.id){
+        req.alertToLogin = true;
+    }
+
+    if(!req?.user){
+        req.alertToLogin = true;
+        return res.redirect('/');
+    }
+
     const {
         firstName, lastName, mobileNumber, address, avatarPhotoUrl, emailAddress
     } = req.user;
+
+
+    const upcomingResult = await getUpcomingreservations(req?.decoded?.id);
+
+    if(upcomingResult?.success){
+        upcoming = upcomingResult.data;
+    }
+
+    const today = new Date();
+    const mappedForDashboard = await Promise.all(
+   
+        upcoming.map(el=>{
+            // checkinDateObj, checkoutDateObj
+            const daysBetween = calculateDaysBetweenDates(today, el.checkinDateObj);
+            const months = Math.floor(daysBetween / 31);
+            // console.log(daysBetween)
+            const dateType = months > 0 ? "month" : "day";
+            const interValText = `In ${months > 0 ? months : daysBetween} ${dateType}${(dateType == "month" ? months :  daysBetween) > 1 ? 's' : ''}`
+            return {
+                roomtType: el.roomType,
+                checkIn: el.checkinDate,
+                checkOut: el.checkoutDate,
+                interval: interValText,
+                img:  el.thumbNail,
+                url: `/dashboard/guest/reservationinfo/${el.linkrefID}`
+            }
+        })
+    )
+
     const VB = new ViewBuilder({
         alertToLogin: req?.alertToLogin??false,
         userType:"Guest",
@@ -23,7 +63,7 @@ exports.loadUserDashboard = (req, res, next) => {
     ]);
     VB.addOptions("buttonData", [
         {name:"View Reservation History",url:"/dashboard/guest/reservations"},
-        {name:"Browse Room Offers",url:"/roomOffers"},
+        {name:"Browse Room Offers",url:"/roomOffers?checkin=today&checkout=tomorrow&guests=1&rooms=1"},
         {name:"View Inbox",url:"/dashboard/guest/view-inbox"}
     ]);
     VB.addOptions("sidebarData", {
@@ -34,50 +74,9 @@ exports.loadUserDashboard = (req, res, next) => {
         emailAddress: emailAddress,
         mobileNumber: mobileNumber,
     });
-    VB.addOptions("reservations", [
-        {
-            roomtType: "Room Name",
-            checkIn: "Jan 28,2024",
-            checkOut: "Jan 30,2024",
-            interval: "In 1 month",
-            img:"../../../assets/images/room1.jpg",
-            url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
-        },
-        {
-            roomtType: "Room Name",
-            checkIn: "Jan 28,2024",
-            checkOut: "Jan 30,2024",
-            interval: "In 1 month",
-            img:"../../../assets/images/room1.jpg",
-            url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
-        },
-        {
-            roomtType: "Room Name",
-            checkIn: "Jan 28,2024",
-            checkOut: "Jan 30,2024",
-            interval: "In 1 month",
-            img:"../../../assets/images/room1.jpg",
-            url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
-        },
-        {
-            roomtType: "Room Name",
-            checkIn: "Jan 28,2024",
-            checkOut: "Jan 30,2024",
-            interval: "In 1 month",
-            img:"../../../assets/images/room1.jpg",
-            url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
-        },
-        {
-            roomtType: "Room Name",
-            checkIn: "Jan 28,2024",
-            checkOut: "Jan 30,2024",
-            interval: "In 1 month",
-            img:"../../../assets/images/room1.jpg",
-            url:'/dashboard/guest/reservationinfo/65edeb166f77f37cbaec2fd2'
-        },
-    ]);
+    VB.addOptions("reservations", mappedForDashboard.filter(el=>el!=null));
     res.render( "pages/hotelguest/userdashboard",VB.getOptions());
-}
+})
 
 exports.uploadNewGuestPhotoPage = (req, res, next) => {
     const VB = new ViewBuilder({

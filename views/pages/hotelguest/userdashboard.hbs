@@ -25,7 +25,7 @@
                         <a href="/dashboard/guest/loyalty-history">View points history</a>
                       </div>
                     </div>
-                    <div class="">
+                    <div class="slider-container">
                       {{#unless reservations}}
                         <div>
                           <p>You have no upcoming reservations</p>
@@ -37,7 +37,7 @@
                           <a href="{{this.url}}">
                             <div>
                               <div class="slick-item">
-                                <img src="../../../assets/images/room1.jpg">
+                                <img src={{this.img}}>
                                 <p class="absolute-text">{{this.interval}}</p>
                               </div>
                               <div>
