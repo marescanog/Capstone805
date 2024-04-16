@@ -4,13 +4,13 @@
     <h6 class="form-content-h6-style">Who are you booking for?</h6> 
     {{!-- Add javascript later for Radio Buttons --}}
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox1" value="yes" checked>
+            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox1" value="yes" {{#if readOnly}}{{#if guestInfo.isMainGuest}}{{#equal guestInfo.isMainGuest "true"}}checked{{/equal}}{{/if}}{{/if}}{{#unless readOnly}}checked{{/unless}}>
             <label class="form-check-label" for="isMainGuestcheckBox1">
                 I am the main guest
             </label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox2" value="no">
+            <input class="form-check-input" type="radio" name="isMainGuest" id="isMainGuestcheckBox2" value="no" {{#if readOnly}}{{#if guestInfo.isMainGuest}}{{#equal guestInfo.isMainGuest "false"}}checked{{/equal}}{{/if}}{{/if}}>
             <label class="form-check-label" for="isMainGuestcheckBox2">
                 booking is for someone else
             </label>
@@ -38,7 +38,13 @@
     </div>
     <div class="mb-2 mt-2 mt-md-0">
         <label for="inputMobileNumber" class="form-label {{#if readOnly}}no-border{{/if}}">Mobile Number</label>
+        {{#if readOnly}}
+            {{#unless guestInfo.mobileNumber}}
+            <p style="margin:0;padding:0">No number specified</p>
+            {{/unless}}
+        {{/if}}
         <input type="tel"  name="mobileNumber" class="form-control {{#if readOnly}}no-border{{/if}}" aria-label="Mobile Number" id="inputMobileNumber" {{#if guestInfo}}{{#if guestInfo.mobileNumber}}value="{{guestInfo.mobileNumber}}"{{/if}}{{/if}}>
+
         <div class="invalid-feedback">
             Please enter your mobile Number
         </div>

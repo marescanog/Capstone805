@@ -28,7 +28,7 @@ async function createReservation(guestId, sessionIformation, formdata) {
         const {sessionID, offer_id, room_id, created_at, expires_at, numberOfGuests, numberOfRooms} = sessionIformation;
         const {isMainGuest, firstName, lastName, mobileNumber, address, city, postalCode, 
             specialRequest, arrivalTime, cardHolderName, cardNumber, expiryDate, cardCVC, billingAddress, 
-            billingCity, billingPostal, billingCountry, loyaltyCheck, loyaltyValue, sameBillingAddress
+            billingCity, billingPostal, billingCountry, loyaltyCheck, loyaltyValue, sameBillingAddress, 
         } = formdata;
         // console.log(`sessionID ${sessionID}`);
         // console.log(`offer_id ${offer_id}`);
@@ -150,7 +150,8 @@ async function createReservation(guestId, sessionIformation, formdata) {
         ]
 
         const excesspersons = (numberOfRooms * maxAllowedGuests) - numberOfGuests;
-        if(parseFloat(bookingData.rate.extraPersonFee) > 0 && excesspersons > 0){
+        const feeForAnExtraSinglePerson = bookingData.extraPersonFee;
+        if(feeForAnExtraSinglePerson > 0 && excesspersons > 0){
             feesArr.push({
                 "feeType": "penalty",
                 "amount": bookingData.extraPersonFee,
@@ -167,7 +168,7 @@ async function createReservation(guestId, sessionIformation, formdata) {
         */
    
         const subTotal = bookingData.rate * bookingData.totalNights;
-        const totalWithPenalties = subTotal + parseFloat(bookingData.extraPersonFee);
+        const totalWithPenalties = subTotal + (feeForAnExtraSinglePerson*excesspersons);
         const taxes = totalWithPenalties * 0.25;
         const total = totalWithPenalties + taxes;
         const chargesDue = total *0.3;

@@ -156,6 +156,9 @@ function finalStepBeforeSubmit() {
     const form = document.getElementById('reservationForm');
     const check = document.getElementById('sameAddress');
     const billingCountry = document.getElementById('inputBillingCountry');
+    const inputCountry = document.getElementById('inputCountry');
+    const specialRequestInput = document.getElementById('specialRequestInput');
+    
     if(form){
         form.setAttribute('novalidate', '');
         const formData = new FormData(form);
@@ -166,7 +169,12 @@ function finalStepBeforeSubmit() {
         if(billingCountry){
             formDataObj['billingCountry'] = billingCountry.value;
         }
-   
+        if(inputCountry){
+            formDataObj['country'] = inputCountry.value;
+        }
+        if(inputCountry){
+            formDataObj['specialRequest'] = specialRequestInput.value;
+        }
         fetch('/createReservation', {
             method: 'POST',
             headers: {

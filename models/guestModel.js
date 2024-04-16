@@ -101,8 +101,7 @@ const roomDetailsSubschema = new mongoose.Schema({
     pricePerNight: {
         type: Decimal128,
         required: [true, 'must have a price per night'],
-    },
-    specialRequest:String
+    }
 });
 
 const mainGuestSubSchema = new mongoose.Schema({
@@ -167,7 +166,8 @@ const reservationSubschema = new mongoose.Schema({
         type: priceBreakdownSubschema,
         required: [true, 'must have price breakdown'],
     },
-    mainGuest: mainGuestSubSchema
+    mainGuest: mainGuestSubSchema,
+    specialRequest:String
 });
 
 const guestSchema = new mongoose.Schema({
