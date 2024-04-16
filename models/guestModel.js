@@ -167,7 +167,7 @@ const reservationSubschema = new mongoose.Schema({
         required: [true, 'must have price breakdown'],
     },
     mainGuest: mainGuestSubSchema,
-    specialRequest:String
+    specialRequest: String
 });
 
 const guestSchema = new mongoose.Schema({

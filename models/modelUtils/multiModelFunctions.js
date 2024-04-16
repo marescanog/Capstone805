@@ -200,7 +200,7 @@ async function createReservation(guestId, sessionIformation, formdata) {
                 let promo = {
                     "promoType": el?.promoType,
                     "name": el?.name,
-                    "value": el?.priceChangeValue,
+                    "value": el?.priceChangeValue??1,
                     "quantity": 1,
                 }
                 if(el.priceChangeType){
@@ -273,7 +273,8 @@ async function createReservation(guestId, sessionIformation, formdata) {
           // Add reservation to guest's document
         //   guest.reservations.push(newReservation);
         //   await guest.save({validateBeforeSave: false});
-
+            // console.log(JSON.stringify(newReservation, null, '\t'))
+            // console.log(`Guest id : ${guestId}`)
           await Guest.updateOne(
             { _id: guestId }, 
             { $push: { reservations: newReservation } }
