@@ -563,20 +563,33 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
         let checkinDate = new Date();
         let checkoutDate = new Date();
         checkoutDate.setDate(checkoutDate.getDate()+1);
+        // console.log(`A checkinDate ${checkinDate}`)
+        // console.log(`A checkout ${checkoutDate}`)
         try{
             checkinArr = checkin ? checkin.split('-') : [];
             checkoutArr = checkin ? checkout.split('-') : [];
-            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]+1, checkinArr[2]) : checkinDate;
-            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]+1, checkoutArr[2]) : checkoutDate;
+            // console.log(`B checkinArr ${checkinArr}`)
+            // console.log(`B checkoutArr ${checkoutArr}`)
+            console.log(`checkinArr.length ${checkinArr.length}`)
+            console.log(`checkoutArr.length ${checkoutArr.length}`)
+            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
+            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
         } catch (err) {
             console.log(`auth controller ${err}`)
             checkinArr = [];
             checkoutArr = [];
         }
-    
+        console.log(`B checkinDate ${checkinDate}, A C 582`)
+        console.log(`B checkout ${checkoutDate}`)
+
         checkinDate.setHours(0,0,0,0);
         checkoutDate.setHours(0,0,0,0);
-    
+
+        // console.log('authController 5810')
+        // console.log(`checkinArr[0] ${checkinArr[0]} checkinArr[1]-1 ${checkinArr[1]-1} checkinArr[2] ${checkinArr[2]}`)
+        // console.log(`checkoutArr[0] ${checkoutArr[0]} checkoutArr[1]-1 ${checkoutArr[1]-1} checkoutArr[2] ${checkoutArr[2]}`)
+        // console.log(`checkinDate ${checkinDate}`)
+        // console.log(`checkout ${checkoutDate}`)
         if(!validParams){
             console.log('Parameters are invalid, auth controller');
             // clear token at the very least
@@ -586,21 +599,22 @@ exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
             // move on, don't bother creating token
             return next();
         } 
-    
         const emptyArray = [...Array(calculateDaysBetweenDates(checkin, checkout))];
-    
+        // console.log(`checkinDate ${checkinDate} 591 `)
         try {
             if(sessionID){
                 // Delete existing holds with the same sessionID
                 await Hold.deleteMany({ sessionID });
             }
     
-    
+            // console.log(`checkinDate ${checkinDate} 599 `)
             // Create a new set of holds  checkinDate checkoutDate
             const holdsPerDay = await Promise.all(
                 emptyArray.map((_, index) => {
                     const holdDate = adjustDays(checkinDate , index);
                     holdDate.setHours(0,0,0,0);
+                    // console.log(`holdDate ${holdDate}, auth con 605`)
+                    // console.log(`checkinDate ${checkinDate}, auth con 605`)
                     return {
                         sessionID: sessionID,
                         offer_id: offers,

@@ -380,24 +380,29 @@ exports.getValidRoomOffers = async (req, res, next) => {
     // TODO ADD VALIDATION FOR TOTAL NIGHTS MAXIMUM OF 2 WEEKS
 
     const {checkin, checkout, guests, rooms} = req.query;
-    console.log(`checkin ${checkin} checkout ${checkout} guests ${guests}`)
+
     let checkinArr = [];
     let checkoutArr = [];
     let checkinDate = new Date();
     let checkoutDate = new Date();
     checkoutDate.setDate(checkoutDate.getDate()+1);
-
+    // console.log('roomController 400')
+    // console.log(`checkin ${checkin} checkout ${checkout}`)
     try{
         checkinArr = checkin ? checkin.split('-') : [];
-        checkoutArr = checkin ? checkout.split('-') : [];
+        checkoutArr = checkout ? checkout.split('-') : [];
         checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
         checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
     } catch (err) {
-        console.log(`room controller ${err}`)
+        // console.log(`room controller ${err}`)
         checkinArr = [];
         checkoutArr = [];
     }
-
+        // console.log('roomController 400')
+        // console.log(`checkinArr[0] ${checkinArr[0]} checkinArr[1]-1 ${checkinArr[1]-1} checkinArr[2] ${checkinArr[2]}`)
+        // console.log(`checkoutArr[0] ${checkoutArr[0]} checkoutArr[1]-1 ${checkoutArr[1]-1} checkoutArr[2] ${checkoutArr[2]}`)
+        // console.log(`checkinDate ${checkinDate}`)
+        // console.log(`checkout ${checkoutDate}`)
     checkinDate.setHours(0,0,0,0);
     checkoutDate.setHours(0,0,0,0);
     // checkoutDate.setHours(23,59,59,999);
@@ -416,6 +421,7 @@ exports.getValidRoomOffers = async (req, res, next) => {
 
     const holdsPerRoomType = await getHoldsPerRoomType(checkinDate, checkoutDate, req.sessionID);
 
+    // console.log(holdsPerRoomType)
     // console.log('Room Quantity per room type')
     // console.log(JSON.stringify(roomQuantityPerRoomType,null,'\t'));
 
