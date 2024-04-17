@@ -1,0 +1,25 @@
+<div class="create-form-page-container">
+    <div class="create-form-page-wrapper create-form-page-wrapper-override">
+        {{> _h1styled headerTitle=headerTitle}}
+
+        <form>
+            <div class="form-wrap">
+                <div class="card form-card-create">
+                    <div class="card-body">
+                       <div class="search-container">
+                            {{> _search searchOptionsList=searchOptionsList searchControlUrl=searchControlUrl placeholder=placeholder }}
+                       </div>
+                    </div>
+                </div>
+                <div class="card form-card-create">
+                    <div class="card-body">
+                        <div class="view-reservation-page-wrapper">
+                            {{> _tableDisplay tableOptions=tableOptions results=results}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>

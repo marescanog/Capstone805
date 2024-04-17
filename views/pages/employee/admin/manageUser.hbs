@@ -1,0 +1,111 @@
+<div class="create-form-page-container">
+    <div class="create-form-page-wrapper">
+        {{> _h1styled headerTitle=headerTitle}}
+        <h3>ID: AHDIHASDUIAD8AS9DSA</h3>
+        <form>
+            <div class="form-wrap">
+                <div class="card form-card-create">
+                    <div class="card-body">
+                       <div class="container-fluid">
+                            <div class="header-and-button">
+                                <h2>User Profile</h2>
+                                <a href="/dashboard/USNVMQD493/{{#notEqual userInfo.userType "Guest"}}employee{{/notEqual}}{{#equal userInfo.userType "Guest"}}user{{/equal}}/SDF4HN"><button type="button" class="btn btn-primary">Edit Profile</button></a>
+                            </div>
+                            <div class="row">
+                                <section class="section-style">
+                                    <h5><strong>User Information</strong></h5>
+                                    <hr>
+                                    <p><strong>First Name:</strong> {{userInfo.firstName}}</p>
+                                    <p><strong>Last Name:</strong> {{userInfo.lastName}}</p>
+                                    <p><strong>Email Address:</strong> {{userInfo.emailAddress}}</p>
+                                    <p><strong>Mobile Number:</strong> {{userInfo.mobileNumber}}</p>
+                                </section>
+                                <section class="section-style">
+                                    <h5><strong>Address Information</strong></h5>
+                                    <hr>
+                                    <p><strong>Address:</strong> {{userInfo.address}}</p>
+                                    <p><strong>City:</strong> {{userInfo.city}}</p>
+                                    <p><strong>Postal Code:</strong> {{userInfo.postalCode}}</p>
+                                    <p><strong>Country:</strong> {{userInfo.country}}</p>
+                                </section>
+                                <section class="section-style">
+                                    <h5><strong>Account Setting/Info</strong></h5>
+                                    <hr>
+                                    <p><strong>User Type:</strong> {{userInfo.userType}}</p>
+                                    <p><strong>Status:</strong> {{userInfo.status}}</p>
+                                    <p><strong>Created On:</strong> {{userInfo.createdOn}}</p>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card form-card-create">
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <h2>Permissions Control</h2>
+                            <div class="row">
+                                <section class="section-style">
+                                    <h5><strong>Account Access</strong></h5>
+                                    <p><strong>Current Status:</strong> {{userInfo.status}} {{#equal userInfo.userType "Guest"}}& {{#equal userInfo.isVerified true}}verified{{/equal}}  {{#equal userInfo.isVerified false}}not veriified{{/equal}}  {{/equal}}</p>
+                                    {{#equal userInfo.isVerified false}}
+                                        <button class="btn btn-success" id="sendVerification"> Send Verification Link</button>
+                                    {{/equal}} 
+                                    {{#equal userInfo.isVerified true}}
+                                        {{#equal userInfo.status "active"}}
+                                            <button class="btn btn-danger" id="deactivateAccount">Deactivate</button>
+                                        {{/equal}} 
+                                        {{#notEqual userInfo.status "active"}}
+                                            <button class="btn btn-success" id="deactivateAccount"> Activate</button>
+                                        {{/notEqual}} 
+                                    {{/equal}} 
+
+                                </section>
+                                <section class="section-style">
+                                    <h5><strong>Account Permissions</strong></h5>
+                                    {{#notEqual userInfo.userType "Guest"}}
+                                        <h5>Modify Access Type</h5>
+                                        <form class="mb-3">
+                                            <div class="mb-3">
+                                                <label for="employeeType" class="form-label">Employee Type</label>
+                                                <select class="form-select" id="employeeType" name="employeeType" required {{#if readOnly}}disabled{{/if}}>
+                                                <option value="staff">Staff</option>
+                                                <option value="manager">Manager</option>
+                                                <option value="admin">Admin</option>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-primary mb-3">Update Access Type</button>
+                                        </form>
+                                        {{#equal userInfo.userType "Manager"}}
+                                        <h5>Manager Code Reset</h5>
+                                        <button class="btn btn-warning">Send New Code</button>
+                                        {{/equal}}
+                                    {{/notEqual}}
+                                </section>
+                                <section class="section-style">
+                                    <h5><strong>Password/Email Change</strong></h5>
+                                    <section class="section-style">
+                                        <h6><strong>Update Password</strong></h6>
+                                        <p class="small">*Password reset will be sent to email provided</p>
+                                        <button class="btn btn-primary">Send Password Reset Link</button>
+                                    </section>
+                                    <section class="section-style">
+                                        <h6><strong>Update Email</strong></h6>
+                                        <form >
+                                            <div class="form-group">
+                                                <label for="email">Email Address</label>
+                                                <input type="email" class="form-control" id="email" name="email" required {{#if readOnly}}disabled{{/if}}>
+                                            </div>
+                                            <p class="small">*Verification will be sent to email provided</p>
+                                            <button class="btn btn-primary">Send Link To Verify & Update</button>
+                                        </form>
+                                    </section>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>

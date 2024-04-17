@@ -13,6 +13,6 @@ contactFormRouter
 
   contactFormRouter
   .route('/submit')
-  .get(submitContactForm)
+  .post(submitContactForm)
 
 module.exports = contactFormRouter;

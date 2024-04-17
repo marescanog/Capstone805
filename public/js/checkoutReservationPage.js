@@ -1,7 +1,7 @@
 const headerTitles = ["Guest Information","Payment Information","Review Information"];
 
-function nextSection(targetSection) {
-    if (!validateCurrentSection(targetSection-1)) {
+function nextSection(targetSection, novalidate=false) {
+    if (!novalidate && !validateCurrentSection(targetSection-1)) {
         // If the current section is not valid, stop the function from proceeding
         return false;
     }
@@ -52,6 +52,49 @@ function populateReviewSection() {
             }
         }
     });
+    const allSelect = document.querySelectorAll('.form-section select');
+    allSelect.forEach(select => {
+        const textDomEl = document.getElementById(`review${select.name}`);
+        if(textDomEl){
+            if(select.value == "" || select.value == null){
+                textDomEl.parentElement.style.display = 'none';
+            } else {
+                textDomEl.parentElement.style.display = 'block';
+                textDomEl.textContent = select.value;
+            }
+        }
+        // console.log(select)
+        // console.log(select.value)
+        // console.log(select.name)
+    });
+    const allTextarea = document.querySelectorAll('.form-section textarea');
+    allTextarea.forEach(textArea => {
+        // console.log(textArea)
+        // console.log(textArea.value)
+        // console.log(textArea.name)
+        const textDomEl = document.getElementById(`review${textArea.name}`);
+        if(textDomEl){
+            if(textArea.value == "" || textArea.value == null){
+                // textDomEl.parentElement.style.display = 'none';
+                textDomEl.textContent = 'none';
+            } else {
+                // textDomEl.parentElement.style.display = 'block';
+                textDomEl.textContent = textArea.value;
+            }
+        }
+
+    });
+    const check = document.getElementById('sameAddress');
+    const sameAddresslabellabellabel = document.getElementById('sameAddresslabellabellabel');
+    if(check && sameAddresslabellabellabel ){
+        if(check.checked === true || check.checked == "true"){
+            sameAddresslabellabellabel.style.display = 'block';
+        } else {
+            sameAddresslabellabellabel.style.display = 'none';
+        }
+    }else {
+        sameAddresslabellabellabel.style.display = 'none';
+    }
 }
 
 const clearInput = (input) => {
@@ -111,19 +154,37 @@ function finalStepBeforeSubmit() {
     allInputs.forEach(input => input.disabled = false);
     
     const form = document.getElementById('reservationForm');
-
+    const check = document.getElementById('sameAddress');
+    const billingCountry = document.getElementById('inputBillingCountry');
+    const inputCountry = document.getElementById('inputCountry');
+    const specialRequestInput = document.getElementById('specialRequestInput');
+    
     if(form){
         form.setAttribute('novalidate', '');
         const formData = new FormData(form);
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+        const formDataObj = Object.fromEntries(formData.entries());
+        if(check){
+            formDataObj['sameBillingAddress'] = check?.checked;
+        }
+        if(billingCountry){
+            formDataObj['billingCountry'] = billingCountry.value;
+        }
+        if(inputCountry){
+            formDataObj['country'] = inputCountry.value;
+        }
+        if(inputCountry){
+            formDataObj['specialRequest'] = specialRequestInput.value;
         }
         fetch('/createReservation', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formDataObj),
         })
         .then(response => response.json())
         .then(data => {
+            // console.log(JSON.stringify(data, null, '\t'))
             if (data.success) {
                 // alert(data.message); // Show success message
                 // form.reset(); // Reset form to clear fields
@@ -136,7 +197,8 @@ function finalStepBeforeSubmit() {
                   }).then((result) => {
                     if (result.value || result.dismiss) {
                       form.reset(); 
-                      window.location.href = '/reservations';
+                      window.location.href = '/dashboard/guest/reservations';
+                    // console.log('for testing purposes do not forget to uncomment these')
                     }
                   });
             } else {
@@ -172,10 +234,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
     const btn_3Section_back = document.getElementById('btn_3Section_back') 
     // const headerTitleText = document.getElementById('h1_styled_partial');
     const submit_button = document.getElementById('submitButton') ;
-    updateProgress(1);
+    updateProgress(1); // change back to 1
     let page = 1;
     nextSection(page);
-
+    // nextSection(2, true)
     if(btn_1Section){
         btn_1Section.addEventListener("click",()=>{
             page++;

@@ -14,6 +14,10 @@ const contactFormRouter = require('./routes/contactFormRoutes');
 const renderDashboardRouter = require('./routes/renderDashboardRoutes');
 const checkoutRouter = require('./routes/checkoutRoutes');
 const publicRouter = require('./routes/publicRoutes');
+const globalRouter = require('./routes/globalRouter');
+const sanitizeHtml = require('sanitize-html');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 var app = express();
 
@@ -67,6 +71,15 @@ app.engine('.hbs', exphbs.engine({
             return options.fn(this);
             }
         },
+        equalOrLT: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue > rvalue) {
+            return options.inverse(this);
+            } else {
+            return options.fn(this);
+            }
+        },
         isDevMode: function() {
             if(process?.env?.NODE_ENV === 'development'){
                 return `<li class="nav-item">
@@ -78,9 +91,24 @@ app.engine('.hbs', exphbs.engine({
         getProperty: function(object, property){
             return object[property];
         },
+        getPropertyAsJSON: function(object, property){
+            return JSON.stringify(object[property]);
+        },
+        isPropertyNull: function(object, property, options){
+            return object[property] == null ? options.fn(this) : options.inverse(this);
+        },
+        isPropertyThere: function(object, property, options){
+            return object[property] == null ?  options.inverse(this) :  options.fn(this);
+        },
         getClassName: function(arr, object, property){
             const res = arr== null ? [] :arr.filter(el=>el.name === object[property]);
             return res.length > 0 ? res[0].classname : "";
+        },
+        concat: function() {
+            return Array.prototype.slice.call(arguments, 0, -1).join('');
+        },
+        json: function (context) {
+            return JSON.stringify(context);
         }
     }
 }));
@@ -96,6 +124,28 @@ app.use(express.static("public"));
 
 app.use(express.urlencoded({extended: true}));
 
+app.use(sanitizer);;
+
+const DB = process.env.NODE_ENV === 'production' ? 
+    (process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD)).replace('<USERNAME>', process.env.DATABASE_USERNAME)
+    : process.env.DATABASE_LOCAL;
+
+// configure sessions
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    // saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: DB,
+        collection: 'sessions'
+    }),
+    cookie: { 
+      secure: 'auto', // Ensure this is true in production if using HTTPS
+      maxAge: 30 * 60 * 1000 // 30 minutes
+    }
+}));
+
 // adds activeRoute property your app.locals
 app.use(function(req,res,next){
     let route = req.path.substring(1);
@@ -103,12 +153,48 @@ app.use(function(req,res,next){
     next();
 })
 
+
+function sanitizer(req, res, next) {
+    // A helper function to recursively sanitize our objects
+    const sanitizeObject = (obj) => {
+      Object.keys(obj).forEach((key) => {
+        // Trim strings
+        if (typeof obj[key] === 'string') {
+          obj[key] = obj[key].trim();
+        }
+  
+        // Convert empty strings to null
+        if (obj[key] === '') {
+          obj[key] = null;
+        }
+  
+        // Sanitize HTML content
+        if (typeof obj[key] === 'string' && obj[key] !== null) {
+          obj[key] = sanitizeHtml(obj[key]);
+        }
+  
+        // Recurse if the property is an object but not null or an array
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          sanitizeObject(obj[key]);
+        }
+      });
+    };
+  
+    // Sanitize req.body, req.query, and req.params
+    sanitizeObject(req.body);
+    sanitizeObject(req.query);
+    sanitizeObject(req.params);
+  
+    next(); // Pass control to the next middleware function
+};
+
 // 3 - ROUTES (Render Views)
 app.use('/', publicRouter);
 app.use('/dashboard', renderDashboardRouter);
 app.use('/checkout', checkoutRouter);
 
 // 4 - ROUTES (Api calls / Get JSON data)
+app.use('/api/v1/', globalRouter);
 app.use('/api/v1/guests', guestRouter);
 app.use('/api/v1/employees', employeeRouter);
 app.use('/api/v1/reservations', reservationRouter);

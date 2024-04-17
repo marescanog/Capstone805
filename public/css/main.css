@@ -7,13 +7,15 @@
 
 
 .login-dropdown {
+    height: 2.5em;
     background-color: #FFFFFF;
     border: #D0D0D0 solid 1px;
-    width:100px;
+    width:5em;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50px;
+    transform: translateY(-0.3em);
 }
 
 .nav-img-hamburger{
@@ -738,6 +740,12 @@ input[type="email"] {
 
   .dropdown-item{
     cursor: pointer !important;
+  }
+
+  .navbar-brand{
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   @media (max-width: 576px) {

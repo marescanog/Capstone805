@@ -1,8 +1,30 @@
 {{#if columnData}}
     {{#each columnData}}
-        {{#unless this.isRow}}           
+        {{#unless this.isRow}}          
+            {{#isPropertyNull ../this this.resultName}}
+               <td>n/a</td>
+            {{/isPropertyNull}}
+            {{#isPropertyThere ../this this.resultName}}
                 {{#if this.isButton}}
-                    <td><button type="submit" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
+                    <td><button type="button" class="btn button-secondary {{getClassName this.isButton.classNames ../this this.resultName}}"
+                        {{#if this.isButton.buttonActions}}
+                            {{#if ../this.variableName}}
+                                {{#unless ../this.sendvariableAsJSON}}
+                                    onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}('{{getProperty ../this ../this.variableName}}')"
+                                {{/unless}}    
+                                {{#if ../this.sendvariableAsJSON}}
+                                    {{#equal ../this.sendvariableAsJSON true}}
+                                        onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}('{{getPropertyAsJSON ../this ../this.variableName}}')"
+                                    {{/equal}}  
+                                    {{#equal ../this.sendvariableAsJSON false}}
+                                        onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}('{{getProperty ../this ../this.variableName}}')"
+                                    {{/equal}}  
+                                {{/if}}    
+                            {{/if}}
+                            {{#unless ../this.variableName}}
+                                onclick="{{getClassName this.isButton.buttonActions ../this this.resultName}}()"
+                            {{/unless}}
+                        {{/if}}
                     >
                         {{getProperty ../this this.resultName}}
                     </button></td>
@@ -10,6 +32,7 @@
                 {{#unless this.isButton}}
                     <td>{{getProperty ../this this.resultName}}</td>
                 {{/unless}}
+            {{/isPropertyThere }}
         {{/unless }}
         {{#if this.isRow}}
             <th scope="row">{{getProperty ../this this.resultName}}</th>

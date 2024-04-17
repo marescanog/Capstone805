@@ -190,6 +190,75 @@ h1.form-header-style{
     margin-bottom: 2em;
 }
 
+.read-only {
+    background-color: #f3f3f3; /* Light gray for read-only fields */
+    opacity: 0.65;
+}
+
+.editable {
+    background-color: #ffffff; /* White for editable fields */
+}
+
+/* Additional styles to override Bootstrap's :focus state */
+input:read-only.read-only {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #f3f3f3 !important;
+    border: none !important;
+}
+
+/* For select specifically when disabled */
+select:disabled {
+    opacity: 0.65; /* Makes the disabled state visually distinct */
+}
+
+.btn-danger {
+    background-color: #dc3545 !important;
+}
+
+.btn-hocho {
+    background-color: #007bff !important;
+}
+
+.hocho-unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.8 !important;
+}
+
+.reservation-status-badge{
+    padding: 0.35em 1em;
+    border-radius: 2em;
+    min-width: 6em;
+    color: white;
+    font-weight: 600;
+}
+
+/* 'pending', 'cancelled', 'checked-in', 'completed', 'no-show' */
+.reservation-status-badge.pending{
+    background-color: #0d6efd;
+}
+
+.reservation-status-badge.cancelled{
+    background-color: #dc3545;
+}
+
+.reservation-status-badge.checked-in{
+    background-color: #0dcaf0;
+}
+
+.reservation-status-badge.completed{
+    background-color: #198754;
+}
+
+.reservation-status-badge.no-show{
+    background-color: #d63384;
+}
+
 
 @media screen and (max-width: 992px) {
 

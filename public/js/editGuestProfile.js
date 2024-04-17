@@ -1,0 +1,1 @@
+console.log('The edit guest profile js is connected to the edit guest page')

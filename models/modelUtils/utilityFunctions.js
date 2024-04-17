@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 // The maximum is exclusive and the minimum is inclusive
 function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
@@ -50,4 +52,91 @@ function randomDate(startDate, endDate) {
     return new Date(startTime + Math.random() * (endDate.getTime() - startTime));
 }
 
-module.exports = {getRandomInt, adjustDays, compareDates, randomDate}
+function calculateDaysBetweenDates(checkInDate, checkOutDate) {
+    // Create date objects for check-in and checkout dates
+    const startDate = new Date(checkInDate);
+    const endDate = new Date(checkOutDate);
+
+    // Calculate the difference in milliseconds
+    const diffInMs = endDate - startDate;
+
+    // Convert milliseconds to days
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    return Math.ceil(diffInDays); // Use Math.ceil to round up to the nearest whole number
+}
+
+function isValidDate(dateString) {
+    // Regular expression to check the format 'YYYY-MM-DD'
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+    // Check if the format matches
+    if (!dateString.match(regex)) {
+        return false; // If format does not match, return false
+    }
+
+    // Destructure the string to separate year, month, and day
+    const [year, month, day] = dateString.split('-');
+
+    // Create a date instance using the parts
+    const date = new Date(year, month - 1, day); // Month is 0-indexed
+
+    // Check the validity of the date by comparing the parts with the created date instance
+    const valid = (date.getFullYear() === parseInt(year, 10)) &&
+                  (date.getMonth() === parseInt(month, 10) - 1) &&
+                  (date.getDate() === parseInt(day, 10));
+
+    return valid; // Return the validity
+}
+
+function isValidMongoId(id) {
+    return mongoose.Types.ObjectId.isValid(id);
+}
+
+function getSecondsBetweenDates(date1, date2, isAbsolute = true) {
+    // Calculate the difference in milliseconds
+    const difference = date2.getTime() - date1.getTime();
+    
+    // Convert milliseconds to seconds and return the absolute value
+    return isAbsolute ? Math.abs(difference / 1000) : (difference / 1000);
+}
+
+function formatDate_Mon_DD_YYYY(date) {
+    // Array of month names
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Extract the month, date, and year from the date object
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${month} ${day}, ${year}`;
+}
+
+
+function formatDate_DD_MON_YYYY(date) {
+    // Array of month names
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Extract the month, date, and year from the date object
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${day} ${month}, ${year}`;
+}
+
+function formatDate_YYY_d_MM_d_dd(date) {    
+    // Extract the month, date, and year from the date object
+    const month = date.getMonth()+1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    
+    // Format the date string
+    return `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+}
+module.exports = {formatDate_YYY_d_MM_d_dd, getRandomInt, adjustDays, compareDates, randomDate, calculateDaysBetweenDates, isValidDate, isValidMongoId, getSecondsBetweenDates, formatDate_Mon_DD_YYYY, formatDate_DD_MON_YYYY}

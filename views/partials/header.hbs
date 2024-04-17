@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {{#if userType}}
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  {{/if}}
   <title>{{#if title}}{{title}}{{/if}}{{#unless title}}{{"Hotel California"}}{{/unless}}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -35,6 +40,7 @@
   {{#if addFlatPicker}}
   <!-- Flatpickr CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/confetti.css">
   <!-- Flatpickr JS -->
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   {{/if}}
@@ -43,54 +49,171 @@
     crossorigin="anonymous"></script>
   <script defer src="/js/main.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
 
+  {{#if addSlick}}
+    <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"
+    integrity="sha512-HGOnQO9+SP1V92SrtZfjqxxtLmVzqZpjFFekvzZVWoiASSQgSr4cw9Kqd2+l8Llp4Gm0G8GIFJ4ddwZilcdb8A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  {{/if}}
+
+  {{#if addChartsJS}}
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {{/if}}
+</head>
 <body>
 
   <div class="nav-container">
     <nav class="navbar navbar-expand-lg p-0">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">
-          <img src="/img/placeholder/hotelCalifornia.png" class="logo" alt="Hotel California">
+          <img src="/img/placeholder/hotel_california_logo.png" class="logo" alt="Hotel California">
           <span class="brand-name">Hotel California</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto ">
+
             {{#navLink "/"}}Home{{/navLink}}
             {{#navLink "/about"}}About Us{{/navLink}}
             {{#navLink "/guestrooms"}}Guest Rooms{{/navLink}}
             {{#navLink "/restaurant"}}Restaurant{{/navLink}}
-            {{#navLink "/contactUs"}}Contact Us{{/navLink}}
-            {{#navLink "/roomdetails"}} <button class="book-now">Book Now</button> {{/navLink}}
-  
+
+{{!-- contact us should not display for staff --}}
+            {{#unless userType}}
+              {{#navLink "/contactUs"}}Contact Us{{/navLink}}
+            {{/unless}}
+            {{#if userType}}
+              {{#equal userType "Guest"}}
+                {{#navLink "/contactUs"}}Contact Us{{/navLink}}
+              {{/equal}}
+            {{/if}}
+
+            {{#equal userType "Guest"}}
+              {{#navLink (concat "/dashboard/guest/" id)}}Dashboard{{/navLink}}
+            {{/equal}}
+
+            {{#equal userType "staff"}}
+              {{#navLink (concat "/dashboard/staff/" id)}}Dashboard{{/navLink}}
+              {{#navLink "/dashboard/staff/inquiries"}}Inbox{{/navLink}}
+            {{/equal}}
+
+            {{#equal userType "manager"}}
+              {{#navLink (concat "/dashboard/manager/" id)}}Dashboard{{/navLink}}
+            {{/equal}}
+
+            {{#equal userType "admin"}}
+              {{#navLink (concat "/dashboard/USNVMQD493/" id)}}Dashboard{{/navLink}}
+            {{/equal}}
+
+{{!-- Book Now button  redirects to room results for guest/public--}}
+            {{#unless userType}}
+              <li class="nav-item">
+                <a class="nav-link" href="/roomOffers?checkin=today&checkout=tomorrow&guests=1&rooms=1">
+                  <button class="book-now">Book Now</button>
+                </a>
+              </li>
+            {{/unless}}
+            {{#if userType}}
+              {{#equal userType "Guest"}}
+                <li class="nav-item">
+                  <a class="nav-link" href="/roomOffers?checkin=today&checkout=tomorrow&guests=1&rooms=1">
+                    <button class="book-now">Book Now</button>
+                  </a>
+                </li>
+              {{/equal}}
+            {{/if}}
+            {{#if userType}}
+              {{#notEqual userType "Guest"}}
+                <li class="nav-item">
+                  <a class="nav-link" href="/dashboard/staff/createReservations">
+                    <button class="book-now">Book Now</button>
+                  </a>
+                </li>
+              {{/notEqual}}
+            {{/if}}
+{{!-- Book Now button  redirects to create reservation for any staff--}}
+
             <div class="nav-show-small">
               <hr>
             </div>
-            {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
-            {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
-            {{!-- {{#navLink "/contactUs"}}Help Center{{/navLink}} --}}
+
+            {{#unless userType}}
+              {{#unless NoHeaderSignup}}
+                {{#navHiddenLink "Sign Up" "/createaccount" }}Sign Up{{/navHiddenLink}}
+              {{/unless}}
+              {{#navHiddenLinkModal "loginModal" "Login" }}Login{{/navHiddenLinkModal}}
+            {{/unless}}
+
+            {{#if userType}}
+              {{#navHiddenLink "Log out" "/api/v1//logout/redirect" }}Logout{{/navHiddenLink}}
+            {{/if}}
 
             <li class="nav-item dropdown ms-auto nav-hide-small">
-              <a class="nav-link dropdown-toggle login-dropdown" href="#" id="navbarDropdown" role="button"
+
+              <div class="nav-link dropdown-toggle login-dropdown" id="navbarDropdown" role="button"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <div>
                   <img class="nav-img-hamburger" src="/img/icons/nav/hamburger.png" alt="hamburger">
                   <img class="nav-img-hamburger" src="/img/icons/nav/account.png" alt="account">
                 </div>
-              </a>
-              <div class="dropdown-menu" style="left: -50px;" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/createaccount">Sign Up</a>
-                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/contactUs">Help Center</a>
               </div>
+              <div class="dropdown-menu" style="left: -50px;" aria-labelledby="navbarDropdown">
+                {{#unless userType}}
+                  {{#unless NoHeaderSignup}}
+                  <a class="dropdown-item" href="/createaccount">Sign Up</a>
+                  {{/unless}}
+                  <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/contactUs">Help Center</a>
+                {{/unless}}
+
+                {{#equal userType "Guest"}}
+                  <a class="dropdown-item" href="/dashboard/guest/reservations">Reservations</a>
+                  <a class="dropdown-item" href="/dashboard/guest/view-inbox">Inbox</a>
+                  <a class="dropdown-item" href="/dashboard/guest/loyalty-history">Loyalty History</a>
+                {{/equal}}
+
+                {{#equal userType "staff"}}
+                  <a class="dropdown-item" href="/dashboard/staff/inquiries">Inbox</a>
+                  <a class="dropdown-item" href="/dashboard/staff/checkin">Guest Checkin</a>
+                  <a class="dropdown-item" href="/dashboard/staff/createReservations">Create Reservation</a>
+                  <a class="dropdown-item" href="/dashboard/staff/viewReservations">Find Reservation</a>
+                {{/equal}}
+
+                {{#equal userType "manager"}}
+                  <a class="dropdown-item" href="/dashboard/manager/report">Report</a>
+                  <a class="dropdown-item" href="/dashboard/manager/promotions">Promotions</a>
+                  <a class="dropdown-item" href="/dashboard/manager/rooms">Rooms</a>
+                  <a class="dropdown-item" href="/dashboard/manager/offers">Offers</a>
+                  <a class="dropdown-item" href="/dashboard/staff/viewReservations">Reservations</a>
+                {{/equal}}
+
+                {{#equal userType "admin"}}
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/managepermissions">Manage Permisssions</a>
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/users">Manage Guests</a>
+                  <a class="dropdown-item" href="/dashboard/USNVMQD493/employees">Manage Employees</a>
+                {{/equal}}
+
+                {{#if userType}}
+                   <hr>
+                   <a class="dropdown-item" id="logout">Logout</a>
+                {{/if}}
+
+               
+              </div>
+              
             </li>
+
           </ul>
         </div>
+
+
       </div>
     </nav>
   </div>

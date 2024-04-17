@@ -71,11 +71,18 @@ const employeeSchema = new mongoose.Schema({
     },
     dateTerminated: Date,
     avatarPhotoUrl: photoSubSchema,
-    passwordChangedAt: {
-        type: Date,
-        default: new Date()
-    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 });
+
+employeeSchema.methods.createPasswordResetToken = function() {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.passwordResetExpires = Date.now() + (10 * 60 * 1000);
+    return resetToken;
+}
+
 
 // refactor later
 employeeSchema.methods.changedPasswordAfter = function(JWTTimestamp) {

@@ -1,0 +1,122 @@
+<div class="create-promotion-page-container">
+    <div class="create-promotion-page-wrapper">
+        {{> _h1styled headerTitle=headerTitle}}
+        {{#if readOnly}}
+            <h3>ID: AHDIHASDUIAD8AS9DSA</h3>
+            <div class="mt-3">
+                <button class="btn btn-primary">EDIT</button>
+                <button class="btn btn-danger">DELETE</button>
+            </div>
+        {{/if}}
+        <form>
+            <div class="form-wrap">
+                <div class="card form-card-create-promotion">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter description" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="promoType" class="form-label">Promotion Type</label>
+                            <select class="form-select" id="promoType" name="promoType" required {{#if readOnly}}disabled{{/if}}>
+                            <option value="season">Fixed Discount</option>
+                            <option value="month">Partnered</option>
+                            <option value="dayOfWeek">Package</option>
+                            {{!-- <option value="dayOfMonth">Loyalty Spend</option> --}}
+                            </select>
+                        </div>
+
+                        <section class="section-style">
+                            <h5>Calendar Implementation</h5>
+                            <div class="mb-3">
+                                <label for="dateType" class="form-label">Date Type</label>
+                                <select class="form-select" id="dateType" name="dateType" required {{#if readOnly}}disabled{{/if}}>
+                                <option value="season">Season</option>
+                                <option value="month">Month</option>
+                                <option value="dayOfWeek">Day of Week</option>
+                                <option value="dayOfMonth">Day of Month</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="dateTypeValue" class="form-label">Date Type Value</label>
+                                <input type="number" class="form-control" id="dateTypeValue" name="dateTypeValue" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="frequencyType" class="form-label">Frequency Type</label>
+                                <select class="form-select" id="frequencyType" name="frequencyType" required {{#if readOnly}}disabled{{/if}}>
+                                <option value="once">Once</option>
+                                <option value="repeats indefinitely">Repeats Indefinitely</option>
+                                <option value="repeats for fixed date period">Repeats for Fixed Date Period</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="frequencyValue" class="form-label">Frequency Value</label>
+                                <input type="number" class="form-control" id="frequencyValue" name="frequencyValue" {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="frequencyPeriodStart" class="form-label">Frequency Period Start</label>
+                                <input type="date" class="form-control" id="frequencyPeriodStart" name="frequencyPeriodStart" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="frequencyPeriodEnd" class="form-label">Frequency Period End (Optional)</label>
+                                <input type="date" class="form-control" id="frequencyPeriodEnd" name="frequencyPeriodEnd" {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                        </section>  
+                    </div>
+                </div>
+                <div class="card form-card-create-promotion">
+                    <div class="card-body">
+                        <section class="section-style">
+                            <h5>Promotion Details</h5>
+                            <div class="mb-3">
+                                <label for="priceChangeType" class="form-label">Price Change Type</label>
+                                <select class="form-select" id="priceChangeType" name="priceChangeType" required {{#if readOnly}}disabled{{/if}}>
+                                <option value="flatRateIncrease">Flat Rate Increase</option>
+                                <option value="percentIncrease">Percent Increase</option>
+                                <option value="flatRateDecrease">Flat Rate Decrease</option>
+                                <option value="percentDecrease">Percent Decrease</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="priceChangeValue" class="form-label">Price Change Value</label>
+                                <input type="number" class="form-control" id="priceChangeValue" name="priceChangeValue" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                        </section>
+
+                        {{#if readOnly}}
+                            {{#if photoList}}
+                                <div>
+                                    <p>Photos</p>
+                                    {{#each photoList}}
+                                        <img src="/img/placeholder/hotel_california_logo.png" alt="smallThumbnail">
+                                    {{/each}}
+                                </div>
+                            {{/if}}
+                        {{/if}}
+
+                        {{#unless readOnly}}
+                            <div class="form-group">
+                                <label for="promoPhotos">Promotion Photos</label>
+                                <input type="file" class="form-control-file" id="promoPhotos" name="promoPhotos" multiple {{#if readOnly}}disabled{{/if}}>
+                                <small class="form-text text-muted">Select multiple photos by holding down the 'Ctrl' or 'Command' key while selecting files.</small>
+                            </div>
+                        {{/unless}}   
+                    </div>
+                </div>
+            </div>
+            {{#unless readOnly}}<button type="submit" class="btn btn-primary">Submit</button> {{/unless}}
+        </form>
+    </div>
+</div>

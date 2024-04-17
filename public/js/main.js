@@ -1,15 +1,101 @@
 
+const launchSwalError = (_callback, title, text) => {
+  Swal.fire({
+    title: title??"Something went wrong!",
+    text: text??"Please try again!",
+    icon: "error"
+  }).then(()=>{
+    if(_callback){
+      _callback();
+    }
+  })
+}
+
 // Function to handle login
 function handleLogin(loginModalCloseButton, loginButton, buttonText, spinner) {
   loginModalCloseButton.disabled = true;
   setDisabledLoginButton (true, loginButton, buttonText, spinner);
 
-  // fetch api call
-  setTimeout(() => {
-    setDisabledLoginButton (false, loginButton, buttonText, spinner);
-    loginModalCloseButton.disabled = false;
-  }, "5000");
+  const form = document.getElementById('loginUserForm');
 
+  if(form){
+    try{
+      const emailInput = form.querySelector('input[type="email"]');
+      const passwordInput = form.querySelector('input[type="password"]');
+      const data = {
+        email: emailInput.value,
+        password: passwordInput.value
+      };
+        try{
+          fetch('api/v1/guests/login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => {
+            try {
+              const json = response.json();
+              return json;
+            } catch (err){
+              console.log(response);
+              return {
+                statusCode: 500,
+                resbody: response,
+                message: "Something went wrong!"
+              }
+            }
+          })
+          .then(res => {
+            // console.log(res)
+              if(res.statusCode && res.statusCode.toString().startsWith("2")){
+                  setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                  loginModalCloseButton.disabled = false;
+                  window.location.href = `dashboard/guest/${res.id}`;
+              } else if (res.statusCode && res.statusCode.toString().startsWith("4")) {
+                  launchSwalError(()=>{
+                    setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                    loginModalCloseButton.disabled = false;
+                  }, "Unable to login", res.message);
+              } else {
+                // console.log(res)
+                  launchSwalError(()=>{
+                    setDisabledLoginButton (false, loginButton, buttonText, spinner);
+                    loginModalCloseButton.disabled = false;
+                  }, "Unable to login")
+              }
+          })
+          .catch(err=>{
+            // console.log(err);
+            launchSwalError(()=>{
+              setDisabledLoginButton (false, loginButton, buttonText, spinner);
+              loginModalCloseButton.disabled = false;
+            })
+          })
+        }catch(err){
+          // console.log(err)
+          launchSwalError(()=>{
+            setDisabledLoginButton (false, loginButton, buttonText, spinner);
+            loginModalCloseButton.disabled = false;
+          })
+        }
+    } catch (err){
+      // console.log(err)
+      launchSwalError(()=>{
+        setDisabledLoginButton (false, loginButton, buttonText, spinner);
+        loginModalCloseButton.disabled = false;
+      })
+    }
+
+
+  } else {
+    // console.log(err)
+    launchSwalError(()=>{
+      setDisabledLoginButton (false, loginButton, buttonText, spinner);
+      loginModalCloseButton.disabled = false;
+    })
+  }
 }
 
 function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
@@ -26,18 +112,51 @@ function setDisabledLoginButton (state, loginButton, buttonText, spinner) {
   }
 }
 
+function logout () {
+  try{
+    fetch('/api/v1/logout')
+    .then(response => response.json())
+    .then(res => {
+      if(res.statusCode && res.statusCode.toString().startsWith("2")){
+        window.location.href = '/';
+      } else {
+          launchSwalError();
+      }
+    });
+  } catch(err){
+    launchSwalError();
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function(e) {
+  const alertToLogin = document.getElementById('alertToLogin');
   const loginModalCloseButton = document.getElementById('loginModalCloseButton');
   const buttonText = document.getElementById('buttonText');
   const spinner = document.getElementById('spinner');
   const loginButton = document.getElementById('loginButton');
+  const logoutButton = document.getElementById('logout');
 
-  document.getElementById('loginButton').addEventListener('click', function(event) {
+  loginButton.addEventListener('click', function(event) {
     event.preventDefault(); 
     handleLogin(loginModalCloseButton, loginButton, buttonText, spinner);
   });
 
+  if(logoutButton){
+    logoutButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      logout();
+    });
+  }
 
+  if(alertToLogin){
+    Swal.fire({
+      title: "Session Expired!",
+      text: "Please login again.",
+      icon: "info"
+    }).then(
+      window.location.href = '/home'
+    )
+  }
 });
 
 

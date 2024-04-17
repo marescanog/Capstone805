@@ -1,0 +1,136 @@
+<div class="dashboard-page-container">
+    <div class="dashboard-page-wrapper">
+        <div class="dashboard-page-content-container">
+            {{> _accountInfoSideBar img=sidebarData.img firstName=sidebarData.firstName lastName=sidebarData.lastName employeeType=sidebarData.employeeType 
+                emailAddress=sidebarData.emailAddress address=sidebarData.address mobileNumber=sidebarData.mobileNumber urlPassword="/dashboard/guest/update-password"
+                urlPhoto="/dashboard/guest/upload-photo" urlEmail="/dashboard/guest/update-email"
+            }}
+
+            <div class="dashboard-main-section-container">
+                <div class="container mt-5">
+                    {{> _h1styled headerTitle="Update Photo"}}
+                    <div class="row mt-4">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="inputGroupFile02">
+                        <label class="input-group-text" for="inputGroupFile02">Upload</label>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{{!-- 
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <!-- User Profile Section -->
+    <div class="col-md-4">
+      <div class="profile-card">
+        <img src="../../../assets/images/me.jpeg" alt="Profile Picture" class="img-thumbnail profile-pic" />
+        <h5 class="mt-5">John Doe</h5>
+        <p>Hotel Guest</p>
+        <ul class="list-group-flush">
+          <li class="list-group-item">johndoe@gmail.com</li>
+          <li class="list-group-item">Email Confirmed</li>
+          <li class="list-group-item">Address<br />City, Postal Code,
+            Country</li>
+          <li class="list-group-item">499-999-9999</li>
+        </ul>
+        <a href="#">Update Email</a><br />
+        <a href="#">Change Password</a>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-8">
+          <div>
+            <p class="fs-5"><strong>Hello, John Doe</strong></p>
+            <p>Joined in 2021</p>
+            <div class="btn">
+              <button type="button" class="btn btn-outline-primary">Edit Profile</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="fs-5">You earned <br><strong class="fs-3">100 points</strong></p>
+          <p class="fs-7">Unlock your rewards! Book now and redeem your points</p>
+          <a href="">View points history</a>
+        </div>
+      </div>
+      <div class="">
+
+
+
+        <section class="autoplay slider slick-slider">
+          <div>
+            <div class="slick-item">
+              <img src="../../../assets/images/room1.jpg">
+              <p class="absolute-text"> In 1 month</p>
+            </div>
+            <div>
+              <h5>Room Name</h5>
+              <p>Jan 28 2024 - jan 30 2024</p>
+            </div>
+          </div>
+          <div>
+            <div class="slick-item">
+              <img src="../../../assets/images/room1.jpg">
+              <p class="absolute-text"> In 1 month</p>
+            </div>
+            <div>
+              <h5>Room Name</h5>
+              <p>Jan 28 2024 - jan 30 2024</p>
+            </div>
+          </div>
+          <div>
+            <div class="slick-item">
+              <img src="../../../assets/images/room1.jpg">
+              <p class="absolute-text"> In 1 month</p>
+            </div>
+            <div>
+              <h5>Room Name</h5>
+              <p>Jan 28 2024 - jan 30 2024</p>
+            </div>
+          </div>
+          <div>
+            <div class="slick-item">
+              <img src="../../../assets/images/room1.jpg">
+              <p class="absolute-text"> In 1 month</p>
+            </div>
+            <div>
+              <h5>Room Name</h5>
+              <p>Jan 28 2024 - jan 30 2024</p>
+            </div>
+          </div>
+
+        </section>
+        <div>
+          <p><strong class="fs-5">What would you like to do today?</strong></p>
+        </div>
+        <div class="d-flex">
+          <div class="p-3">
+            <button class="btn btn-block btn-warning custom-button">View Reservation History</button>
+          </div>
+          <div class="p-3">
+            <button class="btn btn-block btn-purple custom-button" style="background-color: #c779d0;">Browse
+              Rooms</button>
+          </div>
+          <div class="p-3">
+            <button class="btn btn-block btn-info custom-button" style="background-color: #4bc0c8;">View
+              Inquiries</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+</div> --}}
+

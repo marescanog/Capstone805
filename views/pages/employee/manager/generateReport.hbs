@@ -1,0 +1,57 @@
+<div class="reports-main-wrapper">
+    <div class="reposts-main-page-container">
+        {{> _h1styled headerTitle=headerTitle}}
+
+        <div class="report-section-container">
+            <div class="card reports-card-style-smol">
+                <div class="card-header">
+                    Report Details
+                </div>
+                <form >
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="startDate" class="col-form-label">Start Date</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="date" id="startDate" class="form-control">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="endDate" class="col-form-label">End Date</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="date" id="endDate" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <label for="selectionInput" class="form-label">Select Category</label>
+                                        <select id="selectionInput" class="form-select">
+                                            <option selected>Choose...</option>
+                                            <option value="occupancy">Occupancy</option>
+                                            <option value="promotions">Promotions</option>
+                                            <option value="total sales">Total Sales</option>
+                                        </select>
+                                    </div>
+                                </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary m-2">Generate</button>
+                        <button class="btn btn-primary m-2">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card reports-card-style">
+                <div class="card-header">
+                    Report Results
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="chartData" value='{{{json chartData}}}' />
+</div>

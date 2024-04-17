@@ -3,7 +3,7 @@
     {{#unless readOnly}}
     <div class="timeout-container" id="reservationHeldLink">
         <input type="hidden" id="serverHeldSecondsInput" value="{{serverHeldSeconds}}">
-        <img src="/img/icons/general/timer.svg" alt="timer icon" class="pr-4"><p>&nbsp;Room(s) held for&nbsp;</p><span id="roomheldDisplaySeconds">15:00</span>
+        <img src="/img/icons/general/timer.svg" alt="timer icon" class="pr-4"><p>&nbsp;Room(s) held for&nbsp;</p><span id="roomheldDisplaySeconds">0:00</span>
     </div>
     {{/unless}}
     <div class="card pa-side-card">
@@ -36,6 +36,7 @@
                         </div>
                     </div>
                     <ul {{#equalOrGT bookingData.offers.length 4 }} class="room-amenities-list-restrict"{{/equalOrGT}}>
+                    {{!-- TODO ADD ICON --}}
                         <li>{{bookingData.bedCount}} {{bookingData.bedType}}</li>
                         {{#if bookingData.amenities}}
                             {{#each bookingData.amenities}}
@@ -77,7 +78,7 @@
                 <div>
                     <div class="row">
                         <p class="col pa-left">Total Nights</p>
-                        <p  class="col pa-right">$<span id="totalNightsText">{{bookingData.totalNights}}</span></p>
+                        <p  class="col pa-right"><span id="totalNightsText">{{bookingData.totalNights}}</span></p>
                     </div>
                 </div>
                 {{#notEqual bookingData.extraPersonFee 0}}
@@ -92,27 +93,29 @@
                 {{/notEqual}}
 
                 {{#unless readOnly}}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Id like to use my loyalty points
-                        </label>
-                    </div>
-                    <div class="loyalty-container displayNone" id="loyalty-container">
-                        <div class="loyalty-info-points-box">
-                            <p>You have <span>300</span> points to redeem</p>
+                    {{#if loggedIn}}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Id like to use my loyalty points
+                            </label>
                         </div>
-                        <div class="loyalty-rewards-selection-box">
-                            <p>Select your reward*</p>
-                            <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
-                                <option value="10">$10 off</option>
-                                <option value="20">$20 off</option>
-                                <option value="50">$50 off</option>
-                            </select>
-                            <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
-                            <p>** Up to $200 off per booking</p>
+                        <div class="loyalty-container displayNone" id="loyalty-container">
+                            <div class="loyalty-info-points-box">
+                                <p>You have <span>300</span> points to redeem</p>
+                            </div>
+                            <div class="loyalty-rewards-selection-box">
+                                <p>Select your reward*</p>
+                                <select id="rewards-dropdown-select" class="form-select" aria-label="Default select example" disabled="true">
+                                    <option value="10">$10 off</option>
+                                    <option value="20">$20 off</option>
+                                    <option value="50">$50 off</option>
+                                </select>
+                                <p>*Spend $5, earn 1 point. Get $10 off with every 100 points on your next booking!</p>
+                                <p>** Up to $200 off per booking</p>
+                            </div>
                         </div>
-                    </div>
+                    {{/if}}
                 {{/unless}}
             </div>
 
@@ -122,7 +125,7 @@
                 <div>
                     <div class="row">
                         <p id="subTotalTextHeader" class="col pa-left">Subtotal</p>
-                        <p id="subTotalText" class="col pa-right"></p>
+                        <p id="subTotalText" class="col pa-right">{{#if readOnly}}${{bookingData.subtotal}}{{/if}}</p>
                     </div>
                 </div>
                 {{!-- Figure out functionality later, but if discounts.length are greater > 0 or put hidden input here --}}
@@ -141,7 +144,7 @@
                 <div>
                     <div class="row">
                         <p class="col pa-left">Taxes & Fees</p>
-                        <p id="totalTaxText" class="col pa-right"></p>
+                        <p id="totalTaxText" class="col pa-right">{{#if readOnly}}${{bookingData.taxes}}{{/if}}</p>
                     </div>
                 </div>
             </div>
@@ -151,7 +154,7 @@
             <div class="pa-left-right-container">
                 <div class="row">
                     <p class="col pa-left">Total Charges</p>
-                    <p id="totalChargesText" class="col pa-right"></p>
+                    <p id="totalChargesText" class="col pa-right">{{#if readOnly}}${{bookingData.totalCharge}}{{/if}}</p>
                 </div>
             </div>
 
@@ -161,20 +164,20 @@
             <div class="pa-left-right-container">
                 <div>
                     <div class="row">
-                        <p class="col pa-left">Charges Due Now</p>
-                        <p id="paidCharges" class="col pa-right"></p>
+                        <p class="col pa-left">Charges Paid </p>
+                        <p id="paidCharges" class="col pa-right">{{#if readOnly}}${{bookingData.totalPaid}}{{/if}}</p>
                     </div>
                 </div>
                 <div>
                     <div class="row">
-                        <p class="col pa-left">Paid with mastercard-XXXX4567</p>
-                        <p class="col pa-right"></p>
+                        <p class="col pa-left">Paid with {{bookingData.cardType}}-XXXX{{bookingData.lastFour}}</p>
+                        {{!-- <p class="col pa-right">{{#if readOnly}}{{bookingData.totalPaid}}{{/if}}</p> --}}
                     </div>
                 </div>
                 <div>
                     <div class="row">
                         <p class="col pa-left">Due at check-in</p>
-                        <p id="dueCharges" class="col pa-right"></p>
+                        <p id="dueCharges" class="col pa-right">{{#if readOnly}}${{bookingData.totalDue}}{{/if}}</p>
                     </div>
                 </div>
             </div>

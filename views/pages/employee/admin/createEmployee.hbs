@@ -1,0 +1,84 @@
+<div class="create-form-page-container">
+    <div class="create-form-page-wrapper">
+        {{> _h1styled headerTitle=headerTitle}}
+        {{#if readOnly}}
+            <h3>ID: AHDIHASDUIAD8AS9DSA</h3>
+            <div class="mt-3">
+                <button class="btn btn-primary">EDIT</button>
+                <button class="btn btn-danger">DELETE</button>
+            </div>
+        {{/if}}
+        <form>
+            <div class="form-wrap">
+                <div class="card form-card-create">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required {{#if readOnly}}disabled{{/if}}>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required {{#if readOnly}}disabled{{/if}}>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number</label>
+                            <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" {{#if readOnly}}disabled{{/if}}>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required {{#if readOnly}}disabled{{/if}}>
+                        </div>
+
+                        {{#if readOnly}}
+                            <div>
+                                <p>User Photo</p>
+                                <img src="/img/placeholder/hotel_california_logo.png" alt="userPhoto">
+                            </div>
+                        {{/if}}
+
+                        {{#unless readOnly}}
+                            <div class="form-group">
+                                <label for="userPhoto">User Photo</label>
+                                <input type="file" class="form-control-file" id="userPhoto" name="userPhoto" {{#if readOnly}}disabled{{/if}}>
+                                <small class="form-text text-muted">Upload a single user photo.</small>
+                            </div>
+                        {{/unless}}
+                    </div>
+                </div>
+                <div class="card form-card-create">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="hireDate">Hire Date</label>
+                            <input type="date" class="form-control" id="hireDate" name="hireDate" required {{#if readOnly}}disabled{{/if}}>
+                        </div>
+                        <div class="mb-3">
+                            <label for="employeeType" class="form-label">Employee Type</label>
+                            <select class="form-select" id="employeeType" name="employeeType" required {{#if readOnly}}disabled{{/if}}>
+                            <option value="staff">Staff</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <section class="section-style">
+                            <h5>Address Details</h5>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" name="city" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            <div class="form-group">
+                                <label for="postalCode">Postal Code</label>
+                                <input type="text" class="form-control" id="postalCode" name="postalCode" required {{#if readOnly}}disabled{{/if}}>
+                            </div>
+                            {{> formContents/_countrySelect selectId="inputCountry" selectName="country" selectTitle="Country" required=true readOnly=readOnly}}
+                        </section>
+                    </div>
+                </div>
+            </div>
+            {{#unless readOnly}}<button type="submit" class="btn btn-primary">Submit</button> {{/unless}}
+        </form>
+    </div>
+</div>

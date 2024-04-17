@@ -1,0 +1,75 @@
+.reservation-page-wrapper {
+    height: 80vh;
+    /* background-color: #f57a0e; */
+    display: flex;
+    justify-content: center;
+}
+
+.reservation-page-container {
+    padding-top: 2em;
+    padding-bottom: 2em;
+    /* background-color: aqua; */
+}
+
+.nav-item .active {
+    background: transparent !important;
+    border: none;
+    border-radius: 0 !important;
+    border-bottom: 3px solid rgba(232, 143, 59, 1) !important;
+
+}
+
+.pills-btn {
+    color: rgba(72, 72, 72, 1) !important;
+    padding: 5px 0 5px 0 !important;
+    margin-right: 20px;
+}
+
+.reservations-list-container {
+    /* background-color: #f57a0e !important; */
+    min-width: 50em !important;
+    min-height: 30em !important;
+}
+
+
+
+.reservation-list {
+    align-items: center;
+    display: flex;
+
+}
+
+.reservation-list p {
+    line-height: 8px;
+    color: #383849;
+}
+
+.reservation-list img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.modify-btn {
+    color: #ffffff;
+    background-color: #f57a0e;
+    border-color: #f57a0e;
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+}
+
+.modify-btn:hover {
+    opacity: 0.6;
+    background-color: #f57a0e;
+    border-color: #f57a0e
+}
+
+@media screen and (max-width: 992px) {
+
+
+}
+
+@media screen and (max-width: 600px) {
+
+}

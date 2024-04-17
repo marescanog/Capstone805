@@ -9,7 +9,10 @@ const countdown = (serverSecondsInputDOMID, countdownElementDOMID, activationLin
   let timer = setInterval(function() {
       seconds -= 1;
 
-      countdownElement.textContent = seconds>60 ? `${Math.floor(seconds/60)}:${seconds%60}`: seconds; 
+      if(seconds >= 0 ){
+        countdownElement.textContent = seconds>60 ? `${(Math.floor(seconds/60)).toString().padStart(1,'0')}:${(seconds%60).toString().padStart(2,'0')}`: seconds; 
+      }
+      
 
     if (seconds <= 0) {
       clearInterval(timer); 

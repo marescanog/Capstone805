@@ -1,0 +1,48 @@
+<div class="occ-wrapper">
+    <div class="occ-container">
+        
+
+    <div class="container mt-5">
+            {{> _h1styled headerTitle="Room Occupancy"}}
+            {{#each rooms}}
+            <div class="card my-3">
+                <div class="card-body">
+                    <h5 class="card-title">Room Type: {{this.roomType}} - ID: {{this.roomId}}</h5>
+                    <p class="card-text">
+                        Bed Type: {{this.bedType}} <br>
+                        Bed Count: {{this.bedCount}} <br>
+                        Total Quantity: {{this.totalQuantity}}
+                    </p>
+                    <div class="room-details">
+                        <h6>Room Details:</h6>
+                        <div class="row">
+                            {{#each this.roomObjects}}
+                            <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header {{#if this.guestId}}card-header-occupied{{else}}card-header-unoccupied{{/if}}">
+                                        Room {{this.roomNumber}}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Name: {{this.roomName}}<br>
+                                            {{#if this.guestId}}
+                                            Occupied by: {{this.firstName}} {{this.lastName}}<br>
+                                            Check-In: {{this.checkInDate}}<br>
+                                            Check-Out: {{this.checkOutDate}}
+                                            {{else}}
+                                            Status: <span class="text-success">Unoccupied</span>
+                                            {{/if}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+    </div>
+
+    </div>
+</div>

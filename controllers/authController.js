@@ -1,51 +1,187 @@
 const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const {Room} = require('../models/roomModel');
 const Guest = require('../models/guestModel.js');
 const Employee = require('../models/employeeModel.js');
 const catchAsync = require('./../apiUtils/catchAsync');
+const {isValidMongoId, isValidDate, adjustDays, calculateDaysBetweenDates} = require('../models/modelUtils/utilityFunctions');
 const AppError = require('../apiUtils/appError.js');
+const crypto = require ('crypto');
+const bcrypt = require('bcryptjs');
+const Email = require('./../apiUtils/email')
+const Hold = require('../models/holdModel.js');
 
 const {Types} = mongoose;
+const CHECKOUT_SESSION_HOLD_MAX_TIME = 10;
 
-const signToken = id => {
-    return jwt.sign({id: id}, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
-}
+exports.registerUserAccount = catchAsync(async (req, res, next) => {
+    // TODO add 1 second delay just like in login
+   
+    const {
+        firstName, lastName, emailAddress, password, passwordConfirm,
+        address, city, postalCode, country, mobileNumber
+    } = req.body;
 
-const loginUser = async(req, next, Model ) => {
-    const {email, password} = req.body;
+    let found;
 
-    // 1.) if email and password exist
-    if(!email || !password){
-       return next(new AppError('Please provide email and password!', 400));
+    // this flag is so users cant access the verify account page, especially if they havent created an account
+    req.session.createdAccount = emailAddress;
+
+    // Check if email exists
+    if(emailAddress != null && emailAddress != ""){
+        // TODO add try catch
+        found = await Guest.findOne({emailAddress: emailAddress});
+    }
+    // console.log(`Expiry ${req.session.resendLinkexpiry}`)
+    // console.log(`Date now ${Date.now()}`)
+    // console.log(`is expiry less than now ${req.session.resendLinkexpiry < Date.now()}`)
+    if(found){
+        let emailsent = false;
+
+        // CASE A: Existing Deactivated user
+        //Send email account is not active and to contact admin
+        if(!emailsent && !found.isActive){
+            const contactURL = `${req.protocol}://${req.get('host')}/contactUs`;
+            // Only send email if session indicates expiry link expired or has not been created
+            // refactor: instead of storimg in session, store in db & delete activation code?
+            if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
+                req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
+                await (new Email(found, contactURL)).sendContactAdmin();
+            } 
+            emailsent = true;
+        }
+
+        // CASE B: Existing Not Validated User
+        // Send validation email again
+        if(!emailsent && !found.isVerified){
+
+            // check expiry time for validation before sending new email
+            if(found.activationResendExpires && found.activationResendExpires instanceof Date && found.activationResendExpires.getTime() <  Date.now()){
+                // Generate new activation link & send to their email
+
+                let foundActivationToken = await found.createActivationToken();
+
+                await found.save({validateBeforeSave: false});
+
+                const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${foundActivationToken}`;
+
+                req.session.resendLinkexpiry = found.activationResendExpires;
+
+                await (new Email(found, activationURL, {activationCode:found.activationCode, contactURL:`${req.protocol}://${req.get('host')}/contactUs`})).resendActivationLink();
+
+            } else {
+
+                if(!(found.activationResendExpires instanceof Date)){
+                    delete req.session.createdAccount;
+                    delete req.session.resendLinkexpiry;
+                    return next(new AppError("Something went wrong", 500));
+                }
+
+            }
+            emailsent = true;
+        }
+
+        // CASE C: Existing Validated user
+        //Send emai acc already registered
+        if(!emailsent && found.isVerified){
+            const activationURL = `${req.protocol}://${req.get('host')}`;
+            // Only send email if session indicates expiry link expired or has not been created
+            if(!req.session.resendLinkexpiry || req.session.resendLinkexpiry < Date.now()){
+                req.session.resendLinkexpiry = Date.now() + (5 * 60 * 1000);
+                await (new Email(found, activationURL)).sendEmailRegisterExistingAccount();
+            } 
+            emailsent = true;
+        }
+
+        // If Validated -> Send Login Link & Forgot Password Link
+        return res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Activation link sent to email'
+        })
+    } 
+
+    // Default Case No acc created yet
+    // Start a session.
+    const session = await mongoose.startSession();
+    let activationToken; 
+    let newUser;
+    try {
+
+        // Start a transaction.
+        session.startTransaction();
+
+        // Create User - IsActive yes, Verified no
+        newUser = await Guest.create({
+            emailAddress: emailAddress,
+            password: password,
+            passwordConfirm: passwordConfirm,
+            firstName: firstName,
+            lastName: lastName,
+            isVerified: false,
+            isActive: true,
+            createdOn: new Date(),
+            address: {
+                address: address,
+                city: city,
+                postalCode: postalCode,
+                country: country
+            },
+            reservations: [],
+            formSubmissions: [],
+            loyaltyHistory: []
+        });
+        activationToken = await newUser.createActivationToken();
+        await newUser.save({validateBeforeSave: false});
+        req.session.resendLinkexpiry = newUser.activationResendExpires;
+        if(activationToken == null && newUser == null){
+            // Rollback 
+            await session.abortTransaction();
+            return next(new AppError("Token or User was not created",500));
+        }
+
+        await session.commitTransaction();
+        console.log('Register User Transaction Committed.');
+
+    } catch (err) {
+        delete req.session.createdAccount;
+        delete req.session.resendLinkexpiry;
+
+        if(err._message === "guest validation failed"){
+            return next(new AppError(JSON.stringify(err.errors),400));
+        }
+
+        // If any operation fails, abort the transaction.
+        // Rollback 
+        await session.abortTransaction();
+        console.log('Transaction aborted due to an error:', err);
+
+        return next(new AppError("Something went wrong",500));
+    } finally {
+        // End the session.
+        session.endSession();
     }
 
-    // 2.) check if user exists 
-    const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen');
+    // Email Activation Link and Acitivation Code
+    try {
+        // 3) Send it to users email
+        const activationURL = `${req.protocol}://${req.get('host')}/api/v1/guests/activate/${activationToken}`;
 
-    if(!user){
-        return next(new AppError('Incorrect email or password!', 400));
+        await (new Email(newUser, activationURL, {activationCode:newUser.activationCode})).sendActivationLink();
+
+        return res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Activation link sent to email'
+        })
+
+    } catch (err) {
+        console.log(err);
+        return next(new AppError('There was an error sending the email. Try again later!'), 500)
     }
 
-    const {keyWord, keyGen} = user;
-
-    // 2.) check if password is correct
-    // to do also create in Employee & transfer to password utility
-    const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
-
-    if(!isCorrect){
-        return next(new AppError('Incorrect email or password!', 400));
-    }
-
-    // 3.) if everything ok send token to client
-    return {
-        token: signToken(user._id),
-        id: user._id
-    };
-
-};
+})
 
 exports.signup = catchAsync(async(req, res, next)=>{
   
@@ -96,9 +232,94 @@ exports.signup = catchAsync(async(req, res, next)=>{
     });
 });
 
+const signToken = (id, empType) => {
+    const payload = {
+        id: id
+    }
+
+    if(empType){
+        payload.type = empType;
+    } else {
+        payload.type = "Guest";
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN
+    });
+}
+
+const loginUser = async(req, next, Model, userType="Guest" ) => {
+    return new Promise((resolve)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email, password} = req.body;
+    
+            // 1.) if email and password exist
+            if(!email || !password){
+                return resolve(next(new AppError('Please provide email and password!', 400)));
+            }
+        
+            // 2.) check if user exists 
+            const user = await Model.findOne({emailAddress: email}).select('+keyWord +keyGen').maxTimeMS(20000);
+        
+            if(!user){
+                return resolve(next(new AppError('Incorrect email or password!', 400)));
+            }
+        
+            const {keyWord, keyGen, employeeType} = user;
+        
+            // 3.) check if user is active and verified
+            switch(Model.modelName){
+                case "employee":
+                    if(user.status != 'active'){
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+                    if(employeeType){
+                        if(userType === 'management'){
+                            if(!(employeeType === 'admin' || employeeType === 'manager')){
+                                return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                            }
+                        } else {
+                            if(employeeType != userType){
+                                return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                            }
+                        }
+                    } else {
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+                    break;
+                default: 
+                    if(!user.isVerified){
+                        return resolve(next(new AppError('Incorrect email or password!', 400)));
+                    }
+                    if(!user.isActive){
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+                    if(employeeType!=null){
+                        return resolve(next(new AppError('Please contact your administrator for account access!', 403, true)));
+                    }
+            }
+
+            // 4.) check if password is correct
+            // to do also create in Employee & transfer to password utility
+            const isCorrect = await Guest.correctPassword(password, keyGen, keyWord);
+        
+            if(!isCorrect){
+                return resolve(next(new AppError('Incorrect email or password!', 400)));
+            }
+        
+            // 6.) if everything ok send token to client
+            resolve({
+                token: signToken(user._id, user?.employeeType),
+                id: user._id,
+                type: user?.employeeType
+            });
+        }, "1000");
+    });
+};
 
 exports.loginEmployee = catchAsync(async(req, res, next) => {
-    const loginData = await loginUser(req, next, Employee);
+    const loginData = await loginUser(req, next, Employee, 'staff');
 
     if(loginData?.token){
         // Set token in HTTP-only cookie
@@ -106,7 +327,8 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             expiresIn: new Date(
-                Date.now() + process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
             )
         });
         res.status(201).json({
@@ -115,17 +337,51 @@ exports.loginEmployee = catchAsync(async(req, res, next) => {
             statusCode: 201,
             id: loginData.id
         });
-    }
-
+    } 
 });
 
+exports.loginManagement = catchAsync(async(req, res, next) => {
+    const loginData = await loginUser(req, next, Employee, 'management');
+
+    if(loginData?.token){
+        // Set token in HTTP-only cookie
+        res.cookie('jwt', loginData.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            expiresIn: new Date(
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
+            )
+        });
+        res.status(201).json({
+            status: 'success',
+            token: loginData.token,
+            statusCode: 201,
+            id: loginData.id,
+            url: loginData.type == "admin" ? `/dashboard/USNVMQD493/${loginData.id}` : `/dashboard/manager/${loginData.id}`
+        });
+    } 
+});
 
 exports.loginGuest = catchAsync(async(req, res, next) => {
-    const token = await loginUser(req, next, Guest);
-    res.status(201).json({
-        status: 'success',
-        token: token
-    });
+    const loginData = await loginUser(req, next, Guest);
+    if(loginData?.token){
+        // Set token in HTTP-only cookie
+        res.cookie('jwt', loginData.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            expiresIn: new Date(
+                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
+            )
+        });
+        res.status(201).json({
+            status: 'success',
+            token: loginData.token,
+            statusCode: 201,
+            id: loginData.id
+        });
+    } 
 })
 
 
@@ -148,26 +404,37 @@ exports.protect = catchAsync(async(req, res, next)=>{
 
     req.decoded = decoded;
 
+    // console.log(req.decoded)
+
     next();
 });
 
-exports.verifyEmployee = catchAsync(async(req, res, next)=>{
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        if( req.user && !roles.includes(req.user.employeeType)) {
+            return next(new AppError('You do not have access to this resource/action!', 403));
+        }
+        next();
+    }
+}
 
+exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     // 3.) Check if user still exists
     const existing = await Employee.findById(req.decoded.id);
 
     if(!existing){
-        return next(new AppError('Token expired. Please login!', 401));
+        return next(new AppError('You do not have access to this resource/action!', 403));
     }
 
-    // // 4.) TODO Check if user is hotel staff or manager (not guest or admin)
-    // if(existing.changedPasswordAfter(req.decoded.iat)){
-    //     return next(new AppError('Token expired. Please login!', 401));
-    // }
+    // 4.) Check if user is active
+    if(!(existing.status === "active")){
+        return next(new AppError('You do not have access to this resource/action!', 403));
+    }
 
     // 5.) Check if user changed password after route was issued
     if(existing.changedPasswordAfter(req.decoded.iat)){
-        return next(new AppError('Token expired. Please login!', 401));
+        res.clearCookie("jwt");
+        return next(new AppError('Session expired. Please login!', 401));
     }
 
     req.user = existing;
@@ -175,14 +442,536 @@ exports.verifyEmployee = catchAsync(async(req, res, next)=>{
     next();
 });
 
-// TODO create verifyadmin
-
 exports.verifyGuest = catchAsync(async(req, res, next)=>{
-    // // 3.) Check if user still exists
-    // const existing = await Employee.findById(req.decoded.id);
+    // 3.) Check if user still exists
+    const existing = await Guest.findById(req.decoded.id);
 
-    // // 4.) Check if user changed password after route was issued
-    // console.log(existing)
+    if(!existing){
+        return next(new AppError('You do not have access to this resource/action!', 403));
+    }
 
-    // next();
+    // 4. check if user is active and verified
+    if(!existing.isVerified){
+        res.clearCookie("jwt");
+        return next(new AppError('Session expired. Please login!', 401));
+    }
+    if(!existing.isActive){
+        return next(new AppError('You do not have access to this resource/action!', 403));
+    }
+
+    // 5.) Check if user changed password after route was issued
+    if(existing.changedPasswordAfter(req.decoded.iat)){
+        res.clearCookie("jwt");
+        return next(new AppError('Session expired. Please login!', 401));
+    }
+
+    req.user = existing;
+    req.user.employeeType = existing?.employeeType??"guest";
+    next();
+});
+
+
+exports.detect = catchAsync(async(req, res, next)=>{
+    let token;
+
+    if (req.cookies.jwt){
+        // check if token exists
+        token = req.cookies.jwt;
+    }
+
+    if(token){
+        // verify token if existing
+        try{
+            req.decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        } catch(err){
+            // remove cookie & send pop up to client when expired/incorrect token
+            req.alertToLogin = true;
+            res.clearCookie("jwt");
+        }
+    }
+    
+    return next();
+});
+
+async function cameFromRoomOffers(req) {
+    // console.log(req.session)
+    if(req.session){
+        if( req.session.cameFromRoomOffers ){
+            delete req.session.cameFromRoomOffers;
+            // console.log('setting page createCheckoutSession');
+            return true
+        }
+    }
+    return false
+}
+
+exports.createCheckoutSession  = catchAsync(async(req, res, next)=>{
+    const referer = req.get('Referer');
+    const parsedUrl  = referer ? new URL(referer) : null;
+    let  pathname;
+    pathname = parsedUrl?.pathname;
+    const fromOffersPage = await cameFromRoomOffers(req);
+    // console.log(`pathname ${pathname}`);
+
+    // console.log(`fromOffersPage ${fromOffersPage}`)
+    if(pathname && (pathname.includes('roomOffers') || pathname.includes('roomdetails')) && fromOffersPage){
+        // console.log("inside");
+
+        const {roomdetails, offers} = req.query;
+        const sessionID = req.sessionID;
+        let validParams = true;
+        let  checkin = req?.query?.checkin;
+        let  checkout = req?.query?.checkout;
+    
+        if(checkin === "today" || checkin == null ||  !isValidDate(checkin)){
+            const today = new Date();
+            checkin = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+            // console.log(checkin)
+        }
+    
+        if(checkout === "tomorrow" || checkout == null ||  !isValidDate(checkout)){
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate()+1);
+            checkout = `${tomorrow.getFullYear()}-${(tomorrow.getMonth()+1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`
+            // console.log(checkout)
+        }
+    
+        // // isValidMongoId, isValidDate
+        // console.log(`roomdetails ${roomdetails}`);
+        // console.log(`offers ${offers}`);
+        // console.log(`checkin ${checkin}`);
+        // console.log(`checkout ${checkout}`);
+    
+        // check if valid mongo DB IDs
+        // check if valid date string
+        if(validParams && !isValidMongoId(roomdetails)){
+            validParams = false;
+        }
+        if(validParams && !isValidMongoId(offers)){
+            validParams = false;
+        }
+        if(validParams && !isValidDate(checkin)){
+            validParams = false;
+        }
+        if(validParams && !isValidDate(checkout)){
+            validParams = false;
+        }
+    
+        // parse checkin & checkout
+        let checkinArr = [];
+        let checkoutArr = [];
+        let checkinDate = new Date();
+        let checkoutDate = new Date();
+        checkoutDate.setDate(checkoutDate.getDate()+1);
+        // console.log(`A checkinDate ${checkinDate}`)
+        // console.log(`A checkout ${checkoutDate}`)
+        try{
+            checkinArr = checkin ? checkin.split('-') : [];
+            checkoutArr = checkin ? checkout.split('-') : [];
+            // console.log(`B checkinArr ${checkinArr}`)
+            // console.log(`B checkoutArr ${checkoutArr}`)
+            console.log(`checkinArr.length ${checkinArr.length}`)
+            console.log(`checkoutArr.length ${checkoutArr.length}`)
+            checkinDate = checkinArr.length > 1 ? new Date(checkinArr[0], checkinArr[1]-1, checkinArr[2]) : checkinDate;
+            checkoutDate = checkoutArr.length > 1 ? new Date(checkoutArr[0], checkoutArr[1]-1, checkoutArr[2]) : checkoutDate;
+        } catch (err) {
+            console.log(`auth controller ${err}`)
+            checkinArr = [];
+            checkoutArr = [];
+        }
+        console.log(`B checkinDate ${checkinDate}, A C 582`)
+        console.log(`B checkout ${checkoutDate}`)
+
+        checkinDate.setHours(0,0,0,0);
+        checkoutDate.setHours(0,0,0,0);
+
+        // console.log('authController 5810')
+        // console.log(`checkinArr[0] ${checkinArr[0]} checkinArr[1]-1 ${checkinArr[1]-1} checkinArr[2] ${checkinArr[2]}`)
+        // console.log(`checkoutArr[0] ${checkoutArr[0]} checkoutArr[1]-1 ${checkoutArr[1]-1} checkoutArr[2] ${checkoutArr[2]}`)
+        // console.log(`checkinDate ${checkinDate}`)
+        // console.log(`checkout ${checkoutDate}`)
+        if(!validParams){
+            console.log('Parameters are invalid, auth controller');
+            // clear token at the very least
+            if(req.session.checkout){
+                delete req.session.checkout;
+            }
+            // move on, don't bother creating token
+            return next();
+        } 
+        const emptyArray = [...Array(calculateDaysBetweenDates(checkin, checkout))];
+        // console.log(`checkinDate ${checkinDate} 591 `)
+        try {
+            if(sessionID){
+                // Delete existing holds with the same sessionID
+                await Hold.deleteMany({ sessionID });
+            }
+    
+            // console.log(`checkinDate ${checkinDate} 599 `)
+            // Create a new set of holds  checkinDate checkoutDate
+            const holdsPerDay = await Promise.all(
+                emptyArray.map((_, index) => {
+                    const holdDate = adjustDays(checkinDate , index);
+                    holdDate.setHours(0,0,0,0);
+                    // console.log(`holdDate ${holdDate}, auth con 605`)
+                    // console.log(`checkinDate ${checkinDate}, auth con 605`)
+                    return {
+                        sessionID: sessionID,
+                        offer_id: offers,
+                        room_id: roomdetails,
+                        guest_id: req?.decoded?.id,
+                        numberOfRooms: 1, // TODO update later
+                        created_at: new Date(),
+                        expires_at: new Date(Date.now() + CHECKOUT_SESSION_HOLD_MAX_TIME * 60 * 1000),
+                        holdStartDateTime: holdDate,
+                        checkin: checkin,
+                        checkout: checkout,
+                        numberOfGuests: 1,
+                    }
+                })
+            )
+    
+            // Insert new holds
+            const createdHolds = await Hold.insertMany(holdsPerDay);
+    
+            // Update the session with the first hold's info (if needed)
+            if (createdHolds.length > 0) {
+                req.session.checkout = createdHolds[0];
+            }
+    
+            return next();
+    
+        } catch (err) {
+            console.log(err);
+            return next(new AppError('Something went wrong while creating a checkout session!', 500));
+        }
+
+    }
+    // console.log("outside")
+    next();
 })
+
+exports.logout = (req, res, next) => {
+    if (req.cookies.jwt){
+        res.clearCookie("jwt");
+    }
+    res.status(200).json({
+        status: 'success',
+        statusCode: 200
+    })
+}
+
+exports.logoutRedirect = (req, res, next) => {
+    if (req.cookies.jwt){
+        res.clearCookie("jwt");
+    }
+    res.redirect('/');
+}
+
+exports.cacheControl = catchAsync(async(req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
+
+
+exports.forgotPasswordGuest = catchAsync( async (req, res, next) => {
+    // 1) Get user based on POSTed email
+    const user = await Guest.findOne({emailAddress: req.body.emailAddress});
+
+    if(!user){
+        return res.send({"message": "If the email address you entered is associated with an account, we'll send you a password reset link. Please check your inbox (and your spam/junk folder, just in case) for further instructions."})
+    }
+
+    // 2) Generate random reset token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({validateBeforeSave: false});
+
+    try {
+        // 3) Send it to users email
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
+
+        await (new Email(user, resetURL)).sendForgotPasswordLink();
+
+        return res.status(200).json({
+            status: 'success',
+            statusCode: 200,
+            message: 'Token sent to email'
+        })
+
+    } catch (err) {
+        console.log(err);
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({validateBeforeSave: false});
+
+        return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    }
+
+});
+
+exports.resetPasswordGuest = catchAsync(async (req, res, next) => {
+    const {password, passwordConfirm} = req.body;
+    
+    // 1.) if email and password exist
+    if(!password || !passwordConfirm){
+        return resolve(next(new AppError('Please provide password and confirmed password!', 400)));
+    }
+
+    // 2.) check if user exists 
+    // 2.a) Get user based on the token
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    // 2.b) Set new password only if token has not expired and user exists
+    const user = await Guest.findOne({passwordResetToken: hashedToken,
+        passwordResetExpires: {$gt: Date.now()}
+    });
+
+    if(!user){
+        return next(new AppError('Token is invalid or has expired', 400))
+    }
+
+    // 3.) Update password properties for the user
+    user.password = password;
+    user.passwordConfirm = passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    // 4.) Log user in, send JWT
+    const token = signToken(user._id, user?.employeeType);
+
+    res.status(200).json({
+        status: 'success',
+        statusCode: 200,
+        token
+    });
+});
+
+
+// TODO
+exports.forgotPasswordEmployee = catchAsync( async (req, res, next) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The resetPasswordEmployee route is not yet defined!'
+    });
+
+    // // 1) Get user based on POSTed email
+    // const user = await Employee.findOne({emailAddress: req.body.emailAddress, passwordResetExpires: {$gt: Date.now()}});
+
+    // if(!user){
+    //     return res.send({"message": "If the email address you entered is associated with an account, we'll send you a password reset link. Please check your inbox (and your spam/junk folder, just in case) for further instructions."})
+    // }
+
+    // // 2) Generate random reset token
+    // const resetToken = user.createPasswordResetToken();
+    // await user.save({validateBeforeSave: false});
+
+
+    // // 3) Send it to users email
+    // const resetURL = `${req.protocol}://${req.get('host')}/api/v1/guests/resetPassword/${resetToken}`;
+
+    // const message = `Forgot your password? Submit a PATCH request with your new password and password confirm to: ${resetURL}. \nIf you didn't forget your password, please ignore this email!`
+
+    // try {
+    //     await sendEmail({
+    //         email: user.emailAddress,
+    //         subject: 'Your password reset token (valid for 10 min)',
+    //         message 
+    //     });
+
+    //     res.status(200).json({
+    //         status: 'success',
+    //         statusCode: 200,
+    //         message: 'Token sent to email'
+    //     })
+
+    // } catch (err) {
+    //     console.log(err);
+    //     user.passwordResetToken = undefined;
+    //     user.passwordResetExpires = undefined;
+    //     await user.save({validateBeforeSave: false});
+
+    //     return next(new AppError('There was an error sending the email. Try again later!'), 500)
+    // }
+
+});
+
+// TODO
+exports.resetPasswordEmployee = catchAsync(async (req, res, next) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'The resetPasswordEmployee route is not yet defined!'
+    });
+    // const {email, password} = req.body;
+
+    // // 1) Get user based on the token
+    // const hasedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    // // 2) Set new password only if token has not expired and user exists
+    // const user = await Employee.findOne();
+
+    // // 3.) Update ChangedPasswordAt property for the user
+
+    // // 4.) Log user in, send JWT
+});
+
+const checkActivationCode = async(req, res, next ) => {
+    return new Promise((resolve, reject)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email, verificationCode} = req.body;
+            // console.log(`activateAccount(checkActivationCode): email: ${email}, verificationCode:${verificationCode}`);
+            let foundRegisteredUser;
+            // check if email exists
+            try {
+                foundRegisteredUser = await Guest.findOne({emailAddress: email});
+                
+                // REFACTOR instead of using session variable to control when emails can be sent
+                if(!foundRegisteredUser) {
+                    // TODO if not exist send email success anywy
+                }
+
+                // check if user !isValidated
+                if(!foundRegisteredUser.isActive) {
+                    // TODO Send contact admin email
+                }
+                
+                // check if user !isActive
+                if(!foundRegisteredUser.isVerified){
+                    // TODO Send Login email
+                }
+
+                // verify the activation code
+                if(foundRegisteredUser.activationCode === verificationCode){
+                    delete req.session.resendLinkexpiry;
+                    foundRegisteredUser.activationResendExpires = undefined;
+                    foundRegisteredUser.activationToken = undefined;
+                    foundRegisteredUser.resendLinkexpiry = undefined;
+                    foundRegisteredUser.isVerified = true;
+                    await foundRegisteredUser.save({validateBeforeSave: false});
+                    // await foundRegisteredUser.save({validateBeforeSave: false});
+                }
+
+                // Default is activation code is not valid
+            } catch(err) {
+                reject({status: "fail"})
+            }
+
+            resolve({status: "success", message:"updated", user: foundRegisteredUser});
+        }, "1000");
+    });
+};
+
+// TODO finish other activate features 
+exports.activateAccount = catchAsync(async (req, res, next) => {
+    // console.log('Authcontroller activate account')
+    const referer = req.get('Referer');
+    const activationResult = await checkActivationCode(req, res, next)
+    .then(async (result)=>{
+
+       delete req.session.createdAccount;
+
+    //    console.log(`result ${JSON.stringify(result, null, '\t')}`)
+    //    console.log(`referer ${referer}`)
+
+       if(referer){
+            const parsedUrl = new URL(referer);
+            const pathname = parsedUrl?.pathname;
+            // console.log(`pathname ${pathname}`)
+            if(pathname && pathname.includes('checkout')){
+                // login -> create token
+                if(result.user){
+                    // console.log(`inside user ${result.user._id}`)
+                    const loginData = await signToken(result.user._id, result.user?.employeeType)
+                    // console.log(`loginData ${loginData}`)
+                    if(loginData){
+                        // Set token in HTTP-only cookie
+                        res.cookie('jwt', loginData, {
+                            httpOnly: true,
+                            secure: process.env.NODE_ENV === 'production',
+                            expiresIn: new Date(
+                                // Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+                                Date.now() + (process.env.COOKIE_EXPIRES_IN * 60 * 1000) //minutes
+                            )
+                        });
+
+                        return {
+                            status: 'success',
+                            token: loginData,
+                            statusCode: 201,
+                            id: result.user._id
+                        }
+                        // return res.redirect('/checkout');
+                    } 
+                }
+            }
+       }
+
+       delete result.user;
+       return {
+        status: result.status,
+        result: result.message
+       }
+    })
+    .catch((err)=>{
+        return {
+            status: "failure",
+            message: err
+        }
+    });
+
+    if(activationResult.status === "failure"){
+        return next(new AppError(err, 500));
+    }
+
+    // console.log(`activation ${activationResult.status} ${activationResult.status === "success"}`)
+    // console.log(JSON.stringify(activationResult));
+    const statusCode = activationResult.status === "success" ? 200 : 500;
+    res.status(statusCode).json({
+        statusCode: activationResult.statusCode ?? statusCode,
+        status: activationResult.status,
+        message: activationResult.message
+    });
+});
+
+// TODO
+const requestActivationCode = async(req, res, next ) => {
+    return new Promise((resolve, reject)=>{
+        // Set timeout of 1 second to delay brute force attacks
+        setTimeout(async () => {
+            const {email} = req.body;
+            console.log(`requestActivationResetCode: email: ${email}`);
+            // check if email exists
+            try {
+
+            } catch (err) {
+                reject()
+            }
+            // if exists check if time is spend
+            // if not exist send response anyway but not email
+            resolve({
+            });
+        }, "1000");
+    });
+};
+
+// TODO
+exports.requestActivationResetCode = catchAsync(async (req, res, next) => {
+    requestActivationCode(req, res, next)
+    .then(()=>{
+        res.status(500).json({
+            status: 'error',
+            message: 'The requestActivationResetCode route is not yet defined!'
+        });
+    })
+    .catch(()=>{
+        return next(new AppError('Something went wrong with requesting the activation code', 500))
+    })
+});
+
+
+
+

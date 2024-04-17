@@ -1,7 +1,16 @@
 {{> header}}
+
+	{{!-- {{#if userType}}
+	<p>the usertype is {{userType}}</p>
+	{{/if}} --}}
+
 <div class="main_container">
-	{{{body}}}
+	{{{body}}}		
 </div>
+
+{{#if alertToLogin}}
+	<input type="hidden" id="alertToLogin">
+{{/if}}
 
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" >
@@ -13,7 +22,7 @@
       </div>
 	  <hr>
       <div class="modal-body">
-        <form>
+        <form id="loginUserForm">
           <div class="mb-3">
             <input type="email" class="form-control custom-input" id="loginEmail" placeholder="Enter your email">
           </div>
@@ -21,7 +30,7 @@
             <input type="password" class="form-control custom-input" id="loginPassword" placeholder="Enter your password">
           </div>
           <div class="mb-3 text-center">
-            <a href="#" class="forgot-password">Forgot Password?</a>
+            <a href="/forgotpassword" class="forgot-password">Forgot Password?</a>
           </div>
 
 		  <button type="button" id="loginButton" class="btn custom-login-btn d-flex justify-content-center align-items-center">

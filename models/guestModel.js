@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const {addressSubSchema} = require('./modelUtils/subSchemas.js');
+const {addressSubSchema, photoSubSchema} = require('./modelUtils/subSchemas.js');
 const {Decimal128} = mongoose.Types;
 const randomStr = require('random-string-alphanumeric-generator');
 
@@ -32,7 +32,7 @@ const  feesSubschema = new mongoose.Schema({
         type: String,
         required: [true, 'must have a type of fee'],
         enum: {
-            values: ['base','tax', 'penalty'],
+            values: ['base','tax', 'penalty','payment'],
             message: "must be part of categories"
         }
     },
@@ -64,6 +64,7 @@ const  priceBreakdownSubschema = new mongoose.Schema({
 });
 
 const paymentDetailsSubschema = new mongoose.Schema({
+    cardHolderName: String,
     cardType : {
         type: String,
         required: [true, 'must have a card type'],
@@ -71,7 +72,8 @@ const paymentDetailsSubschema = new mongoose.Schema({
     lastFour : {
         type: String,
         required: [true, 'must have a last four'],
-    }
+    },
+    billingAddress: addressSubSchema
 });
 
 const roomDetailsSubschema = new mongoose.Schema({
@@ -100,6 +102,19 @@ const roomDetailsSubschema = new mongoose.Schema({
         type: Decimal128,
         required: [true, 'must have a price per night'],
     }
+});
+
+const mainGuestSubSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: [true, 'must have a first name']
+    },
+    lastName: String,
+    mobileNumber: String,
+    address: {
+        type: addressSubSchema,
+        required: [true, 'must have an address']
+    },
 });
 
 const reservationSubschema = new mongoose.Schema({
@@ -150,7 +165,9 @@ const reservationSubschema = new mongoose.Schema({
     priceBreakdown: {
         type: priceBreakdownSubschema,
         required: [true, 'must have price breakdown'],
-    }
+    },
+    mainGuest: mainGuestSubSchema,
+    specialRequest: String
 });
 
 const guestSchema = new mongoose.Schema({
@@ -160,15 +177,32 @@ const guestSchema = new mongoose.Schema({
         unique: true,
         validate: [validator.isEmail, 'email address must be a valid email']
     },
+    password: {
+        type: String,
+        required: [true, 'Please provide a password'],
+        minlength: [8, 'Minimum length is 8 characters']
+    },
+    passwordConfirm: {
+        type: String,
+        required: [true, 'Please confirm your password'],
+        validate: {
+            // This only works on save
+            validator: function(el){
+                return el === this.password;
+            },
+            message: 'Passwords are not the same!'
+        },
+        
+    },
     keyWord: {
         type: String,
-        required: [true, 'must have this field'],
+        // required: [true, 'must have this field'],
         minlength: [10, 'incorrect number of characters'],
         select: false
     },
     keyGen: {
         type: String,
-        required: [true, 'must have this field'],
+        // required: [true, 'must have this field'],
         minlength: [10, 'incorrect number of characters'],
         select: false
     },
@@ -195,28 +229,46 @@ const guestSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: [true, 'must have a flag'],
-        default: false
+        default: true
     },
     reservations : [reservationSubschema],
     formSubmissions : [String],
     loyaltyHistory: [String],
-    passwordChangedAt: {
-        type: Date,
-        default: new Date()
-    },
+    avatarPhotoUrl: photoSubSchema,
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    activationToken: String,
+    activationCode: String,
+    activationResendExpires: Date,
 });
 
-// refactor later
-guestSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
-    if(this.passwordChangedAt){
-        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
-        return JWTTimestamp < changedTimestamp;
-    }
-    return false;
+// Upon User creation, a random salt is created for each user
+// The password is then hashed with this salt
+// both the salt and the hashed password are returned
+// The salt is what is saved in the database
+async function generatePassandSalt(newPassword){
+    const salt = randomStr.randomLetters(10, "uppercase");
+    const secret = newPassword+salt;
+    const hash = crypto.createHmac('sha256',secret);
+    const update = hash.update(newPassword);
+    const digest = update.digest('hex');
+    return  {h:digest, s:salt};
 }
 
+// The hashed password is then encrypted(hashed) again with bcrypt
+// The 2nd encrypted password is what is saved in the database
+async function createEncryptedPass(cryptoHash) {
+    const hashedPass = await bcrypt.hash(cryptoHash.h, 12);
+    return new Promise((resolve, reject)=>{
+        resolve({h:hashedPass, s:cryptoHash.s})
+    })
+}
 
-guestSchema.statics.getKeywordFromCandidate = async (candidatepass, keygen) => {
+// when a user enters a password, the plain text password gets hashed
+// this is the pre-keyword since it still needs to be hashed by bycrypt
+// and compared with the double hashed password saved in the db
+async function getCandidatePreKeywordfromCandidatePass (candidatepass, keygen) {
     const secret = candidatepass+keygen;
     const hash = crypto.createHmac('sha256',secret);
     const update = hash.update(candidatepass);
@@ -226,44 +278,76 @@ guestSchema.statics.getKeywordFromCandidate = async (candidatepass, keygen) => {
     })
 }
 
-guestSchema.methods.correctPassword = async function(candidatePassword, keygen, userPassword){
-    return  await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
-}
-
-guestSchema.statics.correctPassword = async function(candidatePassword, keygen, userPassword){
+// userPassword is the password in the db
+async function passwordCompare(candidatePassword, keygen, userPassword){
     if(candidatePassword=="" || keygen == "" || userPassword == "" || candidatePassword == null || keygen == null || userPassword == null){
         return false;
     }
-    return await bcrypt.compare(await guestSchema.statics.getKeywordFromCandidate(candidatePassword, keygen), userPassword);
+    return await bcrypt.compare(await getCandidatePreKeywordfromCandidatePass(candidatePassword, keygen), userPassword);
 }
 
+// This function hashes the password before saving it into the database
+guestSchema.pre('save', async function(next) {
+    // Only run this function if the password was modified
+    if(!this.isModified('password')) return next();
 
-// maybe transfer to Auth Controller
-// Can also be used for updating passwords
-guestSchema.methods.generateNewHashandSalt = async function(newPassword){
-    const salt = randomStr.randomLetters(10, "uppercase");
-    const secret = newPassword+salt;
-    const hash = crypto.createHmac('sha256',secret);
-    const update = hash.update(newPassword);
-    const digest = update.digest('hex');
-    return  {h:digest, s:salt};
+    // Hash password & generate salt
+    const saltAndPass = await generatePassandSalt(this.password);
+
+    // Save password and salt, delete fields not needed
+    this.keyGen = saltAndPass.s;
+    const newKeyword = await createEncryptedPass(saltAndPass); // double hash password
+    this.keyWord = newKeyword.h;
+    next();
+});
+
+guestSchema.pre('save', function(next) {
+    if(!this.isModified('password') || this.isNew) return next();
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+
+// clean up unused fields, these are just used for validation.
+guestSchema.pre('save', function(next) {
+    if(!this.isModified('password')) return next();
+    this.password = undefined;
+    this.passwordConfirm = undefined;
+    next();
+});
+
+guestSchema.methods.createPasswordResetToken = function() {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.passwordResetExpires = Date.now() + (10 * 60 * 1000);
+    return resetToken;
 }
 
-guestSchema.statics.generateNewHashandSalt = async function(newPassword){
-    const salt = randomStr.randomLetters(10, "uppercase");
-    const secret = newPassword+salt;
-    const hash = crypto.createHmac('sha256',secret);
-    const update = hash.update(newPassword);
-    const digest = update.digest('hex');
-    return  {h:digest, s:salt};
+guestSchema.methods.createActivationToken = function() {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.activationToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.activationCode = randomStr.randomAlphanumeric(6, 'uppercase');
+    this.activationResendExpires = Date.now() + (5 * 60 * 1000);
+    return resetToken;
 }
 
-guestSchema.statics.createEncyptPass = async (cryptoHash) => {
-    const hashedPass = await bcrypt.hash(cryptoHash.h, 12);
-    return new Promise((resolve, reject)=>{
-        resolve({h:hashedPass, s:cryptoHash.s})
-    })
+// refactor later
+guestSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+    if(this?.passwordChangedAt){
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
 }
+
+// // maybe transfer to Auth Controller ?? Refactor later?
+// // Can also be used for updating passwords
+guestSchema.methods.generateNewHashandSalt = generatePassandSalt;
+guestSchema.statics.generateNewHashandSalt = generatePassandSalt;
+guestSchema.statics.createEncyptPass = createEncryptedPass;
+guestSchema.methods.correctPassword = passwordCompare;
+guestSchema.statics.correctPassword = passwordCompare;
+guestSchema.statics.getKeywordFromCandidate = getCandidatePreKeywordfromCandidatePass;
+
 
 // User.findOne({email}).select('+keyWord +keyGen') // pass to here
 guestSchema.methods.getPassword = function(candidatePassword, salt){

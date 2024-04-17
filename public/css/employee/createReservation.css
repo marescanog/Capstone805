@@ -1,0 +1,43 @@
+.reservation-page-wrapper {
+    min-height: 80vh;
+    padding: 1em 2em;
+}
+
+.price-card {
+    width: 50%;
+}
+
+.form-create-reservation {
+    display: flex;
+    flex-direction: row;
+}
+
+.section-room-selection {
+    flex: 1;
+}
+
+.section-guest-information {
+    flex: 1;
+    margin-left: 1em;
+}
+
+@media screen and (max-width: 992px) {
+    .price-card {
+        width: 100%;
+    }
+
+    .form-create-reservation {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .section-guest-information {
+        margin-left: 0;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .reservation-page-wrapper {
+        padding: 1em;
+    }
+}

@@ -5,7 +5,7 @@
                 {{> _h1styled headerTitle="Create Account"}}
                 <div class="subheader-container">
                     {{#unless disablePaymentSidebar}}<p class="create-acc-p-subheader-style">Reserve your room now! Create an account to proceed.</p>{{/unless}}
-                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" href="#">Login</a></p>
+                    <p class="create-acc-p-subheader-style {{#if disablePaymentSidebar}}text-center{{/if}} mt-2">Already have an account? <a class="login-link" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></p>
                 </div>
                 <div class="card">
                     <div class="success-contents">
@@ -14,14 +14,34 @@
                                 <img class="svg-check" src="/img/icons/general/check.svg" alt="as">
                             </div>
                         </div>
-                        <h1>Email Sent</h1>
-                        <div class="verification-details-container">
-                            <p>To complete your registration, a verification email has been sent to the provided address. Please click the link in the email to verify and proceed with your booking.</p>
+
+                        <div class="email-section">
+                            <h1 class="no-margin-header">Email Sent To</h1>
+                            <h2 class="no-margin-header">{{emailSentTo}}</h2>
                         </div>
+                        
+                        {{!-- TODO do not display verification code if user is already activated or if user is disabled. --}}
+                        <div>
+                            <form id="verificationCodeForm">
+                                <label for="verificationCode" class="form-label">Verification Code</label>
+                                <input type="text" class="form-control activation-code" name="verificationCode" id="verificationCode" aria-describedby="verification code" maxlength="6" required>
+                                <div class="invalid-feedback">Verification code is required</div>
+
+                                <input type="hidden" name="email" id="email" value="{{emailSentTo}}">
+                                
+                                <button id="verificationSubmitButton" type="button" class="btn btn-primary">Activate Account</button>
+                            </form>
+                        </div>
+    
+
+                        <div class="verification-details-container">
+                            <p>**To complete your registration, a verification email has been sent to this email address. Enter the verification code in your email or click on the link to verify your account.</p>
+                        </div>
+
                         <div class="resend-text">
                             <input value="{{serverSeconds}}" type="hidden" id="serverSeconds" >
                             <p>Did not receive verification email? </p>
-                            <a href="" id="activationLink" class="inactive">Resend Email (<span id="countdown">60</span>)</a>
+                            <a href="javascript:void(0);" id="activationLink" class="inactive">Resend Email (<span id="countdown">60</span>)</a>
                         </div>
                     </div>
                 </div>

@@ -11,7 +11,7 @@
     flex:1;
     display: flex;
     flex-direction: row;
-    border: rgba(0,0,0,0.6) solid 2px;
+    border: 2px solid #b2b2b2;
 }
 
 .search-field-container {

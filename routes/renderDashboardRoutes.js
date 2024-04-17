@@ -1,8 +1,10 @@
 const express = require('express');
-const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin } = require('./../controllers/dashboard/staffDashboardController.js');
-const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms} = require('./../controllers/dashboard/managerDashboardController.js');
-const {loadAdminDashboard, viewUsers } = require('./../controllers/dashboard/adminDashboardController.js');
-const {loadUserDashboard} = require('./../controllers/dashboard/dashboardController.js'); 
+const {loadStaffDashboard, editStaffAccount, editStaffPassword, updateStaffPhoto, createReservations, viewStaffReservations, viewInquiries, checkin, viewSingleReservationStafPOV, viewRoomOccupancy } = require('./../controllers/dashboard/staffDashboardController.js');
+const {loadManagerDashboard, viewOffers, viewPromotions, viewRooms, viewReportPage, viewCreateRoomPage, viewRoomPage, viewCreateOfferPage, viewOfferPage, viewCreatePromotionPage, viewPromotionPage} = require('./../controllers/dashboard/managerDashboardController.js');
+const {loadAdminDashboard, viewUsers, viewEmployees, viewUserPage,
+    createUserPage, viewEmployeePage, createEmployeePage, managePermissionsPage, managePermissionsSearchPage } = require('./../controllers/dashboard/adminDashboardController.js');
+const {loadUserDashboard, uploadNewGuestPhotoPage, updateGuestEmailPage, updateGuestPasswordPage, 
+    editGuestProfilePage, loyaltyPointsHistoryPage, reservationHistoryPage, viewInboxPage, renderGuestReservationInfoPage} = require('./../controllers/dashboard/dashboardController.js'); 
 const authController = require('./../controllers/authController.js');
 
 const renderDashboardRouter = express.Router();
@@ -11,64 +13,355 @@ const managerRouter = express.Router();
 const adminRouter = express.Router();
 const userRouter = express.Router();
 
+// ====================================
+//           STAFF ROUTES
+// ====================================
+
 // Staff Router
 renderDashboardRouter.use('/staff', staffRouter);
+
 // Staff Routes
-staffRouter.route('/viewReservations').get(viewStaffReservations);
-staffRouter.route('/edit').get(editStaffAccount);
-staffRouter.route('/changePassword').get(editStaffPassword);
-staffRouter.route('/updatePhoto').get(updateStaffPhoto);
-staffRouter.route('/createReservations').get(createReservations);
-staffRouter.route('/inquiries').get(viewInquiries);
-staffRouter.route('/checkin').get(checkin);
-staffRouter.route('/reservation').get((req, res)=>{res.send('you are at the view single reservation from staff view')});
-staffRouter.route('/reservation/edit').get((req, res)=>{res.send('you are at the edit single reservation from staff view')});
-staffRouter.route('/:id').get(authController.protect, authController.verifyEmployee, loadStaffDashboard);
+staffRouter.route('/viewReservations').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    viewStaffReservations
+); //done
+
+staffRouter.route('/edit').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    editStaffAccount
+); //done
+
+staffRouter.route('/changePassword').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    editStaffPassword
+); //done
+
+staffRouter.route('/updatePhoto').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    updateStaffPhoto
+); //done
+
+staffRouter.route('/createReservations').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    createReservations
+); //semi-done rushed html & css
+
+staffRouter.route('/inquiries').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, viewInquiries
+); //semi-done rushed html & css
+
+staffRouter.route('/checkin').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, checkin
+); //done - no modal TODO
+
+staffRouter.route('/reservation/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    viewSingleReservationStafPOV
+); //done - modify for staff pov TODO
+
+staffRouter.route('/occupancy').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff', 'manager', 'admin'), 
+    authController.cacheControl, 
+    viewRoomOccupancy
+); // done
+
+viewRoomOccupancy
+staffRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('staff'), 
+    authController.cacheControl, 
+    loadStaffDashboard
+); //done
 
 
+
+
+
+// ====================================
+//           MANAGER ROUTES
+// ====================================
 
 // Manager Router
 renderDashboardRouter.use('/manager', managerRouter);
 // Manager Routes
-// // Manager Routes
-// managerRouter.route('/viewReservations').get(viewStaffReservations);
-// managerRouter.route('/edit').get(editStaffAccount);
-// managerRouter.route('/changePassword').get(editStaffPassword);
-// managerRouter.route('/updatePhoto').get(updateStaffPhoto);
-// managerRouter.route('/createReservations').get(createReservations);
-// managerRouter.route('/inquiries').get(viewInquiries);
-// managerRouter.route('/checkin').get(checkin);
-managerRouter.route('/offers').get(viewOffers);
-managerRouter.route('/promotions').get(viewPromotions);
-managerRouter.route('/rooms').get(viewRooms);
-managerRouter.route('/:id').get(loadManagerDashboard);
+managerRouter.route('/offers').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOffers
+); // need link with view
 
+managerRouter.route('/promotions').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewPromotions
+); // need to link views
+
+managerRouter.route('/rooms').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRooms
+); // need to link views
+
+managerRouter.route('/report').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewReportPage
+); // done
+
+managerRouter.route('/createroom').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateRoomPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewroom/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewRoomPage 
+); //semi-done rushed html & css
+
+managerRouter.route('/createoffer').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreateOfferPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewoffer/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewOfferPage
+); //semi-done rushed html & css
+
+managerRouter.route('/createpromotion').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewCreatePromotionPage
+); //semi-done rushed html & css
+
+managerRouter.route('/viewpromotion/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager', 'admin'), 
+    authController.cacheControl, 
+    viewPromotionPage
+);
+
+managerRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('manager'), 
+    authController.cacheControl, 
+    loadManagerDashboard
+); // done
+
+
+
+// ====================================
+//           ADMIN ROUTES
+// ====================================
 
 // Admin Router
 renderDashboardRouter.use('/USNVMQD493', adminRouter);
-// adminRouter.route('/viewReservations').get(viewStaffReservations);
-// adminRouter.route('/edit').get(editStaffAccount);
-// adminRouter.route('/changePassword').get(editStaffPassword);
-// adminRouter.route('/updatePhoto').get(updateStaffPhoto);
-// adminRouter.route('/createReservations').get(createReservations);
-// adminRouter.route('/inquiries').get(viewInquiries);
-// adminRouter.route('/checkin').get(checkin);
-// adminRouter.route('/offers').get(checkin);
-// adminRouter.route('/promotions').get(checkin);
-// adminRouter.route('/rooms').get(checkin);
-adminRouter.route('/users').get(viewUsers);
-adminRouter.route('/:id').get(loadAdminDashboard);
+adminRouter.route('/users').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewUsers
+);
+
+adminRouter.route('/user/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewUserPage
+);
+
+adminRouter.route('/createuser').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    createUserPage
+);
+
+adminRouter.route('/employees').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl,
+    viewEmployees
+);
+
+adminRouter.route('/employee/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    viewEmployeePage
+);
+
+adminRouter.route('/createemployee').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    createEmployeePage
+);
+
+adminRouter.route('/managepermissions').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    managePermissionsSearchPage
+);
+
+adminRouter.route('/managepermissions/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    managePermissionsPage
+);
+
+adminRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyEmployee, 
+    authController.restrictTo('admin'), 
+    authController.cacheControl, 
+    loadAdminDashboard
+);
 
 
-// Staff Router
+
+
+
+
+// ====================================
+//           GUEST ROUTES
+// ====================================
+
+// Guest Router
 renderDashboardRouter.use('/guest', userRouter);
-// user
-userRouter.route('/:id').get((req, res)=>{
-    res.render( "pages/hotelguest/userdashboard", {
-        layout:"main", 
-        title:'Profile',  
-    });  
-});
+// Guest Routes
+userRouter.route("/update-email").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    updateGuestEmailPage
+); // Done
+
+userRouter.route("/upload-photo").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    uploadNewGuestPhotoPage
+); // TODO - no page
+
+userRouter.route("/update-password").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    updateGuestPasswordPage
+); // Done
+
+userRouter.route("/editacccount").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    editGuestProfilePage
+); // Done
+
+userRouter.route("/loyalty-history").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    loyaltyPointsHistoryPage
+); // Done
+
+userRouter.route("/reservations").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    reservationHistoryPage
+); // Done
+
+userRouter.route("/view-inbox").get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    viewInboxPage
+); // Done
+
+userRouter.route("/reservationinfo/:id").get(
+    authController.protect, 
+    authController.verifyGuest,
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    renderGuestReservationInfoPage
+); // Done
+
+userRouter.route('/:id').get(
+    authController.protect, 
+    authController.verifyGuest, 
+    authController.restrictTo('guest'), 
+    authController.cacheControl, 
+    loadUserDashboard
+); // Done
 
 
 module.exports = renderDashboardRouter;
